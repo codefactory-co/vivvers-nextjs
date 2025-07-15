@@ -1,7 +1,6 @@
 import { ExternalLink, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { ProjectDetail } from '@/types/project'
 import { cn } from '@/lib/utils'
 
@@ -37,17 +36,6 @@ export function ProjectQuickInfo({ project, className }: ProjectQuickInfoProps) 
           )}
         </div>
 
-        {/* 기술 스택 */}
-        <div>
-          <h3 className="font-semibold mb-3">기술 스택</h3>
-          <div className="flex flex-wrap gap-2">
-            {project.techStack.map((tech) => (
-              <Badge key={tech.id} variant="secondary">
-                {tech.name}
-              </Badge>
-            ))}
-          </div>
-        </div>
 
         {/* 통계 */}
         <div className="grid grid-cols-2 gap-4 pt-4 border-t">

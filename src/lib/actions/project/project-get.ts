@@ -26,16 +26,6 @@ export async function getProjectById(projectId: string) {
             }
           }
         },
-        projectTechStacks: {
-          include: {
-            tag: {
-              select: {
-                id: true,
-                name: true
-              }
-            }
-          }
-        },
         likes: {
           select: {
             id: true,
@@ -86,10 +76,6 @@ export async function getProjectById(projectId: string) {
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name
-      })),
-      techStack: project.projectTechStacks.map(pts => ({
-        id: pts.tag.id,
-        name: pts.tag.name
       })),
       likes: project.likes,
       comments: [], // 빈 댓글 배열 추가

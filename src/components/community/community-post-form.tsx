@@ -143,9 +143,8 @@ export function CommunityPostForm({}: CommunityPostFormProps) {
         <TagCommandDB
           selectedTags={formData.tags}
           onTagsChange={handleTagsChange}
-          placeholder="영어만 됨 ㅇㅋ? 한국어 원하면 부탁해보셈"
+          placeholder="영어만 됨 ㅇㅋ?"
           maxTags={10}
-          type="tags"
           disabled={isSubmitting}
         />
         <p className="text-sm text-muted-foreground">

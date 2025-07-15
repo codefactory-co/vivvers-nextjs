@@ -35,7 +35,6 @@ export interface Project {
   likeCount: number
   author: ProjectAuthor
   tags: ProjectTag[]
-  techStack: ProjectTag[]
   likes: ProjectLike[]
   createdAt: Date
   updatedAt: Date

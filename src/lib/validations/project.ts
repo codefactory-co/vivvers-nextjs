@@ -2,13 +2,12 @@ import { z } from 'zod'
 
 // 카테고리 목록
 export const PROJECT_CATEGORIES = [
-  '웹 개발',
+  '웹사이트',
   '모바일 앱', 
-  'AI/ML',
-  '블록체인',
-  'UI/UX',
+  '데스크톱 앱',
   '게임',
-  '데이터'
+  '임베디드',
+  '기타'
 ] as const
 
 // 태그 유효성 검사 규칙
@@ -92,9 +91,6 @@ export const createProjectSchema = z.object({
     .url('올바른 URL 형식이 아닙니다')
     .optional()
     .or(z.literal('')),
-  techStack: z.array(tagSchema)
-    .max(15, '기술 스택은 최대 15개까지 가능합니다')
-    .default([]),
   features: z.array(z.string())
     .max(20, '주요 기능은 최대 20개까지 가능합니다')
     .default([]),

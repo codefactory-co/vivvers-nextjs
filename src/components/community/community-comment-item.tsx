@@ -39,7 +39,6 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
   onReply,
   onEdit,
   onDelete,
-  onBestAnswer,
   depth = 0
 }) => {
   const [showReplyForm, setShowReplyForm] = useState(false)
@@ -55,10 +54,6 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
     setShowReplyForm(!showReplyForm)
   }
 
-  const handleBestAnswer = () => {
-    if (!onBestAnswer) return
-    onBestAnswer(comment.id)
-  }
 
 
   return (
@@ -158,18 +153,6 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
               </Button>
             )}
 
-            {/* Best Answer */}
-            {isPostAuthor && !comment.isBestAnswer && depth === 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleBestAnswer}
-                className="text-xs px-2 py-1 h-auto hover:text-yellow-600"
-              >
-                <Star className="w-3 h-3 mr-1" />
-                채택
-              </Button>
-            )}
           </div>
 
           {/* Reply Form */}
@@ -197,7 +180,6 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
               onReply={onReply}
               onEdit={onEdit}
               onDelete={onDelete}
-              onBestAnswer={onBestAnswer}
               depth={depth + 1}
             />
           ))}

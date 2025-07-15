@@ -30,13 +30,6 @@ export function CommunityCommentSection({
     setShowCommentForm(false)
   }
 
-  const handleBestAnswer = (commentId: string) => {
-    // Handle best answer selection
-    setComments(prev => prev.map(comment => ({
-      ...comment,
-      isBestAnswer: comment.id === commentId ? !comment.isBestAnswer : false
-    })))
-  }
 
   return (
     <Card>
@@ -91,7 +84,6 @@ export function CommunityCommentSection({
               comments={comments}
               currentUserId={currentUserId}
               postAuthorId={postAuthorId}
-              onBestAnswer={currentUserId === postAuthorId ? handleBestAnswer : undefined}
             />
           </div>
         ) : (

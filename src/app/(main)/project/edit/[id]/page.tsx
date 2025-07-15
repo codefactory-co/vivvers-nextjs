@@ -24,7 +24,6 @@ export default function ProjectEditPage() {
     screenshots: [],
     demoUrl: '',
     githubUrl: '',
-    techStack: [],
     features: [],
     tags: []
   })
@@ -86,7 +85,6 @@ export default function ProjectEditPage() {
           screenshots: project.images || [],
           demoUrl: project.demoUrl || '',
           githubUrl: project.githubUrl || '',
-          techStack: project.techStack.map(tech => tech.name),
           features: project.features,
           tags: project.tags.map(tag => tag.name)
         })

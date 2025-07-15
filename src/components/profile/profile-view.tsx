@@ -1,11 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Github, Linkedin, ExternalLink, Edit3, Mail, Calendar, User } from 'lucide-react'
+import { Github, Linkedin, ExternalLink, Mail, Calendar, User } from 'lucide-react'
 import { User as UserType } from '@/types/user'
 import type { UserStats } from '@/types/user'
 import { ProfileProjectsSection } from '@/components/profile/profile-projects-section'
@@ -17,12 +15,7 @@ interface ProfileViewProps {
 }
 
 export function ProfileView({ user, isOwner, stats }: ProfileViewProps) {
-  const router = useRouter()
   const socialLinks = user.socialLinks as { github?: string; linkedin?: string; portfolio?: string } || {}
-
-  const handleEditClick = () => {
-    router.push('/profile/edit')
-  }
 
   return (
     <div className="space-y-6">
@@ -47,12 +40,6 @@ export function ProfileView({ user, isOwner, stats }: ProfileViewProps) {
                   </div>
                 </div>
                 
-                {isOwner && (
-                  <Button onClick={handleEditClick} variant="outline">
-                    <Edit3 className="w-4 h-4 mr-2" />
-                    편집
-                  </Button>
-                )}
               </div>
               
               <div className="flex items-center gap-2 text-sm text-muted-foreground">

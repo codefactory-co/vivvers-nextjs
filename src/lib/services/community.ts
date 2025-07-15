@@ -203,8 +203,7 @@ export async function getCommunityPostById(id: string): Promise<CommunityPost | 
                   }
                 },
                 likes: {
-                  select: {
-                    userId: true,
+                  include: {
                     user: {
                       select: {
                         id: true,
@@ -218,8 +217,7 @@ export async function getCommunityPostById(id: string): Promise<CommunityPost | 
               orderBy: { createdAt: 'asc' }
             },
             likes: {
-              select: {
-                userId: true,
+              include: {
                 user: {
                   select: {
                     id: true,
@@ -539,8 +537,14 @@ export async function createCommunityComment({
               }
             },
             likes: {
-              select: {
-                userId: true
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    avatarUrl: true
+                  }
+                }
               }
             }
           }

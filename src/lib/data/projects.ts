@@ -1,17 +1,9 @@
 import { Project, ProjectDetail, ProjectTag, ProjectAuthor } from '@/types/project'
-import { techStackOptions, generalTagOptions } from './tags'
+import { generalTagOptions } from './tags'
 
 // Helper function to create ProjectTag objects
 const createProjectTag = (name: string): ProjectTag => {
-  const techOption = techStackOptions.find(opt => opt.label === name || opt.value === name.toLowerCase())
   const generalOption = generalTagOptions.find(opt => opt.label === name || opt.value === name.toLowerCase())
-  
-  if (techOption) {
-    return {
-      id: techOption.value,
-      name: techOption.label
-    }
-  }
   
   if (generalOption) {
     return {
@@ -20,7 +12,7 @@ const createProjectTag = (name: string): ProjectTag => {
     }
   }
   
-  // Fallback for custom tags
+  // Fallback for custom tags (including tech tags)
   return {
     id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     name: name
@@ -36,6 +28,9 @@ const createProjectAuthor = (id: string, name: string, username: string, avatar:
   bio: null
 })
 
+// TODO: Replace this with your actual Supabase user ID from the console log
+const CURRENT_USER_ID = 'YOUR_ACTUAL_SUPABASE_USER_ID_HERE'
+
 export const mockProjects: Project[] = [
   {
     id: '1',
@@ -47,7 +42,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user1', '김사라', 'sarahdesigns', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face'),
     category: 'UI/UX 디자인',
     tags: [createProjectTag('React'), createProjectTag('Tailwind CSS'), createProjectTag('디자인 시스템')],
-    techStack: [createProjectTag('React'), createProjectTag('Tailwind CSS')],
     features: ['재사용 가능한 컴포넌트', '다크 모드 지원', '반응형 디자인'],
     demoUrl: 'https://design-system-demo.vercel.app',
     githubUrl: 'https://github.com/sarahdesigns/modern-ui-system',
@@ -68,7 +62,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user2', '이준호', 'alexdev', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face'),
     category: '웹 개발',
     tags: [createProjectTag('JavaScript'), createProjectTag('D3.js'), createProjectTag('분석')],
-    techStack: [createProjectTag('JavaScript'), createProjectTag('D3.js')],
     features: ['실시간 데이터 시각화', '리포팅 도구', '인터랙티브 대시보드'],
     demoUrl: 'https://ecommerce-analytics-demo.vercel.app',
     githubUrl: 'https://github.com/alexdev/ecommerce-analytics',
@@ -88,7 +81,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user3', '김민지', 'emilyux', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face'),
     category: '모바일 디자인',
     tags: [createProjectTag('Figma'), createProjectTag('모바일'), createProjectTag('프로토타입')],
-    techStack: [createProjectTag('Figma')],
     features: ['직관적인 UI/UX', '피트니스 추적 기능', '세련된 모바일 디자인'],
     demoUrl: 'https://figma.com/proto/mobile-app',
     githubUrl: null,
@@ -109,7 +101,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user4', '김대현', 'davidai', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face'),
     category: '머신러닝',
     tags: [createProjectTag('Python'), createProjectTag('AI'), createProjectTag('NLP')],
-    techStack: [createProjectTag('Python')],
     features: ['자연어 처리', '코드 생성', '머신러닝 알고리즘'],
     demoUrl: 'https://ai-code-generator.vercel.app',
     githubUrl: 'https://github.com/davidai/ai-code-generator',
@@ -130,7 +121,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user5', '박서연', 'mariaweb3', 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face'),
     category: '블록체인',
     tags: [createProjectTag('Web3'), createProjectTag('React'), createProjectTag('암호화폐')],
-    techStack: [createProjectTag('React'), createProjectTag('Web3')],
     features: ['고급 보안', '사용자 친화적 인터페이스', '멀티 체인 지원'],
     demoUrl: null,
     githubUrl: 'https://github.com/mariaweb3/blockchain-wallet',
@@ -150,7 +140,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user6', '최재원', 'jamesgames', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'),
     category: '게임 개발',
     tags: [createProjectTag('Unity'), createProjectTag('C#'), createProjectTag('포트폴리오')],
-    techStack: [createProjectTag('Unity'), createProjectTag('C#')],
     features: ['인터랙티브 요소', '게임 미리보기', '동적 쇼케이스'],
     demoUrl: 'https://game-portfolio.vercel.app',
     githubUrl: 'https://github.com/jamesgames/game-portfolio',
@@ -170,7 +159,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user7', '이수진', 'lisasocial', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face'),
     category: '웹 개발',
     tags: [createProjectTag('Node.js'), createProjectTag('API'), createProjectTag('소셜 미디어')],
-    techStack: [createProjectTag('Node.js')],
     features: ['스케줄링', '분석 기능', '멀티 플랫폼 지원'],
     demoUrl: 'https://social-manager.vercel.app',
     githubUrl: 'https://github.com/lisasocial/social-manager',
@@ -190,7 +178,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user8', '정민수', 'mikeweather', 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face'),
     category: '데이터 시각화',
     tags: [createProjectTag('Vue.js'), createProjectTag('날씨 API'), createProjectTag('차트')],
-    techStack: [createProjectTag('Vue.js')],
     features: ['데이터 시각화', '정확한 예보', '아름다운 UI'],
     demoUrl: 'https://weather-app.vercel.app',
     githubUrl: 'https://github.com/mikeweather/weather-app',
@@ -210,7 +197,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user9', '이지은 박사', 'drjenlee', 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop&crop=face'),
     category: '헬스케어',
     tags: [createProjectTag('HIPAA'), createProjectTag('데이터베이스'), createProjectTag('보안')],
-    techStack: [createProjectTag('HIPAA')],
     features: ['환자 관리', '예약 시스템', '의료 기록'],
     demoUrl: null,
     githubUrl: 'https://github.com/drjenlee/healthcare-system',
@@ -230,7 +216,6 @@ export const mockProjects: Project[] = [
     author: createProjectAuthor('user10', '강태현', 'robrealty', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face'),
     category: '부동산',
     tags: [createProjectTag('React'), createProjectTag('지도 API'), createProjectTag('금융')],
-    techStack: [createProjectTag('React')],
     features: ['가상 투어', '부동산 비교', '모기지 계산기'],
     demoUrl: 'https://real-estate-platform.vercel.app',
     githubUrl: 'https://github.com/robrealty/real-estate-platform',
@@ -375,7 +360,7 @@ const generateProjectDetail = (project: Project): ProjectDetail => {
     },
     {
       id: `comment-${project.id}-2`,
-      content: `${project.techStack[0]?.name || '기술'} 기술 활용이 매우 잘 되어있습니다. 어떤 학습 리소스를 추천하시나요?`,
+      content: `${project.tags[0]?.name || '기술'} 기술 활용이 매우 잘 되어있습니다. 어떤 학습 리소스를 추천하시나요?`,
       projectId: project.id,
       authorId: 'user-comment-2',
       parentId: null,

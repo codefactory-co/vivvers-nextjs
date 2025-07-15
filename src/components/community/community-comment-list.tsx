@@ -11,7 +11,6 @@ export const CommunityCommentList: React.FC<CommunityCommentListProps> = ({
   onCommentReply,
   onCommentEdit,
   onCommentDelete,
-  onBestAnswer,
   loading = false,
   className
 }) => {
@@ -53,7 +52,6 @@ export const CommunityCommentList: React.FC<CommunityCommentListProps> = ({
               onReply={onCommentReply}
               onEdit={onCommentEdit}
               onDelete={onCommentDelete}
-              onBestAnswer={onBestAnswer}
               depth={0}
             />
           </div>

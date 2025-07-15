@@ -27,7 +27,6 @@ interface TagCommandDBProps {
   onTagsChange: (tags: string[]) => void
   placeholder?: string
   maxTags?: number
-  type: 'techStack' | 'tags'
   className?: string
   disabled?: boolean
 }
@@ -43,7 +42,6 @@ export function TagCommandDB({
   onTagsChange,
   placeholder = "태그를 검색하고 선택하세요",
   maxTags = 10,
-  type,
   className,
   disabled = false
 }: TagCommandDBProps) {
@@ -172,7 +170,7 @@ export function TagCommandDB({
         >
           <Command className="w-full">
             <CommandInput 
-              placeholder={`${type === 'techStack' ? '기술 스택' : '태그'}을 검색하세요...`}
+              placeholder="태그를 검색하세요..."
               value={search}
               onValueChange={setSearch}
             />
@@ -247,7 +245,7 @@ export function TagCommandDB({
       {selectedTags.length > 0 && (
         <div className="space-y-2">
           <div className="text-sm text-muted-foreground">
-            선택된 {type === 'techStack' ? '기술 스택' : '태그'} ({selectedTags.length}/{maxTags})
+            선택된 태그 ({selectedTags.length}/{maxTags})
           </div>
           <div className="flex flex-wrap gap-2">
             {selectedTags.map((tagName) => (
@@ -272,7 +270,7 @@ export function TagCommandDB({
       )}
 
       {/* 추천 태그 (선택사항) */}
-      {selectedTags.length === 0 && type === 'techStack' && !search.trim() && popularTags.length > 0 && (
+      {selectedTags.length === 0 && !search.trim() && popularTags.length > 0 && (
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2">
             {popularTags.slice(0, 5).map((tag) => (

@@ -25,17 +25,7 @@ export async function getRelatedProjects(projectId: string, category: string, li
               select: {
                 id: true,
                 name: true,
-                              }
-            }
-          }
-        },
-        projectTechStacks: {
-          include: {
-            tag: {
-              select: {
-                id: true,
-                name: true,
-                              }
+              }
             }
           }
         }
@@ -70,11 +60,7 @@ export async function getRelatedProjects(projectId: string, category: string, li
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name,
-              })),
-      techStack: project.projectTechStacks.map(pts => ({
-        id: pts.tag.id,
-        name: pts.tag.name,
-              })),
+      })),
       likes: [], // 빈 likes 배열 추가
       createdAt: project.createdAt,
       updatedAt: project.updatedAt
@@ -108,17 +94,7 @@ export async function getProjectsByCategory(category: string, limit: number = 10
               select: {
                 id: true,
                 name: true,
-                              }
-            }
-          }
-        },
-        projectTechStacks: {
-          include: {
-            tag: {
-              select: {
-                id: true,
-                name: true,
-                              }
+              }
             }
           }
         }
@@ -153,11 +129,7 @@ export async function getProjectsByCategory(category: string, limit: number = 10
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name,
-              })),
-      techStack: project.projectTechStacks.map(pts => ({
-        id: pts.tag.id,
-        name: pts.tag.name,
-              })),
+      })),
       likes: [], // 빈 likes 배열 추가
       createdAt: project.createdAt,
       updatedAt: project.updatedAt

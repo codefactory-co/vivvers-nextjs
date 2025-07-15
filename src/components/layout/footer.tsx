@@ -27,31 +27,25 @@ export function Footer({ className }: FooterProps) {
               />
             </Link>
             <p className="text-muted-foreground text-sm max-w-xs">
-              바이브 코딩으로 제작된 프로젝트들을 효과적으로 홍보하고 공유할 수 있는 플랫폼입니다.
+              당신의 프로젝트 vivver에서 빛나다
             </p>
           </div>
 
           {/* Navigation Links */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-foreground">사이트 맵</h3>
+            <h3 className="font-semibold text-foreground">바로가기</h3>
             <nav className="flex flex-col space-y-2">
               <Link 
-                href="/projects" 
+                href="/" 
                 className="text-muted-foreground hover:text-foreground transition-colors text-sm"
               >
-                프로젝트
+                홈
               </Link>
               <Link 
-                href="/about" 
+                href="/community" 
                 className="text-muted-foreground hover:text-foreground transition-colors text-sm"
               >
-                소개
-              </Link>
-              <Link 
-                href="/contact" 
-                className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-              >
-                문의
+                커뮤니티
               </Link>
             </nav>
           </div>
@@ -64,7 +58,7 @@ export function Footer({ className }: FooterProps) {
                 프로젝트 문의나 제안사항이 있으시면 언제든 연락주세요.
               </p>
               <Link 
-                href="/contact" 
+                href="mailto:jc@codefactory.ai" 
                 className="text-primary hover:text-primary/80 transition-colors text-sm font-medium"
               >
                 문의하기 →
@@ -75,24 +69,10 @@ export function Footer({ className }: FooterProps) {
 
         {/* Bottom Section */}
         <div className="mt-12 pt-8 border-t border-border">
-          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+          <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0">
             <p className="text-muted-foreground text-xs">
               © {currentYear} Vivvers. All rights reserved.
             </p>
-            <div className="flex space-x-6">
-              <Link 
-                href="/privacy" 
-                className="text-muted-foreground hover:text-foreground transition-colors text-xs"
-              >
-                개인정보처리방침
-              </Link>
-              <Link 
-                href="/terms" 
-                className="text-muted-foreground hover:text-foreground transition-colors text-xs"
-              >
-                이용약관
-              </Link>
-            </div>
           </div>
         </div>
       </div>

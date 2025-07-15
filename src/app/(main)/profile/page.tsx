@@ -1,6 +1,6 @@
 import { ProfileView } from '@/components/profile/profile-view'
-import { getUserByUsername } from '@/lib/actions/user/user-get'
 import { getUserStats } from '@/lib/actions/user/user-stats'
+import { ensureUserExists } from '@/lib/actions/user/user-ensure'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
 import { User as UserIcon } from 'lucide-react'
@@ -16,52 +16,8 @@ export default async function ProfilePage() {
     redirect('/signin')
   }
   
-  // 사용자 정보 조회
-  let currentUser = null
-  
-  // Debug: Supabase Auth 사용자 정보 확인
-  console.log('Supabase Auth User:', {
-    id: authUser.id,
-    email: authUser.email,
-    user_metadata: authUser.user_metadata
-  })
-  
-  // Try multiple ways to get user data
-  if (authUser.user_metadata?.username) {
-    const currentUserResult = await getUserByUsername(authUser.user_metadata.username)
-    if (currentUserResult.success && currentUserResult.data) {
-      currentUser = currentUserResult.data
-    }
-  } 
-  
-  // If user not found by username, try to find by Supabase user ID
-  if (!currentUser) {
-    try {
-      const { getUserById } = await import('@/lib/actions/user/user-get')
-      currentUser = await getUserById(authUser.id)
-    } catch (error) {
-      console.error('Failed to find user by ID:', error)
-    }
-  }
-  
-  // If still no user found, create a temporary user profile for demo
-  if (!currentUser) {
-    const tempUsername = authUser.email?.split('@')[0] || 'user'
-    currentUser = {
-      id: authUser.id,
-      username: tempUsername,
-      email: authUser.email || '',
-      avatarUrl: null,
-      bio: null,
-      socialLinks: {},
-      skills: [],
-      experience: null,
-      isPublic: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-    console.log('Created temporary user profile:', currentUser)
-  }
+  // 사용자 정보 조회 또는 생성
+  const currentUser = await ensureUserExists(authUser.id)
   
   // 사용자 정보를 찾을 수 없는 경우
   if (!currentUser) {

@@ -6,7 +6,7 @@ import { Plus, FolderOpen } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ProjectCardCompact } from '@/components/project/project-card-compact'
-import { getProjectsByUserId, type GetProjectsByUserIdResult } from '@/lib/actions/project/project-user'
+import { getProjectsByUserId, type GetProjectsByUserIdResult } from '@/lib/actions/user/user-projects'
 import { Project } from '@/types/project'
 import { cn } from '@/lib/utils'
 

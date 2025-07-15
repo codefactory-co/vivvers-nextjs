@@ -15,7 +15,6 @@ async function main() {
     // Delete in reverse dependency order
     await prisma.projectCommentLike.deleteMany().catch(() => {})
     await prisma.projectComment.deleteMany().catch(() => {})
-    await prisma.projectTechStack.deleteMany().catch(() => {})
     await prisma.projectTag.deleteMany().catch(() => {})
     await prisma.projectLike.deleteMany().catch(() => {})
     await prisma.project.deleteMany().catch(() => {})

@@ -96,16 +96,6 @@ export async function getProjectsWithFilters(
                               }
             }
           }
-        },
-        projectTechStacks: {
-          include: {
-            tag: {
-              select: {
-                id: true,
-                name: true,
-                              }
-            }
-          }
         }
       },
       orderBy: sortOptions[sortBy] as { createdAt?: 'desc' } | { likeCount?: 'desc' } | { updatedAt?: 'desc' },
@@ -137,10 +127,6 @@ export async function getProjectsWithFilters(
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name,
-              })),
-      techStack: project.projectTechStacks.map(pts => ({
-        id: pts.tag.id,
-        name: pts.tag.name,
               })),
       likes: [], // Empty array for compatibility
       createdAt: project.createdAt,
@@ -194,16 +180,6 @@ export async function getFeaturedProjects(limit: number = 6): Promise<Project[]>
                               }
             }
           }
-        },
-        projectTechStacks: {
-          include: {
-            tag: {
-              select: {
-                id: true,
-                name: true,
-                              }
-            }
-          }
         }
       },
       orderBy: {
@@ -236,10 +212,6 @@ export async function getFeaturedProjects(limit: number = 6): Promise<Project[]>
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name,
-              })),
-      techStack: project.projectTechStacks.map(pts => ({
-        id: pts.tag.id,
-        name: pts.tag.name,
               })),
       likes: [], // Empty array for compatibility
       createdAt: project.createdAt,

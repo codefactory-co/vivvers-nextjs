@@ -22,6 +22,8 @@ export function CommunityCommentLikeButton({
   disabled = false
 }: CommunityCommentLikeButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [likeCount, setLikeCount] = useState(initialCount)
+  const [isLiked, setIsLiked] = useState(initialLiked)
 
   const handleLike = async () => {
     if (disabled || isLoading) return
@@ -30,7 +32,11 @@ export function CommunityCommentLikeButton({
     try {
       const result = await toggleCommentLike(commentId, postId)
       
-      if (!result.success) {
+      if (result.success && result.data) {
+        // Update local state with server response
+        setLikeCount(result.data.likeCount)
+        setIsLiked(result.data.isLiked)
+      } else {
         console.error('Failed to toggle like:', result.error)
       }
     } catch (error) {
@@ -48,20 +54,20 @@ export function CommunityCommentLikeButton({
       disabled={disabled || isLoading}
       className={cn(
         "text-xs px-2 py-1 h-auto hover:text-red-500 transition-colors",
-        initialLiked && "text-red-500",
+        isLiked && "text-red-500",
         isLoading && "opacity-50 cursor-not-allowed"
       )}
     >
       <Heart 
         className={cn(
           "w-3 h-3 mr-1 transition-all",
-          initialLiked && "fill-current",
+          isLiked && "fill-current",
           isLoading && "animate-pulse"
         )} 
       />
-      {initialCount > 0 && (
+      {likeCount > 0 && (
         <span className="min-w-[1ch]">
-          {initialCount}
+          {likeCount}
         </span>
       )}
     </Button>

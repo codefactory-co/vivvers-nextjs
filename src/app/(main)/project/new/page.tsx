@@ -22,7 +22,6 @@ export default function ProjectCreatePage() {
     screenshots: [],
     demoUrl: '',
     githubUrl: '',
-    techStack: [],
     features: [],
     tags: []
   })

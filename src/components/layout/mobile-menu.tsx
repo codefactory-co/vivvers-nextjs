@@ -107,11 +107,11 @@ export function MobileMenu({ user, className }: MobileMenuProps) {
                 ) : (
                   <Button 
                     variant="outline" 
-                    className="w-full justify-start space-x-2"
+                    className="w-full justify-start"
                     onClick={closeMenu}
                     asChild
                   >
-                    <Link href="/signin">
+                    <Link href="/signin" className="flex items-center space-x-2">
                       <User className="h-4 w-4" />
                       <span>로그인</span>
                     </Link>

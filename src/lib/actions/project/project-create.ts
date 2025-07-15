@@ -48,8 +48,8 @@ export async function createProject(data: CreateProjectData) {
         }
       })
 
-      // 태그와 기술스택 처리
-      const allTagNames = [...validatedData.techStack, ...validatedData.tags]
+      // 태그 처리
+      const allTagNames = [...validatedData.tags]
         .filter(Boolean)
         .map(tag => tag.trim())
         .filter(tag => tag.length > 0)
@@ -81,21 +81,6 @@ export async function createProject(data: CreateProjectData) {
 
         // 모든 태그 (기존 + 새로생성)
         const allTags = [...existingTags, ...newTags]
-
-        // 기술스택 관계 생성
-        const techStackTags = allTags.filter(tag => 
-          validatedData.techStack.includes(tag.name)
-        )
-        for (const tag of techStackTags) {
-          await tx.projectTechStack.create({
-            data: {
-              id: crypto.randomUUID(),
-              projectId: project.id,
-              tagId: tag.id,
-              createdAt: new Date()
-            }
-          })
-        }
 
         // 일반 태그 관계 생성
         const normalTags = allTags.filter(tag => 

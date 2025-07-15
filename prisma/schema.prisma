@@ -68,10 +68,8 @@ model Project {
   // 주요기능
   features String[]
 
-  // 태그 관계 (기술스택 + 일반태그)
+  // 태그 관계
   projectTags       ProjectTag[]
-  // 기술스택 관계 (Tag 테이블 사용)
-  projectTechStacks ProjectTechStack[]
 
   viewCount Int     @default(0) @map("view_count")
   likeCount Int     @default(0) @map("like_count")
@@ -115,7 +113,6 @@ model Tag {
   name String @unique
 
   projectTags       ProjectTag[]
-  projectTechStacks ProjectTechStack[]
 
   // 커뮤니티 관계
   communityPostTags CommunityPostTag[]
@@ -140,20 +137,6 @@ model ProjectTag {
   @@map("project_tags")
 }
 
-// Project-TechStack 연결 테이블 (기술스택)
-model ProjectTechStack {
-  id        String @id @db.Uuid
-  projectId String @map("project_id") @db.Uuid
-  tagId     String @map("tag_id") @db.Uuid
-
-  project Project @relation(fields: [projectId], references: [id])
-  tag     Tag     @relation(fields: [tagId], references: [id])
-
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@unique([projectId, tagId])
-  @@map("project_tech_stacks")
-}
 
 // ProjectComment model
 model ProjectComment {

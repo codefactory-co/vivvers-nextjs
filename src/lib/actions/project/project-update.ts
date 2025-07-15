@@ -69,12 +69,7 @@ export async function updateProject(projectId: string, formData: ProjectFormData
         where: { projectId: projectId }
       })
 
-      // 3. 기존 기술 스택 관계 삭제
-      await tx.projectTechStack.deleteMany({
-        where: { projectId: projectId }
-      })
-
-      // 4. 새 태그 처리
+      // 3. 새 태그 처리
       if (validatedData.tags && validatedData.tags.length > 0) {
         for (const tagName of validatedData.tags) {
           // 태그 생성 또는 조회
@@ -93,30 +88,6 @@ export async function updateProject(projectId: string, formData: ProjectFormData
               id: uuidv7(),
               projectId: projectId,
               tagId: tag.id
-            }
-          })
-        }
-      }
-
-      // 5. 새 기술 스택 처리
-      if (validatedData.techStack && validatedData.techStack.length > 0) {
-        for (const techName of validatedData.techStack) {
-          // 기술 스택 태그 생성 또는 조회
-          const techTag = await tx.tag.upsert({
-            where: { name: techName },
-            update: {},
-            create: {
-              id: uuidv7(),
-              name: techName,
-                          }
-          })
-
-          // 프로젝트-기술스택 관계 생성
-          await tx.projectTechStack.create({
-            data: {
-              id: uuidv7(),
-              projectId: projectId,
-              tagId: techTag.id
             }
           })
         }

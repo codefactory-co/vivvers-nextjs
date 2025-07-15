@@ -28,7 +28,6 @@ export interface ProjectFormData {
   screenshots: string[]
   demoUrl: string
   githubUrl: string
-  techStack: string[]
   features: string[]
   tags: string[]
 }
@@ -200,21 +199,6 @@ export function ProjectForm({ mode, formData, onFormChange, onSubmit, userId }: 
         </CardContent>
       </Card>
 
-      {/* 기술 스택 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>기술 스택</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TagCommandDB
-            selectedTags={formData.techStack}
-            onTagsChange={(tags) => updateFormData('techStack', tags)}
-            placeholder="영어만 됨 ㅇㅋ? 한국어 원하면 부탁해보셈"
-            maxTags={15}
-            type="techStack"
-          />
-        </CardContent>
-      </Card>
 
       {/* 주요 기능 */}
       <Card>
@@ -261,9 +245,8 @@ export function ProjectForm({ mode, formData, onFormChange, onSubmit, userId }: 
           <TagCommandDB
             selectedTags={formData.tags}
             onTagsChange={(tags) => updateFormData('tags', tags)}
-            placeholder="영어만 됨 ㅇㅋ? 한국어 원하면 부탁해보셈"
+            placeholder="영어만 됨 ㅇㅋ?"
             maxTags={10}
-            type="tags"
           />
         </CardContent>
       </Card>

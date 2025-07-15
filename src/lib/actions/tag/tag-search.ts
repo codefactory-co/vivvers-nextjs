@@ -29,8 +29,7 @@ export async function searchTags(input: SearchTagsInput) {
         name: true,
         _count: {
           select: {
-            projectTags: true,
-            projectTechStacks: true
+            projectTags: true
           }
         }
       },
@@ -46,7 +45,7 @@ export async function searchTags(input: SearchTagsInput) {
     const formattedTags = tags.map(tag => ({
       id: tag.id,
       name: tag.name,
-      usageCount: tag._count.projectTags + tag._count.projectTechStacks
+      usageCount: tag._count.projectTags
     }))
     
     const totalCount = await prisma.tag.count({
@@ -100,8 +99,7 @@ export async function searchTagsByExactName(name: string) {
         name: true,
         _count: {
           select: {
-            projectTags: true,
-            projectTechStacks: true
+            projectTags: true
           }
         }
       }
@@ -119,7 +117,7 @@ export async function searchTagsByExactName(name: string) {
       data: {
         id: tag.id,
         name: tag.name,
-          usageCount: tag._count.projectTags + tag._count.projectTechStacks
+          usageCount: tag._count.projectTags
       }
     }
     
@@ -140,8 +138,7 @@ export async function getPopularTags(limit: number = 20) {
         name: true,
         _count: {
           select: {
-            projectTags: true,
-            projectTechStacks: true
+            projectTags: true
           }
         }
       },
@@ -151,7 +148,7 @@ export async function getPopularTags(limit: number = 20) {
     const tagsWithUsageCount = tags.map(tag => ({
       id: tag.id,
       name: tag.name,
-      usageCount: tag._count.projectTags + tag._count.projectTechStacks
+      usageCount: tag._count.projectTags
     }))
     
     const sortedTags = tagsWithUsageCount.sort((a, b) => b.usageCount - a.usageCount)

@@ -137,7 +137,6 @@ export interface CommunityCommentItemProps {
   onReply?: (commentId: string) => void
   onEdit?: (commentId: string) => void
   onDelete?: (commentId: string) => void
-  onBestAnswer?: (commentId: string) => void
   depth?: number
 }
 
@@ -148,7 +147,6 @@ export interface CommunityCommentListProps {
   onCommentReply?: (commentId: string) => void
   onCommentEdit?: (commentId: string) => void
   onCommentDelete?: (commentId: string) => void
-  onBestAnswer?: (commentId: string) => void
   loading?: boolean
   className?: string
 }

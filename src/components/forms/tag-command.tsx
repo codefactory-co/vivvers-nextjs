@@ -21,7 +21,6 @@ import { cn } from '@/lib/utils'
 import { 
   type TagOption, 
   type TagCategory,
-  techStackCategories,
   generalTagCategories 
 } from '@/lib/data/tags'
 import { tagUtils } from '@/lib/validations/project'
@@ -31,7 +30,6 @@ interface TagCommandProps {
   onTagsChange: (tags: string[]) => void
   placeholder?: string
   maxTags?: number
-  type: 'techStack' | 'tags'
   className?: string
 }
 
@@ -40,14 +38,13 @@ export function TagCommand({
   onTagsChange,
   placeholder = "태그를 검색하고 선택하세요",
   maxTags = 10,
-  type,
   className
 }: TagCommandProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
 
-  // 타입에 따라 적절한 카테고리 선택
-  const categories: TagCategory[] = type === 'techStack' ? techStackCategories : generalTagCategories
+  // 태그 카테고리
+  const categories: TagCategory[] = generalTagCategories
 
   // 모든 태그 옵션을 평면화
   const allOptions: TagOption[] = categories.flatMap(category => category.tags)
@@ -117,7 +114,7 @@ export function TagCommand({
         >
           <Command className="w-full">
             <CommandInput 
-              placeholder={`${type === 'techStack' ? '기술 스택' : '태그'}을 검색하세요...`}
+              placeholder="태그를 검색하세요..."
               value={search}
               onValueChange={setSearch}
             />
@@ -162,7 +159,7 @@ export function TagCommand({
       {selectedTags.length > 0 && (
         <div className="space-y-2">
           <div className="text-sm text-muted-foreground">
-            선택된 {type === 'techStack' ? '기술 스택' : '태그'} ({selectedTags.length}/{maxTags})
+            선택된 태그 ({selectedTags.length}/{maxTags})
           </div>
           <div className="flex flex-wrap gap-2">
             {selectedTags.map((tagValue) => (
@@ -186,28 +183,6 @@ export function TagCommand({
         </div>
       )}
 
-      {/* 추천 태그 (선택사항) */}
-      {selectedTags.length === 0 && type === 'techStack' && (
-        <div className="space-y-2">
-          <div className="text-sm text-muted-foreground">인기 기술 스택</div>
-          <div className="flex flex-wrap gap-2">
-            {['react', 'nextjs', 'typescript', 'tailwindcss', 'nodejs'].map((popularTag) => {
-              const option = allOptions.find(opt => opt.value === popularTag)
-              return option ? (
-                <Button
-                  key={popularTag}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleSelect(popularTag)}
-                  className="h-7 text-xs"
-                >
-                  {option.label}
-                </Button>
-              ) : null
-            })}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

@@ -14,7 +14,6 @@ interface ProjectSeedData {
   githubUrl?: string
   features: string[]
   tags: string[]          // 일반 태그 slug 배열
-  techStack: string[]     // 기술스택 slug 배열
   authorUsername: string
   viewCount: number
   likeCount: number
@@ -36,8 +35,7 @@ const projectsData: ProjectSeedData[] = [
     demoUrl: 'https://design-system.example.com',
     githubUrl: 'https://github.com/sarahdesigns/design-system',
     features: ['재사용 가능한 컴포넌트', '다크 모드 지원', '반응형 디자인', 'TypeScript 지원'],
-    tags: ['portfolio', 'responsive', 'dark-mode'],
-    techStack: ['react', 'typescript', 'tailwindcss', 'figma'],
+    tags: ['portfolio', 'responsive', 'dark-mode', 'react', 'typescript', 'tailwindcss', 'figma'],
     authorUsername: 'parkdesigner',
     viewCount: 1832,
     likeCount: 234
@@ -54,8 +52,7 @@ const projectsData: ProjectSeedData[] = [
     demoUrl: 'https://ecommerce-dashboard.example.com',
     githubUrl: 'https://github.com/kimcoder/ecommerce-dashboard',
     features: ['실시간 데이터 시각화', '커스텀 차트', '데이터 필터링', '리포트 생성'],
-    tags: ['commercial', 'realtime', 'advanced', 'e-commerce'],
-    techStack: ['javascript', 'nodejs', 'postgresql', 'docker'],
+    tags: ['commercial', 'realtime', 'advanced', 'e-commerce', 'javascript', 'nodejs', 'postgresql', 'docker'],
     authorUsername: 'kimcoder',
     viewCount: 1456,
     likeCount: 189
@@ -71,8 +68,7 @@ const projectsData: ProjectSeedData[] = [
     ],
     demoUrl: 'https://fitness-app-prototype.example.com',
     features: ['운동 계획 관리', '진행 상황 추적', '소셜 기능', '애니메이션 효과'],
-    tags: ['portfolio', 'mobile-first', 'intermediate', 'healthcare'],
-    techStack: ['react-native', 'typescript', 'firebase'],
+    tags: ['portfolio', 'mobile-first', 'intermediate', 'healthcare', 'react-native', 'typescript', 'firebase'],
     authorUsername: 'songmobile',
     viewCount: 892,
     likeCount: 156
@@ -89,8 +85,7 @@ const projectsData: ProjectSeedData[] = [
     demoUrl: 'https://fintech-dashboard.example.com',
     githubUrl: 'https://github.com/choistartu/fintech-dashboard',
     features: ['보안 인증', '실시간 알림', '데이터 시각화', '반응형 디자인'],
-    tags: ['commercial', 'advanced', 'responsive', 'finance'],
-    techStack: ['nextjs', 'typescript', 'postgresql', 'aws'],
+    tags: ['commercial', 'advanced', 'responsive', 'finance', 'nextjs', 'typescript', 'postgresql', 'aws'],
     authorUsername: 'choistartu',
     viewCount: 2341,
     likeCount: 298
@@ -106,8 +101,7 @@ const projectsData: ProjectSeedData[] = [
     ],
     githubUrl: 'https://github.com/yoondata/ml-analysis-tool',
     features: ['대용량 데이터 처리', 'ML 모델 훈련', '결과 시각화', 'API 제공'],
-    tags: ['open-source', 'advanced', 'learning'],
-    techStack: ['python', 'tensorflow', 'postgresql', 'docker'],
+    tags: ['open-source', 'advanced', 'learning', 'python', 'tensorflow', 'postgresql', 'docker'],
     authorUsername: 'yoondata',
     viewCount: 743,
     likeCount: 89
@@ -124,8 +118,7 @@ const projectsData: ProjectSeedData[] = [
     demoUrl: 'https://lms-platform.example.com',
     githubUrl: 'https://github.com/leestudent/lms-platform',
     features: ['온라인 강의 스트리밍', '과제 제출 시스템', '성적 관리', '실시간 채팅'],
-    tags: ['side-project', 'intermediate', 'education', 'realtime'],
-    techStack: ['java', 'spring', 'mysql', 'aws'],
+    tags: ['side-project', 'intermediate', 'education', 'realtime', 'java', 'spring', 'mysql', 'aws'],
     authorUsername: 'leestudent',
     viewCount: 1234,
     likeCount: 167
@@ -181,19 +174,6 @@ export async function seedProjects(
       }
     }
 
-    // 기술스택 관계 생성
-    for (const techSlug of projectData.techStack) {
-      const tech = tags.find(t => t.name.toLowerCase() === techSlug)
-      if (tech) {
-        await prisma.projectTechStack.create({
-          data: {
-            id: uuidv7(),
-            projectId: project.id,
-            tagId: tech.id,
-          }
-        })
-      }
-    }
 
     projects.push(project)
   }
