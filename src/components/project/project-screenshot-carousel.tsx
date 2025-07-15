@@ -21,8 +21,9 @@ export function ProjectScreenshotCarousel({
   className 
 }: ProjectScreenshotCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
-    align: 'start',
-    containScroll: 'trimSnaps'
+    align: 'center',
+    containScroll: 'trimSnaps',
+    slidesToScroll: 1
   })
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -84,11 +85,11 @@ export function ProjectScreenshotCarousel({
         </div>
 
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-4">
+          <div className="flex">
             {screenshots.map((screenshot, index) => (
               <div
-                key={index}
-                className="flex-none w-80 lg:w-96"
+                key={`screenshot-${index}-${screenshot.slice(-20)}`}
+                className="flex-none w-full"
               >
                 <div 
                   className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg bg-muted shadow-sm hover:shadow-md transition-shadow"
@@ -99,7 +100,7 @@ export function ProjectScreenshotCarousel({
                     alt={`${title} 스크린샷 ${index + 1}`}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="(max-width: 1024px) 320px, 384px"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 70vw"
                   />
                   <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -121,9 +122,9 @@ export function ProjectScreenshotCarousel({
         {/* 인디케이터 */}
         {screenshots.length > 1 && (
           <div className="flex justify-center gap-2">
-            {screenshots.map((_, index) => (
+            {screenshots.map((screenshot, index) => (
               <button
-                key={index}
+                key={`indicator-${index}-${screenshot.slice(-20)}`}
                 className={cn(
                   "w-2 h-2 rounded-full transition-colors",
                   index === selectedIndex ? "bg-primary" : "bg-muted-foreground/30"

@@ -19,9 +19,9 @@ export function ProjectQuickInfo({ project, className }: ProjectQuickInfoProps) 
       <CardContent className="space-y-6">
         {/* 링크 버튼들 */}
         <div className="space-y-2">
-          {project.liveUrl && (
+          {project.demoUrl && (
             <Button asChild className="w-full">
-              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="mr-2 h-4 w-4" />
                 라이브 데모 보기
               </a>
@@ -42,8 +42,8 @@ export function ProjectQuickInfo({ project, className }: ProjectQuickInfoProps) 
           <h3 className="font-semibold mb-3">기술 스택</h3>
           <div className="flex flex-wrap gap-2">
             {project.techStack.map((tech) => (
-              <Badge key={tech} variant="secondary">
-                {tech}
+              <Badge key={tech.id} variant="secondary">
+                {tech.name}
               </Badge>
             ))}
           </div>

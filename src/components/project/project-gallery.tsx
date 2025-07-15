@@ -38,7 +38,7 @@ export function ProjectGallery({ screenshots, title, className }: ProjectGallery
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {screenshots.map((screenshot, index) => (
               <div
-                key={index}
+                key={`gallery-${index}-${screenshot.slice(-20)}`}
                 className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg bg-muted"
                 onClick={() => openLightbox(index)}
               >

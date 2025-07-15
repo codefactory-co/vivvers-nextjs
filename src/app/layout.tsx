@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const notoSansKR = Noto_Sans_KR({ 
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "500", "700", "900"],
+  variable: '--font-noto-sans-kr'
+});
 
 export const metadata: Metadata = {
   title: "Vivvers - 바이브 코딩 프로젝트 홍보 플랫폼",
@@ -19,20 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${notoSansKR.variable} font-sans min-h-screen`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          {children}
         </ThemeProvider>
       </body>
     </html>

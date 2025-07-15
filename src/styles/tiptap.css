@@ -1,0 +1,249 @@
+/* TipTap Editor Styles */
+.ProseMirror {
+  min-height: 300px;
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  height: 0;
+}
+
+/* Code Block Syntax Highlighting - VS Code Dark Theme */
+.hljs,
+.preview-content pre code {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: block;
+}
+
+pre code.hljs {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+}
+
+/* Apply syntax highlighting to both editor and preview */
+.ProseMirror .hljs-keyword,
+.preview-content .hljs-keyword,
+.ProseMirror .hljs-selector-tag,
+.preview-content .hljs-selector-tag,
+.ProseMirror .hljs-literal,
+.preview-content .hljs-literal,
+.ProseMirror .hljs-section,
+.preview-content .hljs-section,
+.ProseMirror .hljs-link,
+.preview-content .hljs-link {
+  color: #569cd6;
+}
+
+.ProseMirror .hljs-string,
+.preview-content .hljs-string,
+.ProseMirror .hljs-attribute,
+.preview-content .hljs-attribute,
+.ProseMirror .hljs-addition,
+.preview-content .hljs-addition {
+  color: #ce9178;
+}
+
+.ProseMirror .hljs-comment,
+.preview-content .hljs-comment,
+.ProseMirror .hljs-quote,
+.preview-content .hljs-quote,
+.ProseMirror .hljs-meta,
+.preview-content .hljs-meta {
+  color: #6a9955;
+  font-style: italic;
+}
+
+.ProseMirror .hljs-title,
+.preview-content .hljs-title,
+.ProseMirror .hljs-type,
+.preview-content .hljs-type,
+.ProseMirror .hljs-class .hljs-title,
+.preview-content .hljs-class .hljs-title {
+  color: #4ec9b0;
+}
+
+.ProseMirror .hljs-function,
+.preview-content .hljs-function,
+.ProseMirror .hljs-name,
+.preview-content .hljs-name,
+.ProseMirror .hljs-selector-id,
+.preview-content .hljs-selector-id,
+.ProseMirror .hljs-selector-class,
+.preview-content .hljs-selector-class {
+  color: #dcdcaa;
+}
+
+.ProseMirror .hljs-number,
+.preview-content .hljs-number,
+.ProseMirror .hljs-regexp,
+.preview-content .hljs-regexp,
+.ProseMirror .hljs-variable,
+.preview-content .hljs-variable,
+.ProseMirror .hljs-template-variable,
+.preview-content .hljs-template-variable,
+.ProseMirror .hljs-tag .hljs-name,
+.preview-content .hljs-tag .hljs-name {
+  color: #b5cea8;
+}
+
+.ProseMirror .hljs-symbol,
+.preview-content .hljs-symbol,
+.ProseMirror .hljs-bullet,
+.preview-content .hljs-bullet,
+.ProseMirror .hljs-subst,
+.preview-content .hljs-subst,
+.ProseMirror .hljs-meta .hljs-keyword,
+.preview-content .hljs-meta .hljs-keyword,
+.ProseMirror .hljs-selector-attr,
+.preview-content .hljs-selector-attr,
+.ProseMirror .hljs-selector-pseudo,
+.preview-content .hljs-selector-pseudo {
+  color: #c586c0;
+}
+
+.ProseMirror .hljs-built_in,
+.preview-content .hljs-built_in,
+.ProseMirror .hljs-builtin-name,
+.preview-content .hljs-builtin-name {
+  color: #4fc1ff;
+}
+
+.ProseMirror .hljs-params,
+.preview-content .hljs-params {
+  color: #9cdcfe;
+}
+
+.ProseMirror .hljs-attr,
+.preview-content .hljs-attr {
+  color: #92c5f8;
+}
+
+.ProseMirror .hljs-tag,
+.preview-content .hljs-tag {
+  color: #569cd6;
+}
+
+.ProseMirror .hljs-title.class_,
+.preview-content .hljs-title.class_,
+.ProseMirror .hljs-class .hljs-title,
+.preview-content .hljs-class .hljs-title {
+  color: #4ec9b0;
+}
+
+.ProseMirror .hljs-title.function_,
+.preview-content .hljs-title.function_ {
+  color: #dcdcaa;
+}
+
+.ProseMirror .hljs-property,
+.preview-content .hljs-property {
+  color: #9cdcfe;
+}
+
+.ProseMirror .hljs-deletion,
+.preview-content .hljs-deletion {
+  color: #f44747;
+}
+
+.ProseMirror .hljs-emphasis,
+.preview-content .hljs-emphasis {
+  font-style: italic;
+}
+
+.ProseMirror .hljs-strong,
+.preview-content .hljs-strong {
+  font-weight: bold;
+}
+
+/* Prose Styles */
+.prose h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+}
+
+.prose ul,
+.prose ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.prose ul li,
+.prose ol li {
+  color: hsl(var(--foreground));
+  margin: 0.5rem 0;
+  list-style-position: outside;
+}
+
+.prose ul li::marker,
+.prose ol li::marker {
+  color: hsl(var(--foreground));
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose ul li {
+  display: list-item;
+}
+
+.prose ol li {
+  display: list-item;
+}
+
+/* 다크 모드 전용 스타일 */
+.dark .prose ul li,
+.dark .prose ol li {
+  color: hsl(var(--foreground));
+}
+
+.dark .prose ul li::marker,
+.dark .prose ol li::marker {
+  color: hsl(var(--foreground));
+}
+
+.prose blockquote {
+  border-left: 4px solid hsl(var(--border));
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: hsl(var(--muted-foreground));
+}
+
+.prose code {
+  background: hsl(var(--muted));
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}

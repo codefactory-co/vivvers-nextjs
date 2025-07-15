@@ -17,7 +17,7 @@ function RelatedProjectCard({ project }: { project: Project }) {
       <div className="space-y-3">
         <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
           <Image
-            src={project.thumbnail}
+            src={project.images[0]}
             alt={project.title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"

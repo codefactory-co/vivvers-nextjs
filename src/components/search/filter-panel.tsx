@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { CategoryFilter, type ProjectCategory } from "./category-filter";
 import { TagFilter } from "./tag-filter";
 import { SortSelector, type SortOption } from "./sort-selector";
+import { SearchBar } from "./search-bar";
 
 interface FilterPanelProps {
   // Category filter
@@ -19,6 +20,10 @@ interface FilterPanelProps {
   sortBy: SortOption;
   onSortChange: (sort: SortOption) => void;
   
+  // Search functionality
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
+  
   // Result count
   resultCount: number;
   
@@ -33,11 +38,24 @@ export function FilterPanel({
   onTagsChange,
   sortBy,
   onSortChange,
+  searchQuery = "",
+  onSearchChange,
   resultCount,
   className
 }: FilterPanelProps) {
   return (
     <div className={cn("space-y-4", className)}>
+      {/* Search bar */}
+      {onSearchChange && (
+        <div className="max-w-md">
+          <SearchBar
+            value={searchQuery}
+            onChange={onSearchChange}
+            placeholder="프로젝트를 검색해보세요..."
+          />
+        </div>
+      )}
+
       {/* Result count */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">

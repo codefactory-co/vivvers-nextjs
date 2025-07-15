@@ -10,8 +10,8 @@ interface ProjectHeaderProps {
 }
 
 export function ProjectHeader({ project, className }: ProjectHeaderProps) {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ko-KR', {
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('ko-KR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -28,8 +28,8 @@ export function ProjectHeader({ project, className }: ProjectHeaderProps) {
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary">{project.category}</Badge>
             {project.tags.map((tag) => (
-              <Badge key={tag} variant="outline">
-                {tag}
+              <Badge key={tag.id} variant="outline">
+                {tag.name}
               </Badge>
             ))}
           </div>
@@ -56,7 +56,7 @@ export function ProjectHeader({ project, className }: ProjectHeaderProps) {
         </div>
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4" />
-          <span>{formatDate(project.uploadDate)}</span>
+          <span>{formatDate(project.createdAt)}</span>
         </div>
       </div>
     </div>

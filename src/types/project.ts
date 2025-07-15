@@ -1,50 +1,83 @@
-export interface User {
+import type { User } from './user'
+
+export { User }
+
+export interface ProjectAuthor {
+  id: string
+  username: string
+  email: string
+  avatarUrl: string | null
+  bio: string | null
+}
+
+export interface ProjectTag {
   id: string
   name: string
-  username: string
-  avatar: string
+  slug: string
+}
+
+export interface ProjectLike {
+  id: string
+  userId: string
 }
 
 export interface Project {
   id: string
   title: string
+  excerpt: string
   description: string
-  thumbnail: string
-  author: User
   category: string
-  tags: string[]
-  likeCount: number
+  images: string[]
+  screenshots: string[] // 호환성을 위해 유지
+  demoUrl: string | null
+  githubUrl: string | null
+  features: string[]
   viewCount: number
-  uploadDate: string
+  likeCount: number
+  author: ProjectAuthor
+  tags: ProjectTag[]
+  techStack: ProjectTag[]
+  likes: ProjectLike[]
+  createdAt: Date
+  updatedAt: Date
   featured?: boolean
 }
 
 export interface Comment {
   id: string
-  author: User
   content: string
-  createdAt: string
+  projectId: string
+  authorId: string
+  parentId: string | null
   likeCount: number
+  repliesCount: number
+  createdAt: Date
+  updatedAt: Date
+  author: {
+    id: string
+    username: string
+    avatarUrl: string | null
+  }
+  isLiked?: boolean
   replies?: Comment[]
 }
 
 export interface ProjectDetail extends Project {
-  fullDescription: string
-  screenshots: string[]
-  liveUrl?: string
-  githubUrl?: string
-  techStack: string[]
-  features: string[]
+  fullDescription: string | null
+  fullDescriptionJson: unknown // JSON 타입
+  fullDescriptionHtml: string | null
   comments: Comment[]
 }
 
 export interface ProjectCardProps {
   project: Project
+  currentUserId?: string
   className?: string
 }
 
 export interface ProjectGridProps {
   projects: Project[]
+  currentUserId?: string
   loading?: boolean
   className?: string
 }

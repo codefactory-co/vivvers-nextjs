@@ -1,92 +1,274 @@
-import { Heart, MessageCircle } from 'lucide-react'
+'use client'
+
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Avatar } from '@/components/ui/avatar'
-import { Comment } from '@/types/project'
-import { cn } from '@/lib/utils'
+import { CommentForm } from '@/components/comment/comment-form'
+import { CommentList } from '@/components/comment/comment-list'
+import { Comment, CommentFormData } from '@/types/comment'
+import { cn, debounce } from '@/lib/utils'
+import { getComments, createComment, createReply } from '@/lib/actions/comment'
+import { toggleCommentLike } from '@/lib/actions/comment/comment-like'
+import { useToast } from '@/hooks/use-toast'
 
 interface ProjectCommentsProps {
-  comments: Comment[]
+  projectId: string
+  initialComments?: Comment[]
   className?: string
 }
 
-function CommentItem({ comment, isReply = false }: { comment: Comment; isReply?: boolean }) {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ko-KR', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+export function ProjectComments({ 
+  projectId, 
+  initialComments = [], 
+  className 
+}: ProjectCommentsProps) {
+  const [comments, setComments] = useState<Comment[]>(initialComments)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [likingComments, setLikingComments] = useState<Set<string>>(new Set())
+  const { toast } = useToast()
+
+  const loadComments = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const result = await getComments({
+        projectId,
+        page: 1,
+        limit: 20,
+        sortBy: 'latest'
+      })
+      
+      if (result.success && result.data) {
+        setComments(result.data.comments || [])
+      }
+    } catch (error) {
+      console.error('댓글 로드 실패:', error)
+      setComments(initialComments)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [projectId, initialComments])
+
+  // 컴포넌트 마운트시 최신 댓글 로드
+  useEffect(() => {
+    loadComments()
+  }, [projectId, initialComments, loadComments])
+
+  const handleCommentSubmit = async (data: CommentFormData) => {
+    setIsSubmitting(true)
+    try {
+      // Handle top-level comments
+      if (!data.parentId) {
+        const result = await createComment({
+          projectId,
+          content: data.content
+        })
+        
+        if (result.success && result.data) {
+          // 새 댓글을 목록 상단에 추가
+          setComments(prev => [result.data!, ...prev])
+        } else {
+          throw new Error(result.error || '댓글 작성에 실패했습니다')
+        }
+      } else {
+        // Handle replies (this shouldn't happen from main form, but just in case)
+        const result = await createReply({
+          content: data.content,
+          parentId: data.parentId
+        })
+        
+        if (result.success && result.data) {
+          // Refresh comments to show the new reply
+          await loadComments()
+        } else {
+          throw new Error(result.error || '답글 작성에 실패했습니다')
+        }
+      }
+    } catch (error) {
+      console.error('댓글 작성 실패:', error)
+      throw error
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleReplyCreated = async (reply: Comment) => {
+    // Optimistically update the comments structure
+    setComments(prev => {
+      const updateCommentReplies = (comments: Comment[]): Comment[] => {
+        return comments.map(comment => {
+          if (comment.id === reply.parentId) {
+            // Found the parent comment, add the reply
+            return {
+              ...comment,
+              replies: [...(comment.replies || []), reply],
+              repliesCount: comment.repliesCount + 1
+            }
+          } else if (comment.replies && comment.replies.length > 0) {
+            // Recursively check nested replies
+            return {
+              ...comment,
+              replies: updateCommentReplies(comment.replies)
+            }
+          }
+          return comment
+        })
+      }
+      
+      return updateCommentReplies(prev)
     })
   }
 
-  return (
-    <div className={cn("space-y-3", isReply && "ml-8 border-l-2 border-muted pl-4")}>
-      <div className="flex items-start gap-3">
-        <Avatar
-          src={comment.author.avatar}
-          alt={comment.author.name}
-          name={comment.author.name}
-          size="md"
-        />
-        <div className="flex-1 space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm">{comment.author.name}</span>
-            <span className="text-xs text-muted-foreground">@{comment.author.username}</span>
-            <span className="text-xs text-muted-foreground">·</span>
-            <span className="text-xs text-muted-foreground">{formatDate(comment.createdAt)}</span>
-          </div>
-          <p className="text-sm leading-relaxed">{comment.content}</p>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground">
-              <Heart className="mr-1 h-3 w-3" />
-              {comment.likeCount > 0 && <span className="text-xs">{comment.likeCount}</span>}
-            </Button>
-            {!isReply && (
-              <Button variant="ghost" size="sm" className="h-8 px-2 text-muted-foreground">
-                <MessageCircle className="mr-1 h-3 w-3" />
-                <span className="text-xs">답글</span>
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-      
-      {comment.replies && comment.replies.length > 0 && (
-        <div className="space-y-3 mt-4">
-          {comment.replies.map((reply) => (
-            <CommentItem key={reply.id} comment={reply} isReply />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+  // Helper function to find and update comment by ID
+  const findAndUpdateComment = useCallback((
+    comments: Comment[], 
+    commentId: string, 
+    updateFn: (comment: Comment) => Comment
+  ): Comment[] => {
+    return comments.map(comment => {
+      if (comment.id === commentId) {
+        return updateFn(comment)
+      }
+      if (comment.replies?.length) {
+        return {
+          ...comment,
+          replies: findAndUpdateComment(comment.replies, commentId, updateFn)
+        }
+      }
+      return comment
+    })
+  }, [])
 
-export function ProjectComments({ comments, className }: ProjectCommentsProps) {
+  // Enhanced comment like handler with optimistic updates and error recovery
+  const handleCommentLike = useCallback(async (commentId: string) => {
+    // Prevent multiple likes on same comment
+    if (likingComments.has(commentId)) {
+      return
+    }
+
+    // Find the comment to get current state
+    const findComment = (comments: Comment[], id: string): Comment | null => {
+      for (const comment of comments) {
+        if (comment.id === id) return comment
+        if (comment.replies?.length) {
+          const found = findComment(comment.replies, id)
+          if (found) return found
+        }
+      }
+      return null
+    }
+
+    const currentComment = findComment(comments, commentId)
+    if (!currentComment) return
+
+    // Add to liking set
+    setLikingComments(prev => new Set([...prev, commentId]))
+
+    // Store original state for potential rollback
+    const originalIsLiked = currentComment.isLiked
+    const originalLikeCount = currentComment.likeCount
+
+    // Optimistic update
+    const newIsLiked = !originalIsLiked
+    const newLikeCount = originalIsLiked ? originalLikeCount - 1 : originalLikeCount + 1
+
+    setComments(prev => 
+      findAndUpdateComment(prev, commentId, (comment) => ({
+        ...comment,
+        isLiked: newIsLiked,
+        likeCount: newLikeCount
+      }))
+    )
+
+    try {
+      const result = await toggleCommentLike({ commentId })
+      console.log('toggleCommentLike result:', result) // Debug log
+      
+      if (result.success && result.data) {
+        // Update with server response
+        setComments(prev => 
+          findAndUpdateComment(prev, commentId, (comment) => ({
+            ...comment,
+            isLiked: result.data!.isLiked,
+            likeCount: result.data!.likeCount
+          }))
+        )
+      } else {
+        // Revert optimistic update
+        setComments(prev => 
+          findAndUpdateComment(prev, commentId, (comment) => ({
+            ...comment,
+            isLiked: originalIsLiked,
+            likeCount: originalLikeCount
+          }))
+        )
+        
+        toast({
+          title: "좋아요 실패",
+          description: result.error || "좋아요 처리 중 오류가 발생했습니다.",
+          variant: "destructive"
+        })
+      }
+    } catch {
+      // Revert optimistic update
+      setComments(prev => 
+        findAndUpdateComment(prev, commentId, (comment) => ({
+          ...comment,
+          isLiked: originalIsLiked,
+          likeCount: originalLikeCount
+        }))
+      )
+      
+      toast({
+        title: "네트워크 오류",
+        description: "인터넷 연결을 확인하고 다시 시도해주세요.",
+        variant: "destructive"
+      })
+    } finally {
+      // Remove from liking set
+      setLikingComments(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(commentId)
+        return newSet
+      })
+    }
+  }, [comments, likingComments, findAndUpdateComment, toast])
+
+  // Debounced like handler to prevent rapid clicking
+  const debouncedLikeHandler = useRef(
+    debounce(handleCommentLike, 300)
+  ).current
+
+  const handleLoadMore = () => {
+    // Mock load more functionality
+    console.log('Load more comments...')
+  }
+
   return (
-    <Card className={cn("", className)}>
+    <Card className={cn("w-full", className)}>
       <CardHeader>
-        <CardTitle>댓글 {comments.length > 0 && `(${comments.length})`}</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          댓글 ({comments.length})
+        </CardTitle>
       </CardHeader>
-      <CardContent>
-        {comments.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <MessageCircle className="mx-auto h-12 w-12 mb-4 opacity-50" />
-            <p>아직 댓글이 없습니다.</p>
-            <p className="text-sm">첫 번째 댓글을 남겨보세요!</p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {comments.map((comment, index) => (
-              <div key={comment.id}>
-                <CommentItem comment={comment} />
-                {index < comments.length - 1 && <Separator className="mt-6" />}
-              </div>
-            ))}
-          </div>
-        )}
+      <CardContent className="space-y-6">
+        {/* 댓글 작성 폼 */}
+        <CommentForm 
+          onSubmit={handleCommentSubmit}
+          isLoading={isSubmitting}
+        />
+        
+        <Separator />
+        
+        {/* 댓글 목록 */}
+        <CommentList 
+          comments={comments}
+          isLoading={isLoading}
+          onLoadMore={handleLoadMore}
+          hasMore={false}
+          onReplyCreated={handleReplyCreated}
+          onLike={debouncedLikeHandler}
+        />
       </CardContent>
     </Card>
   )

@@ -1,3 +1,5 @@
+@import '@/styles/tiptap.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -63,8 +65,11 @@
   * {
     @apply border-border;
   }
+  html {
+    @apply h-full;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground h-full;
   }
 }
 
@@ -91,181 +96,72 @@
   }
 }
 
-/* Prism.js Syntax Highlighting */
+/* Tiptap 코드 블록 스타일링 */
 @layer components {
-  /* Light theme code highlighting */
-  pre .token.comment,
-  pre .token.prolog,
-  pre .token.doctype,
-  pre .token.cdata,
-  code .token.comment,
-  code .token.prolog,
-  code .token.doctype,
-  code .token.cdata {
-    @apply text-gray-500 italic !important;
+  .ProseMirror pre {
+    @apply bg-muted/50 border border-border rounded-lg p-4 overflow-x-auto;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
   }
-  
-  pre .token.punctuation,
-  code .token.punctuation {
-    @apply text-gray-700 !important;
+
+  .ProseMirror pre code {
+    @apply bg-transparent p-0;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
   }
-  
-  pre .token.property,
-  pre .token.tag,
-  pre .token.constant,
-  pre .token.symbol,
-  pre .token.deleted,
-  code .token.property,
-  code .token.tag,
-  code .token.constant,
-  code .token.symbol,
-  code .token.deleted {
-    @apply text-red-600 !important;
+
+  .ProseMirror code {
+    @apply bg-muted/70 text-foreground px-1.5 py-0.5 rounded-md;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875em;
   }
-  
-  pre .token.boolean,
-  pre .token.number,
-  code .token.boolean,
-  code .token.number {
-    @apply text-orange-600 !important;
+
+  /* 다크 모드 대응 */
+  .dark .ProseMirror pre {
+    @apply bg-muted/30;
   }
-  
-  pre .token.selector,
-  pre .token.attr-name,
-  pre .token.string,
-  pre .token.char,
-  pre .token.builtin,
-  pre .token.inserted,
-  code .token.selector,
-  code .token.attr-name,
-  code .token.string,
-  code .token.char,
-  code .token.builtin,
-  code .token.inserted {
-    @apply text-green-600 !important;
+
+  .dark .ProseMirror code {
+    @apply bg-muted/50;
   }
-  
-  pre .token.operator,
-  pre .token.entity,
-  pre .token.url,
-  pre .token.variable,
-  code .token.operator,
-  code .token.entity,
-  code .token.url,
-  code .token.variable,
-  .language-css .token.string,
-  .style .token.string {
-    @apply text-blue-600 !important;
+
+  /* 코드 블록 언어 표시 */
+  .ProseMirror pre[data-language]::before {
+    content: attr(data-language);
+    @apply absolute top-2 right-2 bg-muted text-muted-foreground px-2 py-1 rounded text-xs uppercase font-mono;
   }
-  
-  pre .token.atrule,
-  pre .token.attr-value,
-  pre .token.function,
-  pre .token.class-name,
-  code .token.atrule,
-  code .token.attr-value,
-  code .token.function,
-  code .token.class-name {
-    @apply text-purple-600 !important;
-  }
-  
-  pre .token.keyword,
-  code .token.keyword {
-    @apply text-indigo-600 font-semibold !important;
-  }
-  
-  pre .token.regex,
-  pre .token.important,
-  code .token.regex,
-  code .token.important {
-    @apply text-orange-600 font-semibold !important;
-  }
-  
-  /* Dark theme code highlighting */
-  .dark pre .token.comment,
-  .dark pre .token.prolog,
-  .dark pre .token.doctype,
-  .dark pre .token.cdata,
-  .dark code .token.comment,
-  .dark code .token.prolog,
-  .dark code .token.doctype,
-  .dark code .token.cdata {
-    @apply text-gray-400 italic !important;
-  }
-  
-  .dark pre .token.punctuation,
-  .dark code .token.punctuation {
-    @apply text-gray-300 !important;
-  }
-  
-  .dark pre .token.property,
-  .dark pre .token.tag,
-  .dark pre .token.constant,
-  .dark pre .token.symbol,
-  .dark pre .token.deleted,
-  .dark code .token.property,
-  .dark code .token.tag,
-  .dark code .token.constant,
-  .dark code .token.symbol,
-  .dark code .token.deleted {
-    @apply text-red-400 !important;
-  }
-  
-  .dark pre .token.boolean,
-  .dark pre .token.number,
-  .dark code .token.boolean,
-  .dark code .token.number {
-    @apply text-orange-400 !important;
-  }
-  
-  .dark pre .token.selector,
-  .dark pre .token.attr-name,
-  .dark pre .token.string,
-  .dark pre .token.char,
-  .dark pre .token.builtin,
-  .dark pre .token.inserted,
-  .dark code .token.selector,
-  .dark code .token.attr-name,
-  .dark code .token.string,
-  .dark code .token.char,
-  .dark code .token.builtin,
-  .dark code .token.inserted {
-    @apply text-green-400 !important;
-  }
-  
-  .dark pre .token.operator,
-  .dark pre .token.entity,
-  .dark pre .token.url,
-  .dark pre .token.variable,
-  .dark code .token.operator,
-  .dark code .token.entity,
-  .dark code .token.url,
-  .dark code .token.variable,
-  .dark .language-css .token.string,
-  .dark .style .token.string {
-    @apply text-blue-400 !important;
-  }
-  
-  .dark pre .token.atrule,
-  .dark pre .token.attr-value,
-  .dark pre .token.function,
-  .dark pre .token.class-name,
-  .dark code .token.atrule,
-  .dark code .token.attr-value,
-  .dark code .token.function,
-  .dark code .token.class-name {
-    @apply text-purple-400 !important;
-  }
-  
-  .dark pre .token.keyword,
-  .dark code .token.keyword {
-    @apply text-indigo-400 font-semibold !important;
-  }
-  
-  .dark pre .token.regex,
-  .dark pre .token.important,
-  .dark code .token.regex,
-  .dark code .token.important {
-    @apply text-orange-400 font-semibold !important;
+
+  .ProseMirror pre {
+    @apply relative;
   }
 }
+
+/* Command 컴포넌트 너비 최적화 */
+@layer components {
+  [data-radix-popover-content] {
+    width: var(--radix-popover-trigger-width) !important;
+    min-width: 300px;
+    max-width: min(600px, 90vw);
+  }
+  
+  /* Command 내부 요소들 전체 너비 사용 */
+  [data-radix-popover-content] [cmdk-root] {
+    width: 100%;
+  }
+  
+  [data-radix-popover-content] [cmdk-input] {
+    width: 100%;
+  }
+  
+  [data-radix-popover-content] [cmdk-list] {
+    width: 100%;
+    max-height: 300px;
+  }
+  
+  [data-radix-popover-content] [cmdk-item] {
+    width: 100%;
+  }
+}
+

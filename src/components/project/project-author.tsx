@@ -1,13 +1,12 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import { UserPlus } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { User } from '@/types/project'
+import type { ProjectAuthor } from '@/types/project'
 import { cn } from '@/lib/utils'
 
 interface ProjectAuthorProps {
-  author: User
+  author: ProjectAuthor
   className?: string
 }
 
@@ -19,24 +18,20 @@ export function ProjectAuthor({ author, className }: ProjectAuthorProps) {
       </CardHeader>
       <CardContent>
         <div className="flex items-start gap-4">
-          <Link href={`/profile/${author.username}`}>
-            <Image
-              src={author.avatar}
-              alt={author.name}
-              width={60}
-              height={60}
-              className="rounded-full hover:opacity-80 transition-opacity"
-            />
-          </Link>
+          <Image
+            src={author.avatarUrl || '/default-avatar.png'}
+            alt={author.username}
+            width={60}
+            height={60}
+            className="rounded-full"
+          />
           <div className="flex-1 space-y-3">
             <div>
-              <Link 
-                href={`/profile/${author.username}`}
-                className="font-semibold hover:underline"
-              >
-                {author.name}
-              </Link>
+              <p className="font-semibold">{author.username}</p>
               <p className="text-sm text-muted-foreground">@{author.username}</p>
+              {author.bio && (
+                <p className="text-sm text-muted-foreground mt-1">{author.bio}</p>
+              )}
             </div>
             <Button size="sm" className="w-full">
               <UserPlus className="mr-2 h-4 w-4" />

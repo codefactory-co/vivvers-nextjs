@@ -2,7 +2,6 @@ export { Toast } from './toast'
 export type { ToastProps } from './toast'
 
 export { Dialog } from './dialog'
-export type { DialogProps } from './dialog'
 
 export { EmptyState } from './empty-state'
 export type { EmptyStateProps } from './empty-state'

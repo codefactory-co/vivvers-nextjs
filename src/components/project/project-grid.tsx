@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 
 export const ProjectGrid: React.FC<ProjectGridProps> = ({
   projects,
+  currentUserId,
   loading = false,
   className
 }) => {
@@ -61,6 +62,7 @@ export const ProjectGrid: React.FC<ProjectGridProps> = ({
         <ProjectCard
           key={project.id}
           project={project}
+          currentUserId={currentUserId}
           className="h-full"
         />
       ))}

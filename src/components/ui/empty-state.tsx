@@ -21,9 +21,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   size = 'md'
 }) => {
   const variantStyles = {
-    default: 'text-gray-500',
-    search: 'text-blue-500',
-    error: 'text-red-500',
+    default: 'text-muted-foreground',
+    search: 'text-primary',
+    error: 'text-destructive',
     maintenance: 'text-yellow-500'
   }
 
@@ -60,18 +60,18 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       currentSize.spacing
     )}>
       <div className={cn(
-        'flex items-center justify-center rounded-full bg-gray-100 mb-2',
+        'flex items-center justify-center rounded-full bg-muted mb-2',
         currentSize.icon,
         variantStyles[variant]
       )}>
         {icon}
       </div>
       
-      <h3 className={cn('font-semibold text-gray-900', currentSize.title)}>
+      <h3 className={cn('font-semibold text-foreground', currentSize.title)}>
         {title}
       </h3>
       
-      <p className={cn('text-gray-600 max-w-sm', currentSize.description)}>
+      <p className={cn('text-muted-foreground max-w-sm', currentSize.description)}>
         {description}
       </p>
       

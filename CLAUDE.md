@@ -4,6 +4,79 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## CRITICAL REMINDERS - MUST READ FIRST
 
+### Supabase Client Policy
+**🚨 ALWAYS use ONLY the Supabase clients from src/lib/supabase/ directory.**
+- **NEVER create new Supabase clients directly in components or other files**
+- **ALWAYS import from src/lib/supabase/client.ts for client components**
+- **ALWAYS import from src/lib/supabase/server.ts for server components/actions**
+- **NEVER use @supabase/supabase-js directly - ONLY use @supabase/ssr**
+- All authentication, database operations must go through these centralized clients
+- This ensures consistent cookie handling and SSR optimization
+
+### Database Schema Policy
+**🚨 NEVER modify prisma/schema.prisma without explicit user permission.**
+- DO NOT edit, add, or remove models from schema.prisma
+- DO NOT change field types, relationships, or constraints
+- DO NOT add or remove properties from existing models
+- ALWAYS ask for permission before making ANY schema changes
+- If schema modifications are needed, explain the changes and wait for approval
+
+### Database & External Services Policy
+**NEVER execute Supabase or other external database commands without explicit user permission.**
+- DO NOT run `supabase` CLI commands (start, stop, reset, migration, etc.)
+- DO NOT execute database operations that modify schemas or data
+- DO NOT install or configure external services automatically
+- ALWAYS ask the user first before running any database-related commands
+- If database setup is needed, provide instructions for the user to execute
+
+### Supabase Storage Naming Policy
+**ALWAYS follow consistent storage path conventions for file organization.**
+
+#### Storage Path Conventions
+**Project Images:**
+- Path: `${userId}/${filename}`
+- Bucket: `projects`
+- Example: `user-123e4567-e89b-12d3-a456-426614174000/screenshot_20240715_143022.webp`
+
+**Avatar Images:**
+- Path: `${userId}/${filename}`
+- Bucket: `avatars`
+- Example: `user-123e4567-e89b-12d3-a456-426614174000/profile_pic_1642108800.jpg`
+
+**Community Post Images:**
+- Path: `${userId}/${filename}`
+- Bucket: `community-posts`
+- Example: `user-123e4567-e89b-12d3-a456-426614174000/community_post_20240715_150322.jpg`
+
+#### Implementation Guidelines
+- **ALWAYS use UUID-based userIds** for consistent path structure
+- **NEVER hardcode storage paths** - use the helper functions from `src/lib/storage/helpers.ts`
+- **ALWAYS validate file types** before upload using bucket-specific validation
+- **ALWAYS generate safe filenames** using `generateUniqueFilename()` helper
+- **REFERENCE**: Complete bucket setup and RLS policies are documented in `README.md`
+
+#### Bucket-Specific Policies
+**For detailed Supabase Storage policies, see README.md sections:**
+- Avatar bucket policies: Lines 87-123 in README.md
+- Projects bucket policies: Lines 125-188 in README.md  
+- Community-posts bucket: See "Community Posts Bucket" section in README.md
+
+#### Code Examples
+```typescript
+// ✅ CORRECT - Using helper functions
+import { generateUniqueFilename } from '@/lib/storage/helpers'
+import { supabaseClient } from '@/lib/supabase/client'
+
+const filename = generateUniqueFilename(file.name, userId)
+const path = `${userId}/${filename}`
+const { data, error } = await supabaseClient.storage
+  .from('projects')
+  .upload(path, file)
+
+// ❌ WRONG - Hardcoded paths
+const path = `projects/${userId}/hardcoded_name.jpg`  // Don't do this!
+```
+
 ### Code Quality Checks
 **ALWAYS run these commands after ANY code changes:**
 1. `npm run typecheck` - Check TypeScript errors
@@ -23,6 +96,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Use semantic icon names (e.g., `AlertTriangle`, `CheckCircle`, `Info`)
 - Apply consistent sizing with Tailwind classes (e.g., `h-4 w-4`, `h-5 w-5`)
 - Example: `<AlertTriangle className="h-5 w-5 text-red-500" />` instead of "🚨"
+
+### TipTap Editor State Management Policy
+**ALWAYS batch multiple state updates from TipTap editor to prevent race conditions.**
+- The TipTap `onChange` callback provides three outputs: `html`, `text`, and `json`
+- **NEVER make separate `updateFormData` calls for each output**
+- **ALWAYS batch all three outputs in a single state update**
+
+**Correct Implementation:**
+```typescript
+onChange={(html, text, json) => {
+  const newData = {
+    ...formData,
+    fullDescriptionHtml: html,
+    fullDescription: text,
+    fullDescriptionJson: json
+  }
+  onFormChange(newData)
+}}
+```
+
+**Incorrect Implementation (causes race conditions):**
+```typescript
+onChange={(html, text, json) => {
+  updateFormData('fullDescriptionHtml', html)     // ❌ Race condition
+  updateFormData('fullDescription', text)         // ❌ Race condition
+  updateFormData('fullDescriptionJson', json)     // ❌ Only this survives
+}}
+```
+
+**Root Cause:** React state updates are asynchronous. Multiple rapid calls to `updateFormData` create race conditions where each call uses stale state, causing only the last update to persist.
 
 ### Workflow
 1. Make code changes
@@ -44,6 +147,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Component Development
 - `npx shadcn@latest add [component]` - Add shadcn/ui components
 - Components are installed to `src/components/ui/`
+
+### Database Development (Prisma)
+**NPM 스크립트 (권장):**
+- `npm run db:generate` - Generate Prisma client after schema changes
+- `npm run db:push` - Push schema changes to database (development)
+- `npm run db:migrate` - Create and apply migration (production-ready)
+- `npm run db:studio` - Open Prisma Studio for database GUI
+- `npm run db:seed` - Run database seeding
+- `npm run db:reset` - Reset database and apply all migrations
+- `npm run db:validate` - Validate schema syntax
+- `npm run db:format` - Format schema file
+
+**직접 명령어:**
+- `npx prisma generate` - Generate Prisma client
+- `npx prisma db push` - Push schema to database
+- `npx prisma migrate dev --name description` - Create named migration
+- `npx prisma studio` - Database GUI
+- `npx prisma migrate deploy` - Deploy migrations to production
+
+**파일 위치:**
+- Schema file: `prisma/schema.prisma`
+- Client setup: `src/lib/prisma/client.ts`
+- Migrations: `prisma/migrations/`
 
 ## Project Architecture
 
@@ -111,6 +237,11 @@ The project uses a sophisticated theme system:
 - Korean metadata and content
 - Consider Korean UX patterns
 
+**Database Architecture:**
+- Prisma setup details in `src/lib/CLAUDE.md`
+- Server Actions structure for database operations
+- Mock-to-Prisma migration strategy
+
 ### Code Organization
 
 **Import Patterns:**
@@ -140,39 +271,64 @@ The codebase is ready for building the full project showcase platform with prope
 
 ### Folder Structure
 ```
-src/
-├── app/                    # Next.js 15 App Router
-│   ├── (auth)/            # 인증 관련 페이지 그룹
-│   │   ├── signin/
-│   │   └── signup/
-│   ├── project/           # 개별 프로젝트 페이지
-│   │   └── [id]/
-│   ├── profile/           # 사용자 프로필
-│   │   └── [username]/
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx           # 메인 홈페이지 (프로젝트 목록 + 검색)
-├── components/
-│   ├── ui/                # shadcn/ui 컴포넌트
-│   ├── common/            # 공통 컴포넌트
-│   ├── auth/              # 인증 관련
-│   ├── project/           # 프로젝트 관련
-│   └── profile/           # 프로필 관련
-├── lib/
-│   ├── data/              # Mock 데이터
-│   │   ├── projects.ts    # 프로젝트 목 데이터
-│   │   ├── users.ts       # 사용자 목 데이터
-│   │   └── categories.ts  # 카테고리/태그 목 데이터
-│   ├── mock-api/          # Mock API 함수들
-│   │   ├── projects.ts    # 프로젝트 관련 API 함수
-│   │   ├── users.ts       # 사용자 관련 API 함수
-│   │   └── auth.ts        # 인증 관련 API 함수
-│   ├── validations.ts     # Zod 스키마 검증
-│   ├── constants.ts       # 상수 정의
-│   └── utils.ts           # 유틸리티 함수
-├── hooks/                 # 커스텀 훅
-├── types/                 # TypeScript 타입 정의
-└── store/                 # 상태 관리
+vivvers-nextjs/
+├── prisma/                 # Database schema and migrations
+│   ├── schema.prisma      # Database schema definition
+│   ├── migrations/        # Database migration files
+│   └── seed.ts            # Database seeding (when needed)
+├── src/
+│   ├── app/                # Next.js 15 App Router
+│   │   ├── (auth)/        # 인증 관련 페이지 그룹
+│   │   │   ├── signin/
+│   │   │   └── signup/
+│   │   ├── project/       # 개별 프로젝트 페이지
+│   │   │   └── [id]/
+│   │   ├── profile/       # 사용자 프로필
+│   │   │   └── [username]/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx       # 메인 홈페이지 (프로젝트 목록 + 검색)
+│   ├── components/
+│   │   ├── ui/            # shadcn/ui 컴포넌트
+│   │   ├── common/        # 공통 컴포넌트
+│   │   ├── auth/          # 인증 관련
+│   │   ├── project/       # 프로젝트 관련
+│   │   └── profile/       # 프로필 관련
+│   ├── lib/
+│   │   ├── prisma/        # Database client setup
+│   │   │   └── client.ts  # Prisma client configuration
+│   │   ├── storage/       # Supabase Storage 파일 업로드 기능
+│   │   │   ├── constants.ts    # 스토리지 설정 상수
+│   │   │   ├── helpers.ts      # 파일 검증, 경로 생성 유틸리티
+│   │   │   ├── upload-service.ts # 메인 업로드 서비스 클래스
+│   │   │   └── CLAUDE.md       # 스토리지 기능 사용법 가이드
+│   │   ├── actions/       # Server Actions (when implementing Prisma)
+│   │   │   ├── project/   # Project-related actions
+│   │   │   ├── user/      # User-related actions
+│   │   │   └── auth/      # Authentication actions
+│   │   ├── services/      # Database access layer (when implementing Prisma)
+│   │   │   ├── project.ts # Project CRUD operations
+│   │   │   ├── user.ts    # User CRUD operations
+│   │   │   └── auth.ts    # Authentication operations
+│   │   ├── data/          # Mock 데이터 (현재 개발용)
+│   │   │   ├── projects.ts # 프로젝트 목 데이터
+│   │   │   ├── users.ts   # 사용자 목 데이터
+│   │   │   └── categories.ts # 카테고리/태그 목 데이터
+│   │   ├── mock-api/      # Mock API 함수들 (현재 개발용)
+│   │   │   ├── projects.ts # 프로젝트 관련 API 함수
+│   │   │   ├── users.ts   # 사용자 관련 API 함수
+│   │   │   └── auth.ts    # 인증 관련 API 함수
+│   │   ├── validations/   # Zod 스키마 검증
+│   │   │   ├── project.ts # 프로젝트 스키마
+│   │   │   ├── user.ts    # 사용자 스키마
+│   │   │   └── auth.ts    # 인증 스키마
+│   │   ├── constants.ts   # 상수 정의
+│   │   └── utils.ts       # 유틸리티 함수
+│   ├── hooks/             # 커스텀 훅
+│   ├── types/             # TypeScript 타입 정의
+│   └── store/             # 상태 관리
+├── package.json
+└── .env                   # Environment variables (DATABASE_URL, etc.)
 ```
 
 ### Development Approach

@@ -2,10 +2,35 @@
 
 This directory contains core utility functions, data management, and business logic for the Vivvers platform.
 
+## ⚠️ CRITICAL WARNINGS - READ FIRST
+
+### Prisma Client Policy
+**🚨 NEVER create new Prisma clients. ALWAYS use the existing client from lib/prisma/client.ts.**
+- **NEVER use `new PrismaClient()` directly in any file**
+- **ALWAYS import from `@/lib/prisma/client`** 
+- **NEVER use dynamic imports like `const { PrismaClient } = await import('@prisma/client')`**
+- The centralized client ensures proper connection pooling and prevents connection leaks
+- All database operations must go through the shared client instance
+
+```typescript
+// ❌ WRONG - Never do this
+const prisma = new PrismaClient()
+const { PrismaClient } = await import('@prisma/client')
+const prisma = new PrismaClient()
+
+// ✅ CORRECT - Always do this  
+import { prisma } from '@/lib/prisma/client'
+```
+
 ## Directory Structure
 
 ```
 lib/
+├── supabase/          # Supabase 관련 기능
+│   ├── client.ts      # 브라우저용 Supabase 클라이언트
+│   ├── server.ts      # 서버용 Supabase 클라이언트
+│   ├── middleware.ts  # Supabase 미들웨어
+│   └── storage.ts     # 파일 업로드/삭제 함수
 ├── data/              # Mock data for development
 ├── mock-api/          # API simulation functions
 ├── validations/       # Zod schemas (domain-separated)
@@ -112,6 +137,46 @@ const emailResult = emailSchema.safeParse(email)
 3. **Build API functions** in `/mock-api/`
 4. **Add validation schemas** in `/validations/` (domain-separated)
 5. **Use in components** via Server Components or Server Actions
+
+## Prisma Integration Structure
+
+When ready to integrate Prisma database:
+
+```
+lib/
+├── prisma/
+│   ├── client.ts           # Prisma client setup
+│   ├── schema.prisma       # Database schema definition
+│   └── seed.ts             # Database seeding
+├── actions/                # Server Actions (domain + verb pattern)
+│   ├── project/
+│   │   ├── project-create.ts
+│   │   ├── project-update.ts
+│   │   ├── project-delete.ts
+│   │   ├── project-like.ts
+│   │   └── index.ts
+│   ├── user/
+│   │   ├── user-update-profile.ts
+│   │   ├── user-follow.ts
+│   │   └── index.ts
+│   ├── auth/
+│   │   ├── auth-signin.ts
+│   │   ├── auth-signup.ts
+│   │   └── index.ts
+│   └── index.ts
+├── services/               # Database access layer
+│   ├── project.ts          # Project CRUD operations
+│   ├── user.ts             # User CRUD operations
+│   └── auth.ts             # Authentication operations
+```
+
+### Migration Path from Mock to Prisma
+
+1. **Phase 1**: Add Prisma schema and client setup
+2. **Phase 2**: Create services layer for database operations
+3. **Phase 3**: Replace mock-api with Server Actions
+4. **Phase 4**: Update components to use Server Actions
+5. **Phase 5**: Remove mock-api and data directories
 
 ## Migration Path
 

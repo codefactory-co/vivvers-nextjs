@@ -21,9 +21,9 @@ export function Footer({ className }: FooterProps) {
               <Image
                 src="/img/logo.png"
                 alt="Vivvers"
-                width={120}
-                height={40}
-                className="h-8 w-auto"
+                width={160}
+                height={54}
+                className="h-12 w-auto"
               />
             </Link>
             <p className="text-muted-foreground text-sm max-w-xs">
