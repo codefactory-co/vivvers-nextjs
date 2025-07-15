@@ -31,8 +31,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Supabase Storage Naming Policy
 **ALWAYS follow consistent storage path conventions for file organization.**
+**🔐 CRITICAL: ALL storage paths MUST follow the `userId/filename` pattern for security and organization.**
 
 #### Storage Path Conventions
+**ALL storage buckets use the same path pattern: `${userId}/${filename}`**
+
 **Project Images:**
 - Path: `${userId}/${filename}`
 - Bucket: `projects`

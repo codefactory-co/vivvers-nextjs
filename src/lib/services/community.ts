@@ -1,6 +1,19 @@
 import { prisma } from '@/lib/prisma/client'
 import { CommunityPost, CommunityFilters, CommunityPostsResponse } from '@/types/community'
 import { uuidv7 } from 'uuidv7'
+
+// Test import immediately
+console.log('=== IMPORT TEST ===')
+console.log('uuidv7 imported:', uuidv7)
+console.log('typeof uuidv7:', typeof uuidv7)
+try {
+  const testUuid = uuidv7()
+  console.log('Test UUID generated:', testUuid)
+  console.log('Test UUID type:', typeof testUuid)
+} catch (error) {
+  console.error('Test UUID generation failed:', error)
+}
+console.log('=== END IMPORT TEST ===')
 import type { Prisma } from '@prisma/client'
 
 interface GetCommunityPostsParams {
@@ -262,19 +275,40 @@ export async function createCommunityPost({
   relatedProjectId?: string
 }): Promise<CommunityPost> {
   try {
-    const postId = uuidv7()
+    console.log('=== BEFORE UUID GENERATION ===')
+    console.log('uuidv7 function:', uuidv7)
+    console.log('typeof uuidv7:', typeof uuidv7)
+    console.log('uuidv7 is function?:', typeof uuidv7 === 'function')
     
-    // Debug logging for UUID analysis
+    // Test UUID generation
+    let postId
+    try {
+      postId = uuidv7()
+      console.log('UUID generation successful')
+    } catch (uuidError) {
+      console.error('UUID generation failed:', uuidError)
+      throw uuidError
+    }
+    
     console.log('=== UUID v7 DEBUG INFO ===')
-    console.log('Generated UUID:', postId)
+    console.log('Generated UUID raw:', postId)
     console.log('UUID type:', typeof postId)
-    console.log('UUID length:', postId.length)
-    console.log('First 10 characters:', postId.substring(0, 10))
-    console.log('Character at position 1:', postId[1])
-    console.log('Character code at position 1:', postId.charCodeAt(1))
-    console.log('Is valid hex?', /^[0-9a-fA-F-]+$/.test(postId))
-    console.log('UUID parts:', postId.split('-'))
-    console.log('UUID parts lengths:', postId.split('-').map(part => part.length))
+    console.log('UUID is null?:', postId === null)
+    console.log('UUID is undefined?:', postId === undefined)
+    console.log('UUID toString():', postId ? postId.toString() : 'NULL/UNDEFINED')
+    
+    if (postId && typeof postId === 'string') {
+      console.log('UUID length:', postId.length)
+      console.log('First 10 characters:', postId.substring(0, 10))
+      console.log('Character at position 0:', postId[0])
+      console.log('Character at position 1:', postId[1])
+      console.log('Character code at position 1:', postId.charCodeAt(1))
+      console.log('Is valid hex?', /^[0-9a-fA-F-]+$/.test(postId))
+      console.log('UUID parts:', postId.split('-'))
+      console.log('UUID parts lengths:', postId.split('-').map(part => part.length))
+    } else {
+      console.log('UUID is not a string - cannot analyze further')
+    }
     console.log('=== END DEBUG INFO ===')
 
     const post = await prisma.communityPost.create({
