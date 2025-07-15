@@ -209,7 +209,7 @@ export function ProjectForm({ mode, formData, onFormChange, onSubmit, userId }: 
           <TagCommandDB
             selectedTags={formData.techStack}
             onTagsChange={(tags) => updateFormData('techStack', tags)}
-            placeholder="사용한 기술 스택을 검색하세요"
+            placeholder="영어만 됨 ㅇㅋ? 한국어 원하면 부탁해보셈"
             maxTags={15}
             type="techStack"
           />
@@ -261,7 +261,7 @@ export function ProjectForm({ mode, formData, onFormChange, onSubmit, userId }: 
           <TagCommandDB
             selectedTags={formData.tags}
             onTagsChange={(tags) => updateFormData('tags', tags)}
-            placeholder="프로젝트와 관련된 태그를 검색하세요"
+            placeholder="영어만 됨 ㅇㅋ? 한국어 원하면 부탁해보셈"
             maxTags={10}
             type="tags"
           />

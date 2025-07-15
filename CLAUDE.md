@@ -219,6 +219,64 @@ onChange={(html, text, json) => {
 
 **Root Cause:** React state updates are asynchronous. Multiple rapid calls to `updateFormData` create race conditions where each call uses stale state, causing only the last update to persist.
 
+### Data Mutation Pattern Policy
+**ALWAYS use the revalidate pattern instead of optimistic updates for data mutations.**
+- **NEVER use optimistic updates** - they can lead to inconsistent UI states
+- **ALWAYS use server actions with revalidate** for data mutations
+- **ALWAYS show loading states** during server operations
+- This ensures data consistency between client and server
+
+**Correct Implementation:**
+```typescript
+// Server action with revalidate
+'use server'
+import { revalidatePath } from 'next/cache'
+
+export async function updateProject(projectId: string, data: UpdateData) {
+  // Perform database update
+  await db.project.update({ where: { id: projectId }, data })
+  
+  // Revalidate the affected paths
+  revalidatePath('/projects')
+  revalidatePath(`/project/${projectId}`)
+}
+
+// Client component usage
+const handleUpdate = async (data: UpdateData) => {
+  setIsLoading(true)
+  try {
+    await updateProject(projectId, data)
+    // UI will automatically update after revalidation
+  } catch (error) {
+    // Handle error
+  } finally {
+    setIsLoading(false)
+  }
+}
+```
+
+**Incorrect Implementation (optimistic updates):**
+```typescript
+// ❌ Don't do optimistic updates
+const handleUpdate = async (data: UpdateData) => {
+  // Update UI immediately (optimistic)
+  setProject(prev => ({ ...prev, ...data }))
+  
+  try {
+    await updateProject(projectId, data)
+  } catch (error) {
+    // Rollback on error - can cause UI inconsistencies
+    setProject(originalProject)
+  }
+}
+```
+
+**Benefits of Revalidate Pattern:**
+- **Data consistency**: UI always reflects actual server state
+- **Simpler error handling**: No rollback logic needed
+- **Better UX**: Clear loading states instead of potential flicker
+- **Cache benefits**: Leverages Next.js caching effectively
+
 ### Workflow
 1. Make code changes
 2. Run `npm run typecheck` 

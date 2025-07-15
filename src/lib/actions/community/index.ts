@@ -196,7 +196,7 @@ export async function createComment(
   }
 }
 
-export async function toggleCommentLike(commentId: string): Promise<CommunityLikeActionResult> {
+export async function toggleCommentLike(commentId: string, postId: string): Promise<CommunityLikeActionResult> {
   try {
     const user = await getUser()
     
@@ -209,9 +209,9 @@ export async function toggleCommentLike(commentId: string): Promise<CommunityLik
 
     const result = await toggleCommunityCommentLike(commentId, user.id)
     
-    // Note: We need to know the postId to revalidate properly
-    // For now, just revalidate community page
+    // Revalidate both the specific post page and community list
     revalidatePath('/community')
+    revalidatePath(`/community/post/${postId}`)
     
     return {
       success: true,

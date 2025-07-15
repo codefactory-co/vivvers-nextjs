@@ -14,7 +14,7 @@ export function CommunityHeader() {
           <h1 className="text-3xl font-bold">커뮤니티</h1>
         </div>
         <p className="text-muted-foreground">
-          개발자들과 소통하고 질문을 나누는 공간입니다.
+          일단 생성하면 수정이랑 삭제는 못한다 ㅇㅋ? 시간날때 만들어드림
         </p>
       </div>
 

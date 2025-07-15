@@ -143,7 +143,7 @@ export function CommunityPostForm({}: CommunityPostFormProps) {
         <TagCommandDB
           selectedTags={formData.tags}
           onTagsChange={handleTagsChange}
-          placeholder="관련 태그를 검색하세요 (예: React, JavaScript)"
+          placeholder="영어만 됨 ㅇㅋ? 한국어 원하면 부탁해보셈"
           maxTags={10}
           type="tags"
           disabled={isSubmitting}

@@ -10,8 +10,65 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "Vivvers - 바이브 코딩 프로젝트 홍보 플랫폼",
+  title: "vivvers - 바이브 코딩 프로젝트 홍보 플랫폼",
   description: "바이브 코딩으로 제작된 프로젝트들을 효과적으로 홍보하고 공유할 수 있는 플랫폼입니다.",
+  
+  // Favicon configuration
+  icons: {
+    icon: [
+      { url: '/favicon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon/favicon.ico', sizes: 'any' }
+    ],
+    apple: [
+      { url: '/favicon/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
+    ],
+    shortcut: '/favicon/favicon.ico'
+  },
+  
+  // Web app manifest
+  manifest: '/favicon/site.webmanifest',
+  
+  // Theme colors for mobile browsers
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' }
+  ],
+  
+  // Open Graph metadata with custom OG image
+  openGraph: {
+    type: 'website',
+    locale: 'ko_KR',
+    url: 'https://vivvers.com',
+    siteName: 'vivvers',
+    title: 'vivvers - 바이브 코딩 프로젝트 홍보 플랫폼',
+    description: '바이브 코딩으로 제작된 프로젝트들을 효과적으로 홍보하고 공유할 수 있는 플랫폼입니다.',
+    images: [
+      {
+        url: '/ogimage/og@1200x630.png',
+        width: 1200,
+        height: 630,
+        alt: 'vivvers - 바이브 코딩 프로젝트 홍보 플랫폼'
+      }
+    ]
+  },
+  
+  // Twitter card metadata
+  twitter: {
+    card: 'summary_large_image',
+    site: '@vivvers',
+    title: 'vivvers - 바이브 코딩 프로젝트 홍보 플랫폼',
+    description: '바이브 코딩으로 제작된 프로젝트들을 효과적으로 홍보하고 공유할 수 있는 플랫폼입니다.',
+    images: ['/ogimage/og@1200x630.png']
+  },
+  
+  // Additional metadata for better mobile experience
+  viewport: 'width=device-width, initial-scale=1',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'vivvers'
+  }
 };
 
 export default function RootLayout({
