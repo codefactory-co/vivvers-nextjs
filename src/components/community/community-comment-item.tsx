@@ -4,11 +4,12 @@ import React, { useState } from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Heart, MessageSquare, Star, MoreHorizontal } from 'lucide-react'
+import { MessageSquare, Star, MoreHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CommunityCommentForm } from './community-comment-form'
 import { CommunityCommentItemProps } from '@/types/community'
 import { HtmlContentRenderer } from '@/components/content/html-content-renderer'
+import { CommunityCommentLikeButton } from './community-comment-like-button'
 
 function formatTimeAgo(date: Date): string {
   const now = new Date()
@@ -35,7 +36,6 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
   comment,
   currentUserId,
   postAuthorId,
-  onLike,
   onReply,
   onEdit,
   onDelete,
@@ -43,20 +43,13 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
   depth = 0
 }) => {
   const [showReplyForm, setShowReplyForm] = useState(false)
-  const [isLiked, setIsLiked] = useState(
-    comment.likes?.some(like => like.userId === currentUserId) || false
-  )
   
   const isOwner = currentUserId === comment.authorId
   const isPostAuthor = currentUserId === postAuthorId
   const maxDepth = 1 // 2-level comments only
   const canReply = depth < maxDepth && currentUserId
-
-  const handleLike = () => {
-    if (!currentUserId || !onLike) return
-    setIsLiked(!isLiked)
-    onLike(comment.id)
-  }
+  
+  const isLiked = comment.likes?.some(like => like.userId === currentUserId) || false
 
   const handleReply = () => {
     setShowReplyForm(!showReplyForm)
@@ -144,18 +137,12 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
           <div className="flex items-center space-x-4 text-sm">
             {/* Like */}
             {currentUserId && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLike}
-                className={cn(
-                  "text-xs px-2 py-1 h-auto hover:text-red-500",
-                  isLiked && "text-red-500"
-                )}
-              >
-                <Heart className={cn("w-3 h-3 mr-1", isLiked && "fill-current")} />
-                {comment.likesCount > 0 && comment.likesCount}
-              </Button>
+              <CommunityCommentLikeButton
+                commentId={comment.id}
+                postId={comment.postId}
+                initialLiked={isLiked}
+                initialCount={comment.likesCount}
+              />
             )}
 
             {/* Reply */}
@@ -207,7 +194,6 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
               comment={reply}
               currentUserId={currentUserId}
               postAuthorId={postAuthorId}
-              onLike={onLike}
               onReply={onReply}
               onEdit={onEdit}
               onDelete={onDelete}

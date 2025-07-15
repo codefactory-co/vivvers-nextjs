@@ -8,7 +8,6 @@ export const CommunityCommentList: React.FC<CommunityCommentListProps> = ({
   comments,
   currentUserId,
   postAuthorId,
-  onCommentLike,
   onCommentReply,
   onCommentEdit,
   onCommentDelete,
@@ -51,7 +50,6 @@ export const CommunityCommentList: React.FC<CommunityCommentListProps> = ({
               comment={comment}
               currentUserId={currentUserId}
               postAuthorId={postAuthorId}
-              onLike={onCommentLike}
               onReply={onCommentReply}
               onEdit={onCommentEdit}
               onDelete={onCommentDelete}

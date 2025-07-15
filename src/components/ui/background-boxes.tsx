@@ -42,36 +42,13 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
 
   return (
     <>
-      {/* CSS-based checkered pattern for mobile and tablet */}
-      <div className="absolute inset-0 w-full h-full lg:hidden overflow-hidden">
-        <div 
-          className="absolute inset-0 w-full h-full"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px),
-              linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px)
-            `,
-            backgroundSize: '64px 32px',
-            transform: 'translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(0deg) translateZ(0)',
-          }}
-        />
-        
-        {/* Plus signs overlay */}
-        <div 
-          className="absolute inset-0 w-full h-full"
-          style={{
-            backgroundImage: `
-              radial-gradient(circle at 10px 16px, hsl(var(--muted-foreground) / 0.2) 2px, transparent 2px)
-            `,
-            backgroundSize: '128px 64px',
-            backgroundPosition: '0 0',
-            transform: 'translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(0deg) translateZ(0)',
-          }}
-        />
-        
-        {/* Overlay for better text readability (matching original) */}
-        <div className="absolute inset-0 w-full h-full bg-background/40 z-10 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
-      </div>
+      {/* Static background image for mobile and tablet */}
+      <div 
+        className="absolute inset-0 w-full h-full lg:hidden bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/img/home-hero-bg.png)',
+        }}
+      />
       
       {/* Animated boxes for desktop only */}
       <div className="hidden lg:block absolute inset-0 w-full h-full">

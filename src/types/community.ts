@@ -134,7 +134,6 @@ export interface CommunityPostGridProps {
 export interface CommunityCommentItemProps {
   comment: CommunityPostComment
   currentUserId?: string
-  onLike?: (commentId: string) => void
   onReply?: (commentId: string) => void
   onEdit?: (commentId: string) => void
   onDelete?: (commentId: string) => void
@@ -146,7 +145,6 @@ export interface CommunityCommentListProps {
   comments: CommunityPostComment[]
   currentUserId?: string
   postAuthorId?: string  // For best answer selection
-  onCommentLike?: (commentId: string) => void
   onCommentReply?: (commentId: string) => void
   onCommentEdit?: (commentId: string) => void
   onCommentDelete?: (commentId: string) => void

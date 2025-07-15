@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { MobileMenu } from "./mobile-menu";
-import { ThemeToggle } from "./theme-toggle";
 import { UserMenu } from "./user-menu";
 import { Home, Users } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
@@ -54,9 +53,6 @@ export function Header({ className, user }: HeaderProps) {
 
           {/* User Menu */}
           <div className="flex items-center space-x-2">
-            {/* Theme Toggle */}
-            <ThemeToggle />
-
             {/* User Menu - Server rendered */}
             {user ? (
               <UserMenu user={user} />

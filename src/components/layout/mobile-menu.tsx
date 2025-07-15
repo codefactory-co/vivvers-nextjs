@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { User, Menu, X, Home, Users } from "lucide-react";
-import { ThemeToggle } from "./theme-toggle";
 import { UserMenu } from "./user-menu";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
@@ -97,11 +96,6 @@ export function MobileMenu({ user, className }: MobileMenuProps) {
 
               {/* User Actions */}
               <div className="pt-4 border-t border-border space-y-3">
-                {/* Theme Toggle in Mobile */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">테마</span>
-                  <ThemeToggle />
-                </div>
                 
                 {user ? (
                   <div className="flex items-center space-x-2">

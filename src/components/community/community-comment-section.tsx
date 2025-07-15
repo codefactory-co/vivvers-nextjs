@@ -30,11 +30,6 @@ export function CommunityCommentSection({
     setShowCommentForm(false)
   }
 
-  const handleCommentLike = (commentId: string) => {
-    // Handle comment like - this would update the comment in the list
-    console.log('Like comment:', commentId)
-  }
-
   const handleBestAnswer = (commentId: string) => {
     // Handle best answer selection
     setComments(prev => prev.map(comment => ({
@@ -96,7 +91,6 @@ export function CommunityCommentSection({
               comments={comments}
               currentUserId={currentUserId}
               postAuthorId={postAuthorId}
-              onCommentLike={handleCommentLike}
               onBestAnswer={currentUserId === postAuthorId ? handleBestAnswer : undefined}
             />
           </div>
