@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`${notoSansKR.variable} font-sans min-h-screen`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

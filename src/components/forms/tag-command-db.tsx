@@ -35,7 +35,6 @@ interface TagCommandDBProps {
 interface TagData {
   id: string
   name: string
-  slug: string
   usageCount: number
 }
 

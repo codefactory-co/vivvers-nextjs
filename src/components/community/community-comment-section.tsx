@@ -24,6 +24,11 @@ export function CommunityCommentSection({
   const [comments, setComments] = useState(initialComments)
   const [showCommentForm, setShowCommentForm] = useState(false)
 
+  const handleCommentAdded = (newComment: CommunityPostComment) => {
+    // Add the new comment to the list
+    setComments(prev => [...prev, newComment])
+    setShowCommentForm(false)
+  }
 
   const handleCommentLike = (commentId: string) => {
     // Handle comment like - this would update the comment in the list
@@ -40,9 +45,9 @@ export function CommunityCommentSection({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-xl">
             <MessageSquare className="h-5 w-5" />
             댓글 ({comments.length})
           </CardTitle>
@@ -62,17 +67,19 @@ export function CommunityCommentSection({
       <CardContent className="space-y-6">
         {/* Comment Form */}
         {showCommentForm && currentUserId && (
-          <div className="pb-6 border-b">
+          <div className="p-4 bg-muted/30 rounded-lg mb-6">
             <CommunityCommentForm
               postId={postId}
               onCancel={() => setShowCommentForm(false)}
+              onCommentAdded={handleCommentAdded}
             />
           </div>
         )}
 
         {/* Login prompt for guests */}
-        {!currentUserId && (
-          <div className="text-center py-6 bg-muted/30 rounded-lg">
+        {!currentUserId && comments.length === 0 && (
+          <div className="text-center py-8 bg-muted/30 rounded-lg">
+            <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground mb-4">
               댓글을 작성하려면 로그인해주세요.
             </p>
@@ -84,19 +91,23 @@ export function CommunityCommentSection({
 
         {/* Comments List */}
         {comments.length > 0 ? (
-          <CommunityCommentList
-            comments={comments}
-            currentUserId={currentUserId}
-            postAuthorId={postAuthorId}
-            onCommentLike={handleCommentLike}
-            onBestAnswer={currentUserId === postAuthorId ? handleBestAnswer : undefined}
-          />
-        ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>아직 댓글이 없습니다.</p>
-            <p className="text-sm">첫 번째 댓글을 작성해보세요!</p>
+          <div className="space-y-6">
+            <CommunityCommentList
+              comments={comments}
+              currentUserId={currentUserId}
+              postAuthorId={postAuthorId}
+              onCommentLike={handleCommentLike}
+              onBestAnswer={currentUserId === postAuthorId ? handleBestAnswer : undefined}
+            />
           </div>
+        ) : (
+          currentUserId && (
+            <div className="text-center py-8 text-muted-foreground">
+              <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>아직 댓글이 없습니다.</p>
+              <p className="text-sm">첫 번째 댓글을 작성해보세요!</p>
+            </div>
+          )
         )}
       </CardContent>
     </Card>

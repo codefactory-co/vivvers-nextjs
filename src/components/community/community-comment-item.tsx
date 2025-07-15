@@ -8,6 +8,7 @@ import { Heart, MessageSquare, Star, MoreHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CommunityCommentForm } from './community-comment-form'
 import { CommunityCommentItemProps } from '@/types/community'
+import { HtmlContentRenderer } from '@/components/content/html-content-renderer'
 
 function formatTimeAgo(date: Date): string {
   const now = new Date()
@@ -69,12 +70,15 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
 
   return (
     <div className={cn(
-      "space-y-3",
-      depth > 0 && "ml-8 border-l-2 border-muted pl-4"
+      "space-y-4",
+      depth > 0 && "ml-12 border-l-2 border-muted pl-6 mt-4"
     )}>
-      <div className="flex space-x-3">
+      <div className={cn(
+        "flex space-x-3",
+        comment.isBestAnswer && "bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800"
+      )}>
         {/* Avatar */}
-        <Avatar className="h-10 w-10 shrink-0">
+        <Avatar className="h-10 w-10 shrink-0 mt-1">
           <AvatarImage 
             src={comment.author.avatarUrl || undefined} 
             alt={comment.author.username}
@@ -89,7 +93,7 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
           {/* Header */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
-              <span className="font-medium text-sm">
+              <span className="font-semibold text-sm">
                 {comment.author.username}
               </span>
               {comment.authorId === postAuthorId && (
@@ -98,8 +102,8 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
                 </Badge>
               )}
               {comment.isBestAnswer && (
-                <Badge variant="default" className="text-xs bg-yellow-500">
-                  <Star className="h-3 w-3 mr-1" />
+                <Badge variant="default" className="text-xs bg-yellow-500 hover:bg-yellow-600">
+                  <Star className="h-3 w-3 mr-1 fill-current" />
                   채택답변
                 </Badge>
               )}
@@ -117,12 +121,24 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
           </div>
 
           {/* Comment Content */}
-          <div 
-            className="prose prose-sm max-w-none mb-3"
-            dangerouslySetInnerHTML={{ 
-              __html: comment.contentHtml || comment.content 
-            }}
-          />
+          {comment.contentHtml && comment.contentHtml.trim() !== '' ? (
+            <HtmlContentRenderer
+              htmlContent={comment.contentHtml}
+              enableSyntaxHighlighting={true}
+              className="prose prose-slate dark:prose-invert max-w-none mb-3 p-0"
+            />
+          ) : (
+            <div className="prose prose-slate dark:prose-invert max-w-none mb-3">
+              {comment.content.split('\n')
+                .map((paragraph, index) => ({ paragraph: paragraph.trim(), originalIndex: index }))
+                .filter(({ paragraph }) => paragraph)
+                .map(({ paragraph, originalIndex }) => (
+                  <p key={originalIndex} className="mb-2 last:mb-0 leading-relaxed text-sm">
+                    {paragraph}
+                  </p>
+                ))}
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex items-center space-x-4 text-sm">
@@ -171,7 +187,7 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
 
           {/* Reply Form */}
           {showReplyForm && (
-            <div className="mt-4 pt-4 border-t">
+            <div className="mt-4 p-4 bg-muted/30 rounded-lg">
               <CommunityCommentForm
                 postId={comment.postId}
                 parentId={comment.id}

@@ -73,7 +73,6 @@ export async function createProject(data: CreateProjectData) {
             data: {
               id: crypto.randomUUID(),
               name: tagName,
-              slug: tagName.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-'),
               createdAt: new Date()
             }
           })

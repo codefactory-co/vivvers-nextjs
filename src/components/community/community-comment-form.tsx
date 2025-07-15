@@ -8,18 +8,22 @@ const RichTextEditor = dynamic(() => import('@/components/editor/rich-text-edito
   ssr: false,
 })
 import { Loader2, Send, X } from 'lucide-react'
-import { CommunityCommentFormData } from '@/types/community'
+import { CommunityCommentFormData, CommunityPostComment } from '@/types/community'
 import { useToast } from '@/hooks/use-toast'
+import { createComment } from '@/lib/actions/community'
 
 interface CommunityCommentFormProps {
   postId: string
   parentId?: string
   onCancel: () => void
+  onCommentAdded?: (comment: CommunityPostComment) => void
 }
 
 export function CommunityCommentForm({
+  postId,
   parentId,
-  onCancel
+  onCancel,
+  onCommentAdded
 }: CommunityCommentFormProps) {
   const { toast } = useToast()
   
@@ -44,6 +48,13 @@ export function CommunityCommentForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    console.log('[DEBUG] Comment form submit:', {
+      postId,
+      parentId,
+      hasOnCommentAdded: !!onCommentAdded,
+      contentLength: formData.content.length
+    })
+    
     if (!formData.content.trim()) {
       toast({
         title: '오류',
@@ -56,24 +67,39 @@ export function CommunityCommentForm({
     setIsSubmitting(true)
 
     try {
-      // TODO: Implement comment creation action
-      await createCommunityComment()
+      const result = await createComment(postId, formData)
 
-      // This will be implemented when we create the comment service
-      // toast({
-      //   title: '성공',
-      //   description: parentId ? '답글이 작성되었습니다.' : '댓글이 작성되었습니다.',
-      // })
-      
-      // onCommentAdded(result.data!.comment)
-      
-      // Reset form
-      setFormData({
-        content: '',
-        contentHtml: '',
-        contentJson: '',
-        parentId
-      })
+      if (result.success && result.data) {
+        console.log('[DEBUG] Comment created successfully:', {
+          commentId: result.data.comment.id,
+          parentId: result.data.comment.parentId,
+          isReply: !!result.data.comment.parentId
+        })
+        
+        toast({
+          title: '성공',
+          description: parentId ? '답글이 작성되었습니다.' : '댓글이 작성되었습니다.',
+        })
+        
+        if (onCommentAdded) {
+          console.log('[DEBUG] Calling onCommentAdded callback')
+          onCommentAdded(result.data.comment)
+        } else {
+          console.log('[DEBUG] No onCommentAdded callback provided - this is the issue for replies!')
+        }
+        
+        // Reset form
+        setFormData({
+          content: '',
+          contentHtml: '',
+          contentJson: '',
+          parentId
+        })
+        
+        onCancel()
+      } else {
+        throw new Error(result.error || '댓글 작성에 실패했습니다.')
+      }
     } catch (error) {
       console.error('Failed to create comment:', error)
       toast({
@@ -132,11 +158,3 @@ export function CommunityCommentForm({
   )
 }
 
-// Placeholder function - this should be implemented as a server action
-async function createCommunityComment() {
-  // TODO: Implement this server action
-  return {
-    success: false,
-    error: 'Comment creation not implemented yet'
-  }
-}

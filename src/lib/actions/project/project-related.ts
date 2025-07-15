@@ -25,8 +25,7 @@ export async function getRelatedProjects(projectId: string, category: string, li
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         },
@@ -36,8 +35,7 @@ export async function getRelatedProjects(projectId: string, category: string, li
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         }
@@ -72,13 +70,11 @@ export async function getRelatedProjects(projectId: string, category: string, li
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name,
-        slug: pt.tag.slug
-      })),
+              })),
       techStack: project.projectTechStacks.map(pts => ({
         id: pts.tag.id,
         name: pts.tag.name,
-        slug: pts.tag.slug
-      })),
+              })),
       likes: [], // 빈 likes 배열 추가
       createdAt: project.createdAt,
       updatedAt: project.updatedAt
@@ -112,8 +108,7 @@ export async function getProjectsByCategory(category: string, limit: number = 10
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         },
@@ -123,8 +118,7 @@ export async function getProjectsByCategory(category: string, limit: number = 10
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         }
@@ -159,13 +153,11 @@ export async function getProjectsByCategory(category: string, limit: number = 10
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name,
-        slug: pt.tag.slug
-      })),
+              })),
       techStack: project.projectTechStacks.map(pts => ({
         id: pts.tag.id,
         name: pts.tag.name,
-        slug: pts.tag.slug
-      })),
+              })),
       likes: [], // 빈 likes 배열 추가
       createdAt: project.createdAt,
       updatedAt: project.updatedAt

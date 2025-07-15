@@ -19,7 +19,7 @@ export default async function NewCommunityPostPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-4xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
           <PlusCircle className="h-8 w-8 text-primary" />

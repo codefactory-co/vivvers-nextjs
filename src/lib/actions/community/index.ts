@@ -6,12 +6,17 @@ import { getUser } from '@/lib/supabase/server'
 import { 
   createCommunityPost, 
   toggleCommunityPostLike,
-  getCommunityPostById 
+  getCommunityPostById,
+  createCommunityComment,
+  toggleCommunityCommentLike,
+  setBestAnswer
 } from '@/lib/services/community'
 import { 
   CommunityPostActionResult, 
   CommunityLikeActionResult,
-  CommunityPostFormData 
+  CommunityPostFormData,
+  CommunityCommentActionResult,
+  CommunityCommentFormData
 } from '@/types/community'
 
 export async function createPost(formData: CommunityPostFormData): Promise<CommunityPostActionResult> {
@@ -126,5 +131,129 @@ export async function incrementPostViews(postId: string) {
     revalidatePath(`/community/post/${postId}`)
   } catch (error) {
     console.error('Failed to increment post views:', error)
+  }
+}
+
+export async function createComment(
+  postId: string,
+  formData: CommunityCommentFormData
+): Promise<CommunityCommentActionResult> {
+  try {
+    console.log('[DEBUG] createComment called with:', {
+      postId,
+      parentId: formData.parentId,
+      contentLength: formData.content?.length
+    })
+    
+    const user = await getUser()
+    
+    if (!user) {
+      return {
+        success: false,
+        error: '로그인이 필요합니다.'
+      }
+    }
+
+    // Validate content
+    if (!formData.content?.trim()) {
+      return {
+        success: false,
+        error: '댓글 내용을 입력해주세요.'
+      }
+    }
+
+    const comment = await createCommunityComment({
+      postId,
+      authorId: user.id,
+      content: formData.content.trim(),
+      contentHtml: formData.contentHtml,
+      contentJson: formData.contentJson,
+      parentId: formData.parentId || null
+    })
+
+    console.log('[DEBUG] Comment created:', {
+      commentId: comment.id,
+      parentId: comment.parentId,
+      isReply: !!comment.parentId
+    })
+
+    // Revalidate paths
+    console.log('[DEBUG] Revalidating paths...')
+    revalidatePath(`/community/post/${postId}`)
+    revalidatePath('/community')
+    console.log('[DEBUG] Paths revalidated')
+    
+    return {
+      success: true,
+      data: { comment }
+    }
+  } catch (error) {
+    console.error('Failed to create comment:', error)
+    return {
+      success: false,
+      error: '댓글 작성에 실패했습니다.'
+    }
+  }
+}
+
+export async function toggleCommentLike(commentId: string): Promise<CommunityLikeActionResult> {
+  try {
+    const user = await getUser()
+    
+    if (!user) {
+      return {
+        success: false,
+        error: '로그인이 필요합니다.'
+      }
+    }
+
+    const result = await toggleCommunityCommentLike(commentId, user.id)
+    
+    // Note: We need to know the postId to revalidate properly
+    // For now, just revalidate community page
+    revalidatePath('/community')
+    
+    return {
+      success: true,
+      data: result
+    }
+  } catch (error) {
+    console.error('Failed to toggle comment like:', error)
+    return {
+      success: false,
+      error: '좋아요 처리에 실패했습니다.'
+    }
+  }
+}
+
+export async function selectBestAnswer(
+  commentId: string,
+  postId: string,
+  postAuthorId: string
+): Promise<CommunityCommentActionResult> {
+  try {
+    const user = await getUser()
+    
+    if (!user) {
+      return {
+        success: false,
+        error: '로그인이 필요합니다.'
+      }
+    }
+
+    await setBestAnswer(commentId, postId, postAuthorId, user.id)
+    
+    revalidatePath(`/community/post/${postId}`)
+    revalidatePath('/community')
+    
+    return {
+      success: true
+    }
+  } catch (error) {
+    console.error('Failed to select best answer:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : '베스트 답변 선택에 실패했습니다.'
+    }
   }
 }

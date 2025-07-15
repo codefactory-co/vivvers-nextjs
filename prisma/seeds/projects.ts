@@ -169,7 +169,7 @@ export async function seedProjects(
 
     // 일반 태그 관계 생성
     for (const tagSlug of projectData.tags) {
-      const tag = tags.find(t => t.slug === tagSlug)
+      const tag = tags.find(t => t.name.toLowerCase() === tagSlug)
       if (tag) {
         await prisma.projectTag.create({
           data: {
@@ -183,7 +183,7 @@ export async function seedProjects(
 
     // 기술스택 관계 생성
     for (const techSlug of projectData.techStack) {
-      const tech = tags.find(t => t.slug === techSlug)
+      const tech = tags.find(t => t.name.toLowerCase() === techSlug)
       if (tech) {
         await prisma.projectTechStack.create({
           data: {

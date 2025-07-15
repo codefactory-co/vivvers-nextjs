@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma/client'
-import { CommunityPost, CommunityFilters, CommunityPostsResponse } from '@/types/community'
+import { CommunityPost, CommunityPostComment, CommunityFilters, CommunityPostsResponse } from '@/types/community'
 import { uuidv7 } from 'uuidv7'
 
 // Test import immediately
@@ -107,8 +107,7 @@ export async function getCommunityPosts({
                 select: {
                   id: true,
                   name: true,
-                  slug: true
-                }
+                                  }
               }
             }
           },
@@ -169,8 +168,7 @@ export async function getCommunityPostById(id: string): Promise<CommunityPost | 
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         },
@@ -398,8 +396,7 @@ export async function createCommunityPost({
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         },
@@ -492,5 +489,208 @@ export async function toggleCommunityPostLike(postId: string, userId: string): P
   } catch (error) {
     console.error('Failed to toggle community post like:', error)
     throw new Error('Failed to toggle like')
+  }
+}
+
+export async function createCommunityComment({
+  postId,
+  authorId,
+  content,
+  contentHtml,
+  contentJson,
+  parentId
+}: {
+  postId: string
+  authorId: string
+  content: string
+  contentHtml?: string
+  contentJson?: unknown
+  parentId?: string | null
+}): Promise<CommunityPostComment> {
+  try {
+    const commentId = uuidv7()
+    
+    // Create the comment
+    const comment = await prisma.communityPostComment.create({
+      data: {
+        id: commentId,
+        postId,
+        authorId,
+        content,
+        contentHtml,
+        contentJson: contentJson as Prisma.InputJsonValue,
+        parentId
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true
+          }
+        },
+        replies: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                username: true,
+                avatarUrl: true
+              }
+            },
+            likes: {
+              select: {
+                userId: true
+              }
+            }
+          }
+        },
+        likes: {
+          select: {
+            userId: true
+          }
+        }
+      }
+    })
+
+    // Update counts
+    const updatePromises: Promise<unknown>[] = [
+      // Update post comment count
+      prisma.communityPost.update({
+        where: { id: postId },
+        data: { commentsCount: { increment: 1 } }
+      })
+    ]
+
+    // If this is a reply, update parent comment's reply count
+    if (parentId) {
+      updatePromises.push(
+        prisma.communityPostComment.update({
+          where: { id: parentId },
+          data: { repliesCount: { increment: 1 } }
+        })
+      )
+    }
+
+    await Promise.all(updatePromises)
+
+    return comment as CommunityPostComment
+  } catch (error) {
+    console.error('Failed to create community comment:', error)
+    throw new Error('Failed to create comment')
+  }
+}
+
+export async function toggleCommunityCommentLike(commentId: string, userId: string): Promise<{
+  isLiked: boolean
+  likeCount: number
+}> {
+  try {
+    const existingLike = await prisma.communityPostCommentLike.findUnique({
+      where: {
+        userId_commentId: {
+          userId,
+          commentId
+        }
+      }
+    })
+
+    if (existingLike) {
+      // Unlike
+      await Promise.all([
+        prisma.communityPostCommentLike.delete({
+          where: { id: existingLike.id }
+        }),
+        prisma.communityPostComment.update({
+          where: { id: commentId },
+          data: { likesCount: { decrement: 1 } }
+        })
+      ])
+
+      const comment = await prisma.communityPostComment.findUnique({
+        where: { id: commentId },
+        select: { likesCount: true }
+      })
+
+      return {
+        isLiked: false,
+        likeCount: comment?.likesCount || 0
+      }
+    } else {
+      // Like
+      await Promise.all([
+        prisma.communityPostCommentLike.create({
+          data: {
+            id: uuidv7(),
+            userId,
+            commentId
+          }
+        }),
+        prisma.communityPostComment.update({
+          where: { id: commentId },
+          data: { likesCount: { increment: 1 } }
+        })
+      ])
+
+      const comment = await prisma.communityPostComment.findUnique({
+        where: { id: commentId },
+        select: { likesCount: true }
+      })
+
+      return {
+        isLiked: true,
+        likeCount: comment?.likesCount || 0
+      }
+    }
+  } catch (error) {
+    console.error('Failed to toggle community comment like:', error)
+    throw new Error('Failed to toggle comment like')
+  }
+}
+
+export async function setBestAnswer(commentId: string, postId: string, postAuthorId: string, userId: string): Promise<void> {
+  try {
+    // Verify the user is the post author
+    if (userId !== postAuthorId) {
+      throw new Error('Only the post author can select best answer')
+    }
+
+    // Check if comment belongs to the post
+    const comment = await prisma.communityPostComment.findFirst({
+      where: {
+        id: commentId,
+        postId: postId
+      }
+    })
+
+    if (!comment) {
+      throw new Error('Comment not found or does not belong to this post')
+    }
+
+    // Remove any existing best answer for this post
+    await prisma.communityPostComment.updateMany({
+      where: {
+        postId: postId,
+        isBestAnswer: true
+      },
+      data: {
+        isBestAnswer: false
+      }
+    })
+
+    // Set the new best answer
+    await prisma.communityPostComment.update({
+      where: { id: commentId },
+      data: { isBestAnswer: true }
+    })
+
+    // Update helpful answers count for the comment author
+    await prisma.user.update({
+      where: { id: comment.authorId },
+      data: { helpfulAnswersCount: { increment: 1 } }
+    })
+  } catch (error) {
+    console.error('Failed to set best answer:', error)
+    throw error instanceof Error ? error : new Error('Failed to set best answer')
   }
 }

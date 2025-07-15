@@ -1,11 +1,25 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
   const { theme } = useTheme();
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Check if device is mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
   const rows = new Array(150).fill(1);
   const cols = new Array(100).fill(1);
   
@@ -58,13 +72,13 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
         >
           {cols.map((_, j) => (
             <motion.div
-              whileHover={{
+              whileHover={!isMobile ? {
                 backgroundColor: getRandomColor(),
                 transition: { duration: 0 },
-              }}
-              animate={{
+              } : undefined}
+              animate={!isMobile ? {
                 transition: { duration: 2 },
-              }}
+              } : undefined}
               key={`col` + j}
               className="w-16 h-8 border-r border-t border-border relative"
             >

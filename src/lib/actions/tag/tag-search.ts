@@ -17,28 +17,16 @@ export async function searchTags(input: SearchTagsInput) {
   try {
     const { query, limit, offset } = searchTagsSchema.parse(input)
     
-    const normalizedQuery = query.trim().toLowerCase()
-    
     const tags = await prisma.tag.findMany({
       where: {
-        OR: [
-          {
-            name: {
-              contains: query,
-              mode: 'insensitive'
-            }
-          },
-          {
-            slug: {
-              contains: normalizedQuery
-            }
-          }
-        ]
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        }
       },
       select: {
         id: true,
         name: true,
-        slug: true,
         _count: {
           select: {
             projectTags: true,
@@ -58,25 +46,15 @@ export async function searchTags(input: SearchTagsInput) {
     const formattedTags = tags.map(tag => ({
       id: tag.id,
       name: tag.name,
-      slug: tag.slug,
       usageCount: tag._count.projectTags + tag._count.projectTechStacks
     }))
     
     const totalCount = await prisma.tag.count({
       where: {
-        OR: [
-          {
-            name: {
-              contains: query,
-              mode: 'insensitive'
-            }
-          },
-          {
-            slug: {
-              contains: normalizedQuery
-            }
-          }
-        ]
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        }
       }
     })
     
@@ -110,16 +88,16 @@ export async function searchTags(input: SearchTagsInput) {
   }
 }
 
+
 export async function searchTagsByExactName(name: string) {
   try {
     const tag = await prisma.tag.findUnique({
       where: {
-        name
+        name: name
       },
       select: {
         id: true,
         name: true,
-        slug: true,
         _count: {
           select: {
             projectTags: true,
@@ -141,53 +119,7 @@ export async function searchTagsByExactName(name: string) {
       data: {
         id: tag.id,
         name: tag.name,
-        slug: tag.slug,
-        usageCount: tag._count.projectTags + tag._count.projectTechStacks
-      }
-    }
-    
-  } catch (error) {
-    console.error('태그 조회 오류:', error)
-    return {
-      success: false,
-      error: '태그 조회 중 오류가 발생했습니다'
-    }
-  }
-}
-
-export async function searchTagsByExactSlug(slug: string) {
-  try {
-    const tag = await prisma.tag.findUnique({
-      where: {
-        slug
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        _count: {
-          select: {
-            projectTags: true,
-            projectTechStacks: true
-          }
-        }
-      }
-    })
-    
-    if (!tag) {
-      return {
-        success: false,
-        error: '태그를 찾을 수 없습니다'
-      }
-    }
-    
-    return {
-      success: true,
-      data: {
-        id: tag.id,
-        name: tag.name,
-        slug: tag.slug,
-        usageCount: tag._count.projectTags + tag._count.projectTechStacks
+          usageCount: tag._count.projectTags + tag._count.projectTechStacks
       }
     }
     
@@ -206,7 +138,6 @@ export async function getPopularTags(limit: number = 20) {
       select: {
         id: true,
         name: true,
-        slug: true,
         _count: {
           select: {
             projectTags: true,
@@ -220,7 +151,6 @@ export async function getPopularTags(limit: number = 20) {
     const tagsWithUsageCount = tags.map(tag => ({
       id: tag.id,
       name: tag.name,
-      slug: tag.slug,
       usageCount: tag._count.projectTags + tag._count.projectTechStacks
     }))
     
@@ -263,8 +193,7 @@ export async function createOrFindTag(name: string) {
     const newTag = await prisma.tag.create({
       data: {
         id: randomUUID(),
-        name: validatedTag,
-        slug: validatedTag // 이미 tagSchema에서 sanitize되었음
+        name: validatedTag
       }
     })
     

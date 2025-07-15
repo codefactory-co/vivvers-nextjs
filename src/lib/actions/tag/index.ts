@@ -1,7 +1,6 @@
 export {
   searchTags,
   searchTagsByExactName,
-  searchTagsByExactSlug,
   getPopularTags,
   createOrFindTag,
   type SearchTagsInput

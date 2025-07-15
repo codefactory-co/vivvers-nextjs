@@ -10,8 +10,7 @@ export async function seedTags(prisma: PrismaClient): Promise<Tag[]> {
     const tag = await prisma.tag.create({
       data: {
         id: uuidv7(),
-        name: techTag.label,
-        slug: techTag.value,
+        name: techTag.label
       }
     })
     tags.push(tag)
@@ -22,8 +21,7 @@ export async function seedTags(prisma: PrismaClient): Promise<Tag[]> {
     const tag = await prisma.tag.create({
       data: {
         id: uuidv7(),
-        name: generalTag.label,
-        slug: generalTag.value,
+        name: generalTag.label
       }
     })
     tags.push(tag)

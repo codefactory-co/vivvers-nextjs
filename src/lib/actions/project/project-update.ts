@@ -84,8 +84,7 @@ export async function updateProject(projectId: string, formData: ProjectFormData
             create: {
               id: uuidv7(),
               name: tagName,
-              slug: tagName.toLowerCase().replace(/\s+/g, '-')
-            }
+                          }
           })
 
           // 프로젝트-태그 관계 생성
@@ -109,8 +108,7 @@ export async function updateProject(projectId: string, formData: ProjectFormData
             create: {
               id: uuidv7(),
               name: techName,
-              slug: techName.toLowerCase().replace(/\s+/g, '-')
-            }
+                          }
           })
 
           // 프로젝트-기술스택 관계 생성

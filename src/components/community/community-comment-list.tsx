@@ -44,19 +44,21 @@ export const CommunityCommentList: React.FC<CommunityCommentListProps> = ({
   return (
     <div className={className}>
       <div className="space-y-6">
-        {sortedComments.map((comment) => (
-          <CommunityCommentItem
-            key={comment.id}
-            comment={comment}
-            currentUserId={currentUserId}
-            postAuthorId={postAuthorId}
-            onLike={onCommentLike}
-            onReply={onCommentReply}
-            onEdit={onCommentEdit}
-            onDelete={onCommentDelete}
-            onBestAnswer={onBestAnswer}
-            depth={0}
-          />
+        {sortedComments.map((comment, index) => (
+          <div key={comment.id}>
+            {index > 0 && <div className="border-t my-6" />}
+            <CommunityCommentItem
+              comment={comment}
+              currentUserId={currentUserId}
+              postAuthorId={postAuthorId}
+              onLike={onCommentLike}
+              onReply={onCommentReply}
+              onEdit={onCommentEdit}
+              onDelete={onCommentDelete}
+              onBestAnswer={onBestAnswer}
+              depth={0}
+            />
+          </div>
         ))}
       </div>
     </div>

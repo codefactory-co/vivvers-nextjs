@@ -97,7 +97,6 @@ export interface CommunityPostTag {
   tag: {
     id: string
     name: string
-    slug: string
   }
   createdAt: Date
 }

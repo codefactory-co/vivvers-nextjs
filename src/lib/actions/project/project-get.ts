@@ -21,8 +21,7 @@ export async function getProjectById(projectId: string) {
             tag: {
               select: {
                 id: true,
-                name: true,
-                slug: true
+                name: true
               }
             }
           }
@@ -32,8 +31,7 @@ export async function getProjectById(projectId: string) {
             tag: {
               select: {
                 id: true,
-                name: true,
-                slug: true
+                name: true
               }
             }
           }
@@ -87,13 +85,11 @@ export async function getProjectById(projectId: string) {
       },
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
-        name: pt.tag.name,
-        slug: pt.tag.slug
+        name: pt.tag.name
       })),
       techStack: project.projectTechStacks.map(pts => ({
         id: pts.tag.id,
-        name: pts.tag.name,
-        slug: pts.tag.slug
+        name: pts.tag.name
       })),
       likes: project.likes,
       comments: [], // 빈 댓글 배열 추가

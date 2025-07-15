@@ -46,7 +46,7 @@ export async function getProjectsWithFilters(
       whereClause.projectTags = {
         some: {
           tag: {
-            slug: {
+            name: {
               in: tags
             }
           }
@@ -93,8 +93,7 @@ export async function getProjectsWithFilters(
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         },
@@ -104,8 +103,7 @@ export async function getProjectsWithFilters(
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         }
@@ -139,13 +137,11 @@ export async function getProjectsWithFilters(
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name,
-        slug: pt.tag.slug
-      })),
+              })),
       techStack: project.projectTechStacks.map(pts => ({
         id: pts.tag.id,
         name: pts.tag.name,
-        slug: pts.tag.slug
-      })),
+              })),
       likes: [], // Empty array for compatibility
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,
@@ -195,8 +191,7 @@ export async function getFeaturedProjects(limit: number = 6): Promise<Project[]>
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         },
@@ -206,8 +201,7 @@ export async function getFeaturedProjects(limit: number = 6): Promise<Project[]>
               select: {
                 id: true,
                 name: true,
-                slug: true
-              }
+                              }
             }
           }
         }
@@ -242,13 +236,11 @@ export async function getFeaturedProjects(limit: number = 6): Promise<Project[]>
       tags: project.projectTags.map(pt => ({
         id: pt.tag.id,
         name: pt.tag.name,
-        slug: pt.tag.slug
-      })),
+              })),
       techStack: project.projectTechStacks.map(pts => ({
         id: pts.tag.id,
         name: pts.tag.name,
-        slug: pts.tag.slug
-      })),
+              })),
       likes: [], // Empty array for compatibility
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,

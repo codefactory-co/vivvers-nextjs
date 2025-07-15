@@ -13,7 +13,6 @@ export interface ProjectAuthor {
 export interface ProjectTag {
   id: string
   name: string
-  slug: string
 }
 
 export interface ProjectLike {

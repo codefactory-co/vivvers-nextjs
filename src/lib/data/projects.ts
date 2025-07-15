@@ -9,24 +9,21 @@ const createProjectTag = (name: string): ProjectTag => {
   if (techOption) {
     return {
       id: techOption.value,
-      name: techOption.label,
-      slug: techOption.value
+      name: techOption.label
     }
   }
   
   if (generalOption) {
     return {
       id: generalOption.value,
-      name: generalOption.label,
-      slug: generalOption.value
+      name: generalOption.label
     }
   }
   
   // Fallback for custom tags
   return {
     id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    name: name,
-    slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    name: name
   }
 }
 
