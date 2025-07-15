@@ -61,6 +61,7 @@ export interface ProjectCommentActionsProps {
   onReply: (commentId: string) => void
   onEdit: (commentId: string) => void
   onDelete: (commentId: string) => void
+  depth?: number
 }
 
 // Backward compatibility aliases

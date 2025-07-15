@@ -12,7 +12,8 @@ export function CommentActions({
   onLike,
   onReply,
   onEdit,
-  onDelete
+  onDelete,
+  depth = 0
 }: CommentActionsProps) {
   const [animateCount, setAnimateCount] = useState(false)
 
@@ -56,18 +57,20 @@ export function CommentActions({
         )}
       </Button>
 
-      {/* 답글 버튼 */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onReply(comment.id)}
-        className="h-8 gap-1.5 px-2 text-xs text-muted-foreground"
-      >
-        <MessageCircle className="h-4 w-4" />
-        {comment.repliesCount > 0 && (
-          <span className="font-medium">{comment.repliesCount}</span>
-        )}
-      </Button>
+      {/* 답글 버튼 - 최상위 댓글에만 표시 */}
+      {depth === 0 && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onReply(comment.id)}
+          className="h-8 gap-1.5 px-2 text-xs text-muted-foreground"
+        >
+          <MessageCircle className="h-4 w-4" />
+          {comment.repliesCount > 0 && (
+            <span className="font-medium">{comment.repliesCount}</span>
+          )}
+        </Button>
+      )}
 
       {/* 소유자 전용 액션 */}
       {isOwner && (

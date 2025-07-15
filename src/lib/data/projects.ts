@@ -29,7 +29,7 @@ const createProjectAuthor = (id: string, name: string, username: string, avatar:
 })
 
 // TODO: Replace this with your actual Supabase user ID from the console log
-const CURRENT_USER_ID = 'YOUR_ACTUAL_SUPABASE_USER_ID_HERE'
+// const CURRENT_USER_ID = 'YOUR_ACTUAL_SUPABASE_USER_ID_HERE'
 
 export const mockProjects: Project[] = [
   {

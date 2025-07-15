@@ -114,6 +114,7 @@ export function CommentItem({
             onReply={handleReplyClick}
             onEdit={onEdit}
             onDelete={onDelete}
+            depth={depth}
           />
         </div>
       </div>

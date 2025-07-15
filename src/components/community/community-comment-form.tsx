@@ -81,22 +81,26 @@ export function CommunityCommentForm({
           description: parentId ? '답글이 작성되었습니다.' : '댓글이 작성되었습니다.',
         })
         
-        if (onCommentAdded) {
-          console.log('[DEBUG] Calling onCommentAdded callback')
-          onCommentAdded(result.data.comment)
+        // For replies, refresh the page to show the new comment
+        if (parentId) {
+          window.location.reload()
         } else {
-          console.log('[DEBUG] No onCommentAdded callback provided - this is the issue for replies!')
+          // For top-level comments, use the callback if available
+          if (onCommentAdded) {
+            console.log('[DEBUG] Calling onCommentAdded callback')
+            onCommentAdded(result.data.comment)
+          }
+          
+          // Reset form
+          setFormData({
+            content: '',
+            contentHtml: '',
+            contentJson: '',
+            parentId
+          })
+          
+          onCancel()
         }
-        
-        // Reset form
-        setFormData({
-          content: '',
-          contentHtml: '',
-          contentJson: '',
-          parentId
-        })
-        
-        onCancel()
       } else {
         throw new Error(result.error || '댓글 작성에 실패했습니다.')
       }

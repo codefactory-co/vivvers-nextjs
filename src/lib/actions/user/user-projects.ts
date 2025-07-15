@@ -46,7 +46,7 @@ export async function getProjectsByUserId(
     }
 
     // 정렬 옵션 설정
-    let orderBy: any = { createdAt: 'desc' } // 기본값: 최신순
+    let orderBy: Record<string, 'asc' | 'desc'> = { createdAt: 'desc' } // 기본값: 최신순
     
     switch (sortBy) {
       case 'popular':
