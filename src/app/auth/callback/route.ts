@@ -1,4 +1,4 @@
-import { createRouteHandlerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
       },
     })
     
-    // Create route handler client that can set cookies on the response
-    const supabase = createRouteHandlerClient(request, supabaseResponse)
+    // Create Supabase client
+    const supabase = await createClient()
     
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     

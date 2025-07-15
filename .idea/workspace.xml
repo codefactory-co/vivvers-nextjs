@@ -5,61 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad806f3d-eef9-4d68-a899-5dafa1abc142" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/CLAUDE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/signin/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/signin/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/color/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/lexical/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/project/[id]/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/hero/hero-section.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/hero/hero-section.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/hero/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/hero/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/layout/footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/footer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/layout/header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/layout/mobile-menu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/mobile-menu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/config.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/lexical-editor-demo.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/lexical-editor.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/lexical-toolbar.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/plugins/auto-link-plugin.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/plugins/code-highlight-plugin.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/plugins/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/plugins/list-plugin.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/plugins/markdown-shortcuts-plugin.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/lexical/theme.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-author.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-author.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-card.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-comments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-comments.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-description.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-description.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-gallery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-gallery.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-grid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-grid.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-info-header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-info-header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-quick-info.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-quick-info.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/project-screenshot-carousel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-screenshot-carousel.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project/related-projects.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/related-projects.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/search/filter-panel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/search/filter-panel.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ui/avatar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/avatar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ui/dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/dialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ui/empty-state.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/empty-state.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ui/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hooks/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/CLAUDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/CLAUDE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/data/projects.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/data/projects.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/data/users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/data/users.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/project.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/project.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/auth/callback/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/auth/callback/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/server.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +70,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1752539604899</updated>
-      <workItem from="1752539605995" duration="41939000" />
+      <workItem from="1752539605995" duration="42261000" />
     </task>
     <servers />
   </component>
