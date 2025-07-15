@@ -44,8 +44,8 @@ export const ProjectGrid: React.FC<ProjectGridProps> = ({
               />
             </svg>
           }
-          title="No projects found"
-          description="There are no projects to display at the moment. Try adjusting your search or filters."
+          title="프로젝트를 찾을 수 없습니다"
+          description="현재 표시할 프로젝트가 없습니다. 검색어나 필터를 조정해 보세요."
           variant="search"
           size="lg"
         />

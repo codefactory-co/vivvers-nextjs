@@ -60,8 +60,11 @@ export function TagInput({ tags, onTagsChange, placeholder = "태그를 입력�
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault()
-      addTag(inputValue)
-      setInputValue('')
+      if (addTag(inputValue)) {
+        setInputValue('')
+        setValidationMessage(null)
+        setIsValid(null)
+      }
     } else if (e.key === 'Backspace' && inputValue === '' && tags.length > 0) {
       removeTag(tags.length - 1)
     }
@@ -71,25 +74,58 @@ export function TagInput({ tags, onTagsChange, placeholder = "태그를 입력�
     const value = e.target.value
     if (value.includes(',')) {
       const newTags = value.split(',').map(tag => tag.trim()).filter(Boolean)
-      newTags.forEach(tag => addTag(tag))
-      setInputValue('')
+      let hasValidTag = false
+      newTags.forEach(tag => {
+        if (addTag(tag)) {
+          hasValidTag = true
+        }
+      })
+      if (hasValidTag) {
+        setInputValue('')
+        setValidationMessage(null)
+        setIsValid(null)
+      }
     } else {
       setInputValue(value)
+      validateAndSuggest(value)
     }
   }
 
   return (
     <div className="space-y-2">
-      <Input
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        placeholder={tags.length >= maxTags ? `최대 ${maxTags}개까지 입력 가능` : placeholder}
-        disabled={disabled || tags.length >= maxTags}
-      />
+      <div className="relative">
+        <Input
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          placeholder={tags.length >= maxTags ? `최대 ${maxTags}개까지 입력 가능` : placeholder}
+          disabled={disabled || tags.length >= maxTags}
+          className={`pr-8 ${isValid === false ? 'border-red-500' : isValid === true ? 'border-green-500' : ''}`}
+        />
+        {isValid !== null && (
+          <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+            {isValid ? (
+              <CheckCircle className="h-4 w-4 text-green-500" />
+            ) : (
+              <AlertCircle className="h-4 w-4 text-red-500" />
+            )}
+          </div>
+        )}
+      </div>
       
-      <div className="text-xs text-muted-foreground">
-        Enter, 쉼표(,)로 태그를 추가할 수 있습니다 ({tags.length}/{maxTags})
+      <div className="space-y-1">
+        <div className="text-xs text-muted-foreground">
+          Enter, 쉼표(,)로 태그를 추가할 수 있습니다 ({tags.length}/{maxTags})
+        </div>
+        {validationMessage && (
+          <div className={`text-xs flex items-center gap-1 ${isValid === false ? 'text-red-500' : 'text-yellow-600'}`}>
+            <AlertCircle className="h-3 w-3" />
+            {validationMessage}
+          </div>
+        )}
+        <div className="text-xs text-muted-foreground">
+          영문, 숫자, 하이픈(-), 언더스코어(_)만 사용 가능합니다
+        </div>
       </div>
 
       {tags.length > 0 && (

@@ -15,6 +15,19 @@ The TipTap image upload feature has been successfully implemented with the follo
 - **Error handling**: Toast notifications for success/failure
 - **TypeScript support**: Fully typed configuration options
 
+## 🎯 Current Implementation Status
+
+### ✅ **Enabled (Image Upload Available):**
+- **Community Posts** - `bucket: 'community-posts', directory: 'posts'`
+- **Community Comments** - Disabled (no image upload)
+
+### ❌ **Disabled (No Image Upload):**
+- **Project Descriptions** - Image upload disabled as requested
+- **Project Comments** - Image upload disabled
+
+### 🔄 **Available for Future Use:**
+- Blog posts, user profiles, documentation, etc.
+
 ## 🔧 Configuration Options
 
 ```typescript
@@ -41,30 +54,31 @@ interface ImageUploadConfig {
 />
 ```
 
-### 2. Project Description with Image Upload
+### 2. Community Post with Image Upload
 
 ```tsx
-// Enable image upload for project descriptions
+// Enable image upload for community posts
 <RichTextEditor
-    content={formData.fullDescriptionHtml}
+    content={formData.contentHtml}
     onChange={(html, text, json) => {
-        const newData = {
-            ...formData,
-            fullDescriptionHtml: html,
-            fullDescription: text,
-            fullDescriptionJson: json
-        }
-        onFormChange(newData)
+        setFormData(prev => ({
+            ...prev,
+            content: text,
+            contentHtml: html,
+            contentJson: json
+        }))
     }}
     imageUpload={{
         enabled: true,
-        bucket: 'project-images',
-        directory: 'descriptions',
-        maxSize: 5 * 1024 * 1024, // 5MB
+        bucket: 'community-posts',
+        directory: 'posts',
+        maxSize: 10 * 1024 * 1024, // 10MB
         allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
-        maxFiles: 10
+        maxFiles: 15
     }}
-    placeholder="Describe your project in detail..."
+    placeholder="커뮤니티 게시글 내용을 작성하세요..."
+    mode="editor-only"
+    height="400px"
 />
 ```
 
@@ -93,11 +107,18 @@ interface ImageUploadConfig {
 ```tsx
 // Comments typically don't need image upload
 <RichTextEditor
-    content={commentContent}
-    onChange={(html, text, json) => setCommentContent(html)}
+    content={formData.contentHtml}
+    onChange={(html, text, json) => {
+        setFormData(prev => ({
+            ...prev,
+            content: text,
+            contentHtml: html,
+            contentJson: json
+        }))
+    }}
     mode="editor-only"
-    height="150px"
-    placeholder="Write your comment..."
+    height="200px"
+    placeholder="댓글을 작성하세요..."
     // imageUpload prop omitted = disabled by default
 />
 ```

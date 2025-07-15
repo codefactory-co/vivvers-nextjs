@@ -2,6 +2,8 @@
 
 import { prisma } from '@/lib/prisma/client'
 import { z } from 'zod'
+import { tagSchema } from '@/lib/validations/project'
+import { randomUUID } from 'crypto'
 
 const searchTagsSchema = z.object({
   query: z.string().min(1, '검색어를 입력해주세요').max(50),
@@ -234,6 +236,56 @@ export async function getPopularTags(limit: number = 20) {
     return {
       success: false,
       error: '인기 태그 조회 중 오류가 발생했습니다'
+    }
+  }
+}
+
+export async function createOrFindTag(name: string) {
+  try {
+    // 태그 유효성 검사
+    const validatedTag = tagSchema.parse(name)
+    
+    // 기존 태그가 있는지 확인
+    const existingTag = await prisma.tag.findUnique({
+      where: {
+        name: validatedTag
+      }
+    })
+    
+    if (existingTag) {
+      return {
+        success: true,
+        data: existingTag
+      }
+    }
+    
+    // 새 태그 생성
+    const newTag = await prisma.tag.create({
+      data: {
+        id: randomUUID(),
+        name: validatedTag,
+        slug: validatedTag // 이미 tagSchema에서 sanitize되었음
+      }
+    })
+    
+    return {
+      success: true,
+      data: newTag
+    }
+    
+  } catch (error) {
+    console.error('태그 생성 오류:', error)
+    
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        error: error.issues[0]?.message || '유효하지 않은 태그입니다'
+      }
+    }
+    
+    return {
+      success: false,
+      error: '태그 생성 중 오류가 발생했습니다'
     }
   }
 }

@@ -162,7 +162,7 @@ export default function ProjectEditPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
         <div className="mb-10">
           <h1 className="text-4xl font-bold tracking-tight mb-3">프로젝트 수정</h1>
           <p className="text-lg text-muted-foreground">

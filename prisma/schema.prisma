@@ -113,7 +113,6 @@ model ProjectLike {
 model Tag {
   id   String @id @db.Uuid
   name String @unique
-  slug String @unique
 
   projectTags       ProjectTag[]
   projectTechStacks ProjectTechStack[]

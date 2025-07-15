@@ -2,7 +2,11 @@
 
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import TiptapEditor from '@/components/editor/tiptap-editor'
+import dynamic from 'next/dynamic'
+
+const RichTextEditor = dynamic(() => import('@/components/editor/rich-text-editor'), {
+  ssr: false,
+})
 import { Loader2, Send, X } from 'lucide-react'
 import { CommunityCommentFormData } from '@/types/community'
 import { useToast } from '@/hooks/use-toast'
@@ -22,18 +26,18 @@ export function CommunityCommentForm({
   const [formData, setFormData] = useState<CommunityCommentFormData>({
     content: '',
     contentHtml: '',
-    contentJson: null,
+    contentJson: '',
     parentId
   })
   
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleEditorChange = (content: string) => {
+  const handleEditorChange = (html: string, text: string, json: string) => {
     setFormData(prev => ({
       ...prev,
-      content: content,
-      contentHtml: content,
-      contentJson: null
+      content: text,
+      contentHtml: html,
+      contentJson: json
     }))
   }
 
@@ -67,7 +71,7 @@ export function CommunityCommentForm({
       setFormData({
         content: '',
         contentHtml: '',
-        contentJson: null,
+        contentJson: '',
         parentId
       })
     } catch (error) {
@@ -85,12 +89,14 @@ export function CommunityCommentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Editor */}
-      <div className="border rounded-md">
-        <TiptapEditor
-          content={formData.content}
-          onChange={handleEditorChange}
-        />
-      </div>
+      <RichTextEditor
+        content={formData.contentHtml}
+        onChange={handleEditorChange}
+        placeholder={parentId ? "답글을 작성하세요..." : "댓글을 작성하세요..."}
+        mode="editor-only"
+        height="200px"
+        // No image upload for comments
+      />
 
       {/* Actions */}
       <div className="flex justify-end space-x-3">

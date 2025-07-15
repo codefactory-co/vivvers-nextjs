@@ -24,6 +24,7 @@ import {
   techStackCategories,
   generalTagCategories 
 } from '@/lib/data/tags'
+import { tagUtils } from '@/lib/validations/project'
 
 interface TagCommandProps {
   selectedTags: string[]
@@ -65,8 +66,11 @@ export function TagCommand({
       // 이미 선택된 태그라면 제거
       onTagsChange(selectedTags.filter(tag => tag !== tagValue))
     } else if (selectedTags.length < maxTags) {
-      // 최대 개수 제한 내에서 추가
-      onTagsChange([...selectedTags, tagValue])
+      // 태그 유효성 검사 후 추가
+      const sanitizedTag = tagUtils.sanitizeTag(tagValue)
+      if (sanitizedTag && tagUtils.isValidTag(sanitizedTag)) {
+        onTagsChange([...selectedTags, sanitizedTag])
+      }
     }
   }
 

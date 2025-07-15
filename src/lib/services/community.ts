@@ -305,8 +305,7 @@ export async function createCommunityPost({
   contentHtml,
   contentJson,
   authorId,
-  tags = [],
-  relatedProjectId
+  tags = []
 }: {
   title: string
   content: string
@@ -314,7 +313,6 @@ export async function createCommunityPost({
   contentJson: unknown
   authorId: string
   tags?: string[]
-  relatedProjectId?: string
 }): Promise<CommunityPost> {
   try {
     console.log('=== BEFORE UUID GENERATION ===')
@@ -364,7 +362,6 @@ export async function createCommunityPost({
         contentHtml,
         contentJson: contentJson as Prisma.InputJsonValue,
         authorId,
-        relatedProjectId: relatedProjectId || null,
         tags: {
           create: tagIds.map(tagId => {
             const tagRelationId = uuidv7()

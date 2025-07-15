@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { togglePostLike } from '@/lib/actions/community'
 import { CommunityPost } from '@/types/community'
 import { useToast } from '@/hooks/use-toast'
+import { HtmlContentRenderer } from '@/components/content/html-content-renderer'
 
 interface CommunityPostDetailProps {
   post: CommunityPost
@@ -86,8 +87,8 @@ export function CommunityPostDetail({ post, currentUserId }: CommunityPostDetail
     <div className="space-y-6">
       {/* Back Button */}
       <Button variant="ghost" asChild className="mb-4">
-        <Link href="/community">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+        <Link href="/community" className="flex items-center gap-2">
+          <ArrowLeft className="h-4 w-4" />
           커뮤니티로 돌아가기
         </Link>
       </Button>
@@ -157,12 +158,24 @@ export function CommunityPostDetail({ post, currentUserId }: CommunityPostDetail
 
         <CardContent>
           {/* Content */}
-          <div 
-            className="prose prose-slate max-w-none mb-6"
-            dangerouslySetInnerHTML={{ 
-              __html: post.contentHtml || post.content 
-            }}
-          />
+          {post.contentHtml && post.contentHtml.trim() !== '' ? (
+            <HtmlContentRenderer 
+              htmlContent={post.contentHtml} 
+              enableSyntaxHighlighting={true}
+              className="mt-0 p-0 mb-6" // Card padding과 중복 방지
+            />
+          ) : (
+            <div className="prose prose-slate dark:prose-invert max-w-none mb-6">
+              {post.content.split('\n')
+                .map((paragraph, index) => ({ paragraph: paragraph.trim(), originalIndex: index }))
+                .filter(({ paragraph }) => paragraph)
+                .map(({ paragraph, originalIndex }) => (
+                  <p key={originalIndex} className="mb-4 last:mb-0 leading-relaxed">
+                    {paragraph}
+                  </p>
+                ))}
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex items-center justify-between pt-6 border-t">

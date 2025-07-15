@@ -145,14 +145,6 @@ export function ProjectForm({ mode, formData, onFormChange, onSubmit, userId }: 
               showPreview={false}
               placeholder="프로젝트에 대한 자세한 설명을 작성하세요..."
               height="300px"
-              imageUpload={{
-                enabled: true,
-                bucket: 'project-images',
-                directory: 'descriptions',
-                maxSize: 5 * 1024 * 1024, // 5MB
-                allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
-                maxFiles: 10
-              }}
             />
           </div>
         </CardContent>

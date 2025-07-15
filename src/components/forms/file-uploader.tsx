@@ -102,6 +102,8 @@ export function FileUploader({
 
     try {
       const supabase = createClient()
+
+      console.log((await supabase.auth.getUser()))
       
       const uploadPromises = filesToUpload.map(async (file, index) => {
         const fileKey = `${file.name}-${index}`

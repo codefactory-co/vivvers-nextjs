@@ -100,6 +100,95 @@ const path = `projects/${userId}/hardcoded_name.jpg`  // Don't do this!
 - Apply consistent sizing with Tailwind classes (e.g., `h-4 w-4`, `h-5 w-5`)
 - Example: `<AlertTriangle className="h-5 w-5 text-red-500" />` instead of "🚨"
 
+### Layout Width Consistency Policy
+**ALL pages must use consistent container width that matches the navbar width unless explicitly stated otherwise.**
+
+#### Standard Container Width
+**Default container class: `container mx-auto px-4 sm:px-6 lg:px-8`**
+
+This ensures consistent alignment with the main navbar across all screen sizes:
+- **Small screens** (`px-4`): 16px horizontal padding
+- **Medium screens** (`sm:px-6`): 24px horizontal padding  
+- **Large screens** (`lg:px-8`): 32px horizontal padding
+
+#### Implementation Guidelines
+```typescript
+// ✅ CORRECT - Standard page container
+<div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  {/* Page content */}
+</div>
+
+// ✅ CORRECT - With max-width constraint
+<div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
+  {/* Narrow content like forms */}
+</div>
+
+// ❌ WRONG - Fixed padding that doesn't match navbar
+<div className="container mx-auto px-4 py-6">
+  {/* This won't align with navbar on larger screens */}
+</div>
+```
+
+#### When to Use Different Widths
+- **Full-width components** (Hero sections, backgrounds): Use `w-full` or no container
+- **Narrow content** (Forms, single-column layouts): Add `max-w-4xl` or similar
+- **Special layouts**: Document the reason for deviation in code comments
+
+#### Navbar Reference
+The main navbar uses: `container mx-auto px-4 sm:px-6 lg:px-8`
+All page content should align with this width for visual consistency.
+
+### Tag Validation Policy
+**ALL tags must follow strict character and format rules for consistency and URL safety.**
+
+#### Character Rules
+- **Allowed characters**: Letters (a-z, A-Z), numbers (0-9), hyphens (-), underscores (_)
+- **Prohibited**: Spaces, special characters (!@#$%^&*()+={}[]|\\:";'<>?,./~`)
+- **Case handling**: All tags are automatically converted to lowercase
+- **Length limits**: Minimum 2 characters, maximum 20 characters per tag
+
+#### Implementation Guidelines
+**Always use the validation utilities from `src/lib/validations/project.ts`:**
+```typescript
+import { tagSchema, tagUtils } from '@/lib/validations/project'
+
+// Validate individual tag
+const isValid = tagUtils.isValidTag(tag)
+
+// Sanitize tag (converts spaces to hyphens, removes invalid chars)
+const cleanTag = tagUtils.sanitizeTag(tag)
+
+// Get suggested valid version of invalid tag
+const suggestion = tagUtils.suggestTag(tag)
+
+// Validate with Zod schema (includes transformation)
+const validatedTag = tagSchema.parse(tag)
+```
+
+#### Component Usage
+- **Tag Input**: Uses real-time validation with visual feedback
+- **Tag Selection**: Applies validation before adding to selection
+- **Server Actions**: Validates tags before database operations
+- **All tag components** automatically sanitize and validate input
+
+#### Database Schema
+- Tags are stored with both `name` and `slug` fields
+- Both fields use the same sanitized format for consistency
+- Server-side validation ensures only valid tags enter the database
+
+#### Auto-Correction Features
+- **Spaces → Hyphens**: `"hello world"` becomes `"hello-world"`
+- **Invalid characters removed**: `"react.js!"` becomes `"reactjs"`
+- **Case normalization**: `"TypeScript"` becomes `"typescript"`
+- **Visual feedback**: Shows suggested corrections to users
+
+#### Benefits
+- **URL-safe**: Tags work directly in URLs without encoding
+- **Consistent**: All tags follow the same format pattern
+- **User-friendly**: Auto-correction with clear feedback
+- **Database efficient**: Simpler indexing and searching
+- **SEO optimized**: Clean tag URLs for better search results
+
 ### TipTap Editor State Management Policy
 **ALWAYS batch multiple state updates from TipTap editor to prevent race conditions.**
 - The TipTap `onChange` callback provides three outputs: `html`, `text`, and `json`

@@ -20,6 +20,7 @@ import {
 import { cn } from '@/lib/utils'
 import { searchTags, getPopularTags } from '@/lib/actions/tag'
 import { useDebounce } from '@/hooks/use-debounce'
+import { tagUtils } from '@/lib/validations/project'
 
 interface TagCommandDBProps {
   selectedTags: string[]
@@ -114,8 +115,11 @@ export function TagCommandDB({
       // 이미 선택된 태그라면 제거
       onTagsChange(selectedTags.filter(tag => tag !== tagName))
     } else if (selectedTags.length < maxTags) {
-      // 최대 개수 제한 내에서 추가
-      onTagsChange([...selectedTags, tagName])
+      // 태그 유효성 검사 후 추가
+      const sanitizedTag = tagUtils.sanitizeTag(tagName)
+      if (sanitizedTag && tagUtils.isValidTag(sanitizedTag)) {
+        onTagsChange([...selectedTags, sanitizedTag])
+      }
     }
     // 태그 선택 후 팝오버 닫기 및 검색 초기화
     setOpen(false)

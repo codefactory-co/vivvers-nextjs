@@ -96,21 +96,21 @@ Supabase 대시보드 > SQL Editor에서 다음 모든 정책들을 한 번에 �
 
 -- Avatar 버킷 정책 삭제
 DROP POLICY IF EXISTS "Anyone can view avatars" ON storage.objects;
-DROP POLICY IF EXISTS "Authenticated users can upload avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Users can upload own avatars" ON storage.objects;
 DROP POLICY IF EXISTS "Users can update own avatars" ON storage.objects;
 DROP POLICY IF EXISTS "Users can delete own avatars" ON storage.objects;
 
 -- Projects 버킷 정책 삭제
-DROP POLICY IF EXISTS "Users can upload to their projects" ON storage.objects;
-DROP POLICY IF EXISTS "Anyone can view project files" ON storage.objects;
-DROP POLICY IF EXISTS "Users can update their project files" ON storage.objects;
-DROP POLICY IF EXISTS "Users can delete their project files" ON storage.objects;
+DROP POLICY IF EXISTS "Anyone can view projects" ON storage.objects;
+DROP POLICY IF EXISTS "Users can upload own projects" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update own projects" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete own projects" ON storage.objects;
 
 -- Community Posts 버킷 정책 삭제
-DROP POLICY IF EXISTS "Anyone can view community post images" ON storage.objects;
-DROP POLICY IF EXISTS "Authenticated users can upload community post images" ON storage.objects;
-DROP POLICY IF EXISTS "Users can update own community post images" ON storage.objects;
-DROP POLICY IF EXISTS "Users can delete own community post images" ON storage.objects;
+DROP POLICY IF EXISTS "Anyone can view community posts" ON storage.objects;
+DROP POLICY IF EXISTS "Users can upload own community posts" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update own community posts" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete own community posts" ON storage.objects;
 
 -- =============================================
 -- Avatar 버킷 정책 (4개)
@@ -123,12 +123,15 @@ FOR SELECT
 TO public
 USING (bucket_id = 'avatars');
 
--- 정책 2: Avatar 업로드 권한 (인증된 사용자)
-CREATE POLICY "Authenticated users can upload avatars" 
+-- 정책 2: Avatar 업로드 권한 (인증된 사용자, 본인 폴더만)
+CREATE POLICY "Users can upload own avatars" 
 ON storage.objects 
 FOR INSERT 
 TO authenticated
-WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+WITH CHECK (
+  bucket_id = 'avatars' 
+  AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
 
 -- 정책 3: Avatar 업데이트 권한 (본인 파일만)
 CREATE POLICY "Users can update own avatars" 
@@ -137,7 +140,7 @@ FOR UPDATE
 TO authenticated
 USING (
   bucket_id = 'avatars' 
-  AND auth.uid()::text = (string_to_array(name, '_'))[1]
+  AND auth.uid()::text = (string_to_array(name, '/'))[1]
 );
 
 -- 정책 4: Avatar 삭제 권한 (본인 파일만)
@@ -147,51 +150,42 @@ FOR DELETE
 TO authenticated
 USING (
   bucket_id = 'avatars' 
-  AND auth.uid()::text = (string_to_array(name, '_'))[1]
+  AND auth.uid()::text = (string_to_array(name, '/'))[1]
 );
 
 -- =============================================
 -- Projects 버킷 정책 (4개)
 -- =============================================
 
--- 정책 1: 프로젝트 파일 업로드 권한 (본인 프로젝트만)
-CREATE POLICY "Users can upload to their projects" 
-ON storage.objects 
-FOR INSERT 
-TO authenticated
-WITH CHECK (
-  bucket_id = 'projects' 
-  AND auth.uid()::text = (string_to_array(name, '/'))[2]
-  AND EXISTS (
-    SELECT 1 FROM public.projects 
-    WHERE id = (string_to_array(name, '/'))[1]::uuid
-    AND author_id = auth.uid()
-  )
-);
-
--- 정책 2: 프로젝트 파일 읽기 권한 (모든 사용자)
-CREATE POLICY "Anyone can view project files" 
+-- 정책 1: 프로젝트 파일 읽기 권한 (모든 사용자)
+CREATE POLICY "Anyone can view projects" 
 ON storage.objects 
 FOR SELECT 
 TO public
 USING (bucket_id = 'projects');
 
+-- 정책 2: 프로젝트 파일 업로드 권한 (인증된 사용자, 본인 폴더만)
+CREATE POLICY "Users can upload own projects" 
+ON storage.objects 
+FOR INSERT 
+TO authenticated
+WITH CHECK (
+  bucket_id = 'projects' 
+  AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
+
 -- 정책 3: 프로젝트 파일 업데이트 권한 (본인 파일만)
-CREATE POLICY "Users can update their project files" 
+CREATE POLICY "Users can update own projects" 
 ON storage.objects 
 FOR UPDATE 
 TO authenticated
 USING (
   bucket_id = 'projects' 
   AND auth.uid()::text = (string_to_array(name, '/'))[1]
-)
-WITH CHECK (
-  bucket_id = 'projects' 
-  AND auth.uid()::text = (string_to_array(name, '/'))[1]
 );
 
 -- 정책 4: 프로젝트 파일 삭제 권한 (본인 파일만)
-CREATE POLICY "Users can delete their project files" 
+CREATE POLICY "Users can delete own projects" 
 ON storage.objects 
 FOR DELETE 
 TO authenticated
@@ -205,21 +199,24 @@ USING (
 -- =============================================
 
 -- 정책 1: 커뮤니티 게시물 읽기 권한 (모든 사용자)
-CREATE POLICY "Anyone can view community post images" 
+CREATE POLICY "Anyone can view community posts" 
 ON storage.objects 
 FOR SELECT 
 TO public
 USING (bucket_id = 'community-posts');
 
--- 정책 2: 커뮤니티 게시물 업로드 권한 (인증된 사용자)
-CREATE POLICY "Authenticated users can upload community post images" 
+-- 정책 2: 커뮤니티 게시물 업로드 권한 (인증된 사용자, 본인 폴더만)
+CREATE POLICY "Users can upload own community posts" 
 ON storage.objects 
 FOR INSERT 
 TO authenticated
-WITH CHECK (bucket_id = 'community-posts' AND auth.role() = 'authenticated');
+WITH CHECK (
+  bucket_id = 'community-posts' 
+  AND auth.uid()::text = (string_to_array(name, '/'))[1]
+);
 
 -- 정책 3: 커뮤니티 게시물 업데이트 권한 (본인 파일만)
-CREATE POLICY "Users can update own community post images" 
+CREATE POLICY "Users can update own community posts" 
 ON storage.objects 
 FOR UPDATE 
 TO authenticated
@@ -229,7 +226,7 @@ USING (
 );
 
 -- 정책 4: 커뮤니티 게시물 삭제 권한 (본인 파일만)
-CREATE POLICY "Users can delete own community post images" 
+CREATE POLICY "Users can delete own community posts" 
 ON storage.objects 
 FOR DELETE 
 TO authenticated
@@ -274,14 +271,19 @@ community-posts/                    # 버킷 이름
 **예시:**
 ```
 avatars/
-├── 6ba7b810-9dad-11d1-80b4-00c04fd430c8_1640995200000.webp
-└── 123e4567-e89b-12d3-a456-426614174000_1640995300000.webp
+├── 6ba7b810-9dad-11d1-80b4-00c04fd430c8/    # 사용자 ID
+│   ├── avatar_1640995200000.webp
+│   └── profile_pic_1640995300000.jpg
+└── 123e4567-e89b-12d3-a456-426614174000/    # 다른 사용자 ID
+    └── avatar_1640995400000.png
 
 projects/
-├── 550e8400-e29b-41d4-a716-446655440000/    # 프로젝트 ID
-│   └── 6ba7b810-9dad-11d1-80b4-00c04fd430c8/ # 사용자 ID
-│       ├── 123e4567-e89b-12d3-a456-426614174000.jpg
-│       └── 987fcdeb-51a2-43d1-9f12-123456789abc.png
+├── 6ba7b810-9dad-11d1-80b4-00c04fd430c8/    # 사용자 ID
+│   ├── project_screenshot_1640995200000.jpg
+│   ├── project_demo_1640995300000.png
+│   └── project_thumbnail_1640995400000.webp
+└── 123e4567-e89b-12d3-a456-426614174000/    # 다른 사용자 ID
+    └── project_image_1640995500000.jpg
 
 community-posts/
 ├── 6ba7b810-9dad-11d1-80b4-00c04fd430c8/    # 사용자 ID
@@ -295,19 +297,19 @@ community-posts/
 
 #### Avatar 권한
 1. **읽기 권한**: 모든 사용자가 다른 사용자의 아바타를 볼 수 있습니다.
-2. **업로드 권한**: 인증된 사용자만 아바타를 업로드할 수 있습니다.
+2. **업로드 권한**: 인증된 사용자만 자신의 폴더에 아바타를 업로드할 수 있습니다.
 3. **수정/삭제 권한**: 사용자는 자신의 아바타만 수정하거나 삭제할 수 있습니다.
-4. **파일명 보안**: 파일명에서 사용자 ID를 추출하여 소유권을 검증합니다.
+4. **경로 보안**: 파일 경로에서 사용자 ID를 추출하여 소유권을 검증합니다.
 
 #### Projects 권한
-1. **업로드 권한**: 사용자는 자신이 소유한 프로젝트에만 파일을 업로드할 수 있습니다.
-2. **읽기 권한**: 모든 사용자(로그인하지 않은 사용자 포함)가 프로젝트 이미지를 볼 수 있습니다.
-3. **수정/삭제 권한**: 프로젝트 소유자만 자신의 프로젝트 파일을 수정하거나 삭제할 수 있습니다.
-4. **경로 보안**: 파일 경로에서 프로젝트 ID와 사용자 ID를 추출하여 권한을 검증합니다.
+1. **읽기 권한**: 모든 사용자(로그인하지 않은 사용자 포함)가 프로젝트 이미지를 볼 수 있습니다.
+2. **업로드 권한**: 인증된 사용자만 자신의 폴더에 프로젝트 파일을 업로드할 수 있습니다.
+3. **수정/삭제 권한**: 사용자는 자신의 프로젝트 파일만 수정하거나 삭제할 수 있습니다.
+4. **경로 보안**: 파일 경로에서 사용자 ID를 추출하여 소유권을 검증합니다.
 
 #### Community Posts 권한
 1. **읽기 권한**: 모든 사용자가 커뮤니티 게시물 이미지를 볼 수 있습니다.
-2. **업로드 권한**: 인증된 사용자만 커뮤니티 게시물 이미지를 업로드할 수 있습니다.
+2. **업로드 권한**: 인증된 사용자만 자신의 폴더에 커뮤니티 게시물 이미지를 업로드할 수 있습니다.
 3. **수정/삭제 권한**: 사용자는 자신이 업로드한 커뮤니티 게시물 이미지만 수정하거나 삭제할 수 있습니다.
 4. **경로 보안**: 파일 경로에서 사용자 ID를 추출하여 소유권을 검증합니다.
 

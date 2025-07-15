@@ -66,7 +66,7 @@ export default async function ProfilePage() {
   // 사용자 정보를 찾을 수 없는 경우
   if (!currentUser) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <UserIcon className="w-12 h-12 text-muted-foreground mb-4" />
@@ -93,7 +93,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
       <ProfileView
         user={currentUser}
         isOwner={true}

@@ -5,8 +5,11 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import TiptapEditor from '@/components/editor/tiptap-editor'
+import dynamic from 'next/dynamic'
+
+const RichTextEditor = dynamic(() => import('@/components/editor/rich-text-editor'), {
+  ssr: false,
+})
 import { TagCommandDB } from '@/components/forms/tag-command-db'
 import { createPostAndRedirect } from '@/lib/actions/community'
 import { CommunityPostFormData } from '@/types/community'
@@ -25,19 +28,18 @@ export function CommunityPostForm({}: CommunityPostFormProps) {
     title: '',
     content: '',
     contentHtml: '',
-    contentJson: null,
-    tags: [],
-    relatedProjectId: undefined
+    contentJson: '',
+    tags: []
   })
   
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleEditorChange = (content: string) => {
+  const handleEditorChange = (html: string, text: string, json: string) => {
     setFormData(prev => ({
       ...prev,
-      content: content,
-      contentHtml: content,
-      contentJson: null
+      content: text,
+      contentHtml: html,
+      contentJson: json
     }))
   }
 
@@ -118,12 +120,21 @@ export function CommunityPostForm({}: CommunityPostFormProps) {
       {/* Content */}
       <div className="space-y-2">
         <Label>내용 *</Label>
-        <div className="border rounded-md">
-          <TiptapEditor
-            content={formData.content}
-            onChange={handleEditorChange}
-          />
-        </div>
+        <RichTextEditor
+          content={formData.contentHtml}
+          onChange={handleEditorChange}
+          placeholder="커뮤니티 게시글 내용을 작성하세요..."
+          mode="editor-only"
+          height="400px"
+          imageUpload={{
+            enabled: true,
+            bucket: 'community-posts',
+            directory: 'posts',
+            maxSize: 10 * 1024 * 1024, // 10MB
+            allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+            maxFiles: 15
+          }}
+        />
       </div>
 
       {/* Tags */}
@@ -142,31 +153,6 @@ export function CommunityPostForm({}: CommunityPostFormProps) {
         </p>
       </div>
 
-      {/* Related Project (Optional) */}
-      <div className="space-y-2">
-        <Label>관련 프로젝트 (선택사항)</Label>
-        <Select
-          value={formData.relatedProjectId || undefined}
-          onValueChange={(value) => setFormData(prev => ({ 
-            ...prev, 
-            relatedProjectId: value === 'none' ? undefined : value 
-          }))}
-          disabled={isSubmitting}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="관련된 프로젝트가 있다면 선택하세요" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="none">선택 안함</SelectItem>
-            {/* TODO: Load user's projects dynamically */}
-            <SelectItem value="sample-project-1">샘플 프로젝트 1</SelectItem>
-            <SelectItem value="sample-project-2">샘플 프로젝트 2</SelectItem>
-          </SelectContent>
-        </Select>
-        <p className="text-sm text-muted-foreground">
-          특정 프로젝트와 관련된 질문이나 토론인 경우 연결할 수 있습니다.
-        </p>
-      </div>
 
       {/* Actions */}
       <div className="flex justify-end space-x-4 pt-6 border-t">

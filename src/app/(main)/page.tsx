@@ -55,7 +55,7 @@ export default async function Home({ searchParams }: HomePageProps) {
       {/* Search & Filter Section */}
       <section className="border-b border-border bg-background/50 backdrop-blur">
         <div className="container mx-auto px-4 py-6">
-          <Suspense fallback={<div>Loading filters...</div>}>
+          <Suspense fallback={<div>필터 불러오는 중...</div>}>
             <ClientFilterWrapper
               availableTags={AVAILABLE_TAGS}
               resultCount={totalCount}
@@ -71,8 +71,8 @@ export default async function Home({ searchParams }: HomePageProps) {
       </section>
       
       {/* Project Grid Section */}
-      <section data-section="projects" className="container mx-auto px-4 py-8">
-        <Suspense fallback={<div>Loading projects...</div>}>
+      <section data-section="projects" className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Suspense fallback={<div>프로젝트 불러오는 중...</div>}>
           <ProjectGrid 
             projects={projects}
             currentUserId={currentUserId}

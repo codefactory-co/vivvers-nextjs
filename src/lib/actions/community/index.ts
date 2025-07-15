@@ -62,8 +62,7 @@ export async function createPost(formData: CommunityPostFormData): Promise<Commu
       contentHtml: formData.contentHtml || '',
       contentJson: formData.contentJson,
       authorId: user.id,
-      tags: formData.tags || [],
-      relatedProjectId: formData.relatedProjectId
+      tags: formData.tags || []
     })
 
     revalidatePath('/community')

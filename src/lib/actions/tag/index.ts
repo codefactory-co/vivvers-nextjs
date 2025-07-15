@@ -3,5 +3,6 @@ export {
   searchTagsByExactName,
   searchTagsByExactSlug,
   getPopularTags,
+  createOrFindTag,
   type SearchTagsInput
 } from './tag-search'

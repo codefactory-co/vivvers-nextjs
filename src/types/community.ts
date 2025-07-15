@@ -109,7 +109,6 @@ export interface CommunityPostFormData {
   contentHtml: string
   contentJson: unknown
   tags: string[]
-  relatedProjectId?: string
 }
 
 export interface CommunityCommentFormData {
