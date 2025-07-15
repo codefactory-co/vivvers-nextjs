@@ -7,31 +7,9 @@
     <list default="true" id="ad806f3d-eef9-4d68-a899-5dafa1abc142" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(main)/project/edit/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/project/edit/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(main)/project/new/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/project/new/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/community/community-comment-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/community/community-comment-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/community/community-comment-item.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/community/community-comment-item.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/community/community-comment-section.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/community/community-comment-section.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/community/community-post-detail.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/community/community-post-detail.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/community/community-post-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/community/community-post-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/forms/drag-drop-screenshots.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/forms/drag-drop-screenshots.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/forms/file-uploader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/forms/file-uploader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/forms/sortable-screenshot.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/forms/sortable-screenshot.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/forms/tag-command-db.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/forms/tag-command-db.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/hero/hero-section.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/hero/hero-section.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/onboarding/avatar-crop-modal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/onboarding/avatar-crop-modal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/onboarding/onboarding-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/onboarding/onboarding-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/profile-edit-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/profile-edit-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/profile-edit-page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/profile-edit-page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/profile-view.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/profile-view.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/project/project-comments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project/project-comments.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hooks/use-file-upload.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/use-file-upload.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/actions/comment/comment-like.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/actions/comment/comment-like.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/actions/project/project-user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/actions/project/project-user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/services/avatar-upload.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/services/avatar-upload.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/actions/community/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/actions/community/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/services/community.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/services/community.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/supabase/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/supabase/middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/middleware.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +72,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1752539604899</updated>
-      <workItem from="1752539605995" duration="43949000" />
+      <workItem from="1752539605995" duration="44955000" />
     </task>
     <servers />
   </component>

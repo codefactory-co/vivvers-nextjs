@@ -29,8 +29,10 @@ export function ProjectComments({
   const { toast } = useToast()
 
   const loadComments = useCallback(async () => {
+    console.log('🔄 loadComments called with projectId:', projectId)
     setIsLoading(true)
     try {
+      console.log('🔄 Calling getComments action...')
       const result = await getComments({
         projectId,
         page: 1,
@@ -38,11 +40,18 @@ export function ProjectComments({
         sortBy: 'latest'
       })
       
+      console.log('🔄 getComments result:', result)
+      
       if (result.success && result.data) {
+        console.log('✅ Comments loaded successfully:', result.data.comments?.length, 'comments')
+        console.log('✅ Setting comments state to:', result.data.comments)
         setComments(result.data.comments || [])
+      } else {
+        console.log('❌ Failed to load comments:', result.error)
+        setComments(initialComments)
       }
     } catch (error) {
-      console.error('댓글 로드 실패:', error)
+      console.error('❌ 댓글 로드 실패:', error)
       setComments(initialComments)
     } finally {
       setIsLoading(false)
@@ -51,8 +60,14 @@ export function ProjectComments({
 
   // 컴포넌트 마운트시 최신 댓글 로드
   useEffect(() => {
+    console.log('🔄 useEffect triggered - loading comments for projectId:', projectId)
     loadComments()
   }, [projectId, initialComments, loadComments])
+
+  // Track comments state changes
+  useEffect(() => {
+    console.log('📊 Comments state changed:', comments.length, 'comments', comments)
+  }, [comments])
 
   const handleCommentSubmit = async (data: CommentFormData) => {
     setIsSubmitting(true)

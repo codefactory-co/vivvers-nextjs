@@ -40,6 +40,14 @@ export async function createPost(formData: CommunityPostFormData): Promise<Commu
       }
     }
 
+    console.log('=== FORM DATA DEBUG ===')
+    console.log('Form data tags:', formData.tags)
+    console.log('Form data tags type:', typeof formData.tags)
+    console.log('Form data tags length:', formData.tags?.length)
+    console.log('User ID:', user.id)
+    console.log('User ID type:', typeof user.id)
+    console.log('=== END FORM DATA DEBUG ===')
+    
     const post = await createCommunityPost({
       title: formData.title.trim(),
       content: formData.content.trim(),

@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma/client'
 import { CommunityPost, CommunityFilters, CommunityPostsResponse } from '@/types/community'
-import { randomUUID } from 'crypto'
+import { uuidv7 } from 'uuidv7'
 import type { Prisma } from '@prisma/client'
 
 interface GetCommunityPostsParams {
@@ -262,7 +262,20 @@ export async function createCommunityPost({
   relatedProjectId?: string
 }): Promise<CommunityPost> {
   try {
-    const postId = randomUUID()
+    const postId = uuidv7()
+    
+    // Debug logging for UUID analysis
+    console.log('=== UUID v7 DEBUG INFO ===')
+    console.log('Generated UUID:', postId)
+    console.log('UUID type:', typeof postId)
+    console.log('UUID length:', postId.length)
+    console.log('First 10 characters:', postId.substring(0, 10))
+    console.log('Character at position 1:', postId[1])
+    console.log('Character code at position 1:', postId.charCodeAt(1))
+    console.log('Is valid hex?', /^[0-9a-fA-F-]+$/.test(postId))
+    console.log('UUID parts:', postId.split('-'))
+    console.log('UUID parts lengths:', postId.split('-').map(part => part.length))
+    console.log('=== END DEBUG INFO ===')
 
     const post = await prisma.communityPost.create({
       data: {
@@ -274,10 +287,19 @@ export async function createCommunityPost({
         authorId,
         relatedProjectId: relatedProjectId || null,
         tags: {
-          create: tags.map(tagId => ({
-            id: randomUUID(),
-            tagId
-          }))
+          create: tags.map(tagId => {
+            const tagRelationId = uuidv7()
+            console.log('=== TAG RELATION UUID DEBUG ===')
+            console.log('Tag relation UUID:', tagRelationId)
+            console.log('Tag relation UUID type:', typeof tagRelationId)
+            console.log('Tag ID being used:', tagId)
+            console.log('Tag ID type:', typeof tagId)
+            console.log('=== END TAG DEBUG ===')
+            return {
+              id: tagRelationId,
+              tagId
+            }
+          })
         }
       },
       include: {
@@ -318,6 +340,13 @@ export async function createCommunityPost({
 
     return post as CommunityPost
   } catch (error) {
+    console.error('=== ERROR DEBUG INFO ===')
+    console.error('Full error object:', error)
+    console.error('Error message:', error.message)
+    console.error('Error code:', error.code)
+    console.error('Error meta:', error.meta)
+    console.error('Error stack:', error.stack)
+    console.error('=== END ERROR DEBUG ===')
     console.error('Failed to create community post:', error)
     throw new Error('Failed to create community post')
   }
@@ -363,7 +392,7 @@ export async function toggleCommunityPostLike(postId: string, userId: string): P
       await Promise.all([
         prisma.communityPostLike.create({
           data: {
-            id: randomUUID(),
+            id: uuidv7(),
             userId,
             postId
           }
