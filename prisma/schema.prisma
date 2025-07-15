@@ -6,21 +6,22 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // User model
 model User {
-  id          String  @id @db.Uuid
-  email       String  @unique
-  username    String  @unique
-  avatarUrl   String? @map("avatar_url")
+  id          String   @id @db.Uuid
+  email       String   @unique
+  username    String   @unique
+  avatarUrl   String?  @map("avatar_url")
   bio         String?
-  socialLinks Json?   @map("social_links")
+  socialLinks Json?    @map("social_links")
   skills      String[]
   experience  String?
-  isPublic    Boolean @default(true) @map("is_public")
+  isPublic    Boolean  @default(true) @map("is_public")
 
   projects     Project[]
   projectLikes ProjectLike[]
@@ -45,21 +46,21 @@ model User {
 
 // Project model
 model Project {
-  id          String   @id @db.Uuid
+  id                  String   @id @db.Uuid
   // 제목
-  title       String
+  title               String
   // 간단한 설명
-  excerpt     String
+  excerpt             String
   // 카테고리
-  category    String
+  category            String
   // 상세 설명 (기존 - 검색용 플레인 텍스트)
-  description String
+  description         String
   // 리치 텍스트 에디터 데이터
-  fullDescription     String? @map("full_description")     // 검색용 플레인 텍스트
-  fullDescriptionJson Json?   @map("full_description_json") // TipTap JSON 데이터
-  fullDescriptionHtml String? @map("full_description_html") // 렌더링용 HTML
+  fullDescription     String?  @map("full_description") // 검색용 플레인 텍스트
+  fullDescriptionJson Json?    @map("full_description_json") // TipTap JSON 데이터
+  fullDescriptionHtml String?  @map("full_description_html") // 렌더링용 HTML
   // 대표 이미지, 추가 스크린샷
-  images      String[]
+  images              String[]
 
   demoUrl   String? @map("demo_url")
   githubUrl String? @map("github_url")
@@ -72,8 +73,8 @@ model Project {
   // 기술스택 관계 (Tag 테이블 사용)
   projectTechStacks ProjectTechStack[]
 
-  viewCount Int @default(0) @map("view_count")
-  likeCount Int @default(0) @map("like_count")
+  viewCount Int     @default(0) @map("view_count")
+  likeCount Int     @default(0) @map("like_count")
   featured  Boolean @default(false)
 
   authorId String @map("author_id") @db.Uuid
@@ -157,17 +158,17 @@ model ProjectTechStack {
 
 // ProjectComment model
 model ProjectComment {
-  id           String @id @db.Uuid
+  id           String  @id @db.Uuid
   content      String
-  projectId    String @map("project_id") @db.Uuid
-  authorId     String @map("author_id") @db.Uuid
+  projectId    String  @map("project_id") @db.Uuid
+  authorId     String  @map("author_id") @db.Uuid
   parentId     String? @map("parent_id") @db.Uuid
-  likeCount    Int    @default(0) @map("like_count")
-  repliesCount Int    @default(0) @map("replies_count")
+  likeCount    Int     @default(0) @map("like_count")
+  repliesCount Int     @default(0) @map("replies_count")
 
-  project Project @relation(fields: [projectId], references: [id])
-  author  User    @relation(fields: [authorId], references: [id])
-  parent  ProjectComment? @relation("CommentReplies", fields: [parentId], references: [id])
+  project Project          @relation(fields: [projectId], references: [id])
+  author  User             @relation(fields: [authorId], references: [id])
+  parent  ProjectComment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies ProjectComment[] @relation("CommentReplies")
 
   likes ProjectCommentLike[]
@@ -205,33 +206,33 @@ model ProjectCommentLike {
 
 // Community Post model
 model CommunityPost {
-  id       String @id @db.Uuid
-  title    String
-  content  String           // 검색용 플레인 텍스트
-  contentHtml String?       @map("content_html")     // 렌더링용 HTML
-  contentJson Json?         @map("content_json")     // TipTap JSON 데이터
-  
+  id          String  @id @db.Uuid
+  title       String
+  content     String // 검색용 플레인 텍스트
+  contentHtml String? @map("content_html") // 렌더링용 HTML
+  contentJson Json?   @map("content_json") // TipTap JSON 데이터
+
   // 메타데이터
-  viewsCount     Int @default(0) @map("views_count")
-  likesCount     Int @default(0) @map("likes_count")
-  commentsCount  Int @default(0) @map("comments_count")
-  
+  viewsCount    Int @default(0) @map("views_count")
+  likesCount    Int @default(0) @map("likes_count")
+  commentsCount Int @default(0) @map("comments_count")
+
   // 관계
   authorId String @map("author_id") @db.Uuid
   author   User   @relation(fields: [authorId], references: [id])
-  
+
   // 선택적 프로젝트 연결
   relatedProjectId String?  @map("related_project_id") @db.Uuid
   relatedProject   Project? @relation(fields: [relatedProjectId], references: [id])
-  
+
   // 관련 데이터
-  tags      CommunityPostTag[]
-  likes     CommunityPostLike[]
-  comments  CommunityPostComment[]
-  
+  tags     CommunityPostTag[]
+  likes    CommunityPostLike[]
+  comments CommunityPostComment[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  
+
   @@index([authorId])
   @@index([createdAt])
   @@index([likesCount])
@@ -244,44 +245,44 @@ model CommunityPostLike {
   id     String @id @db.Uuid
   userId String @map("user_id") @db.Uuid
   postId String @map("post_id") @db.Uuid
-  
+
   user User          @relation(fields: [userId], references: [id])
   post CommunityPost @relation(fields: [postId], references: [id])
-  
+
   createdAt DateTime @default(now()) @map("created_at")
-  
+
   @@unique([userId, postId])
   @@map("community_post_likes")
 }
 
 // Community Post Comment model
 model CommunityPostComment {
-  id       String @id @db.Uuid
-  content  String
-  contentHtml String? @map("content_html")  // 리치 텍스트 지원
+  id          String  @id @db.Uuid
+  content     String
+  contentHtml String? @map("content_html") // 리치 텍스트 지원
   contentJson Json?   @map("content_json")
-  
+
   // 관계
-  postId   String @map("post_id") @db.Uuid
-  authorId String @map("author_id") @db.Uuid
-  parentId String? @map("parent_id") @db.Uuid  // null = 최상위 댓글, not null = 답글
-  
+  postId   String  @map("post_id") @db.Uuid
+  authorId String  @map("author_id") @db.Uuid
+  parentId String? @map("parent_id") @db.Uuid // null = 최상위 댓글, not null = 답글
+
   post   CommunityPost         @relation(fields: [postId], references: [id])
   author User                  @relation(fields: [authorId], references: [id])
   parent CommunityPostComment? @relation("CommunityCommentReplies", fields: [parentId], references: [id])
-  
+
   // 상태
-  likesCount    Int @default(0) @map("likes_count")
-  repliesCount  Int @default(0) @map("replies_count")
-  isBestAnswer  Boolean @default(false) @map("is_best_answer")  // 질문의 채택 답변
-  
+  likesCount   Int     @default(0) @map("likes_count")
+  repliesCount Int     @default(0) @map("replies_count")
+  isBestAnswer Boolean @default(false) @map("is_best_answer") // 질문의 채택 답변
+
   // 관련 데이터
-  replies CommunityPostComment[] @relation("CommunityCommentReplies")
+  replies CommunityPostComment[]     @relation("CommunityCommentReplies")
   likes   CommunityPostCommentLike[]
-  
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  
+
   @@index([postId])
   @@index([authorId])
   @@index([parentId])
@@ -295,12 +296,12 @@ model CommunityPostCommentLike {
   id        String @id @db.Uuid
   userId    String @map("user_id") @db.Uuid
   commentId String @map("comment_id") @db.Uuid
-  
-  user    User                   @relation(fields: [userId], references: [id])
-  comment CommunityPostComment   @relation(fields: [commentId], references: [id])
-  
+
+  user    User                 @relation(fields: [userId], references: [id])
+  comment CommunityPostComment @relation(fields: [commentId], references: [id])
+
   createdAt DateTime @default(now()) @map("created_at")
-  
+
   @@unique([userId, commentId])
   @@map("community_post_comment_likes")
 }
@@ -310,12 +311,12 @@ model CommunityPostTag {
   id     String @id @db.Uuid
   postId String @map("post_id") @db.Uuid
   tagId  String @map("tag_id") @db.Uuid
-  
+
   post CommunityPost @relation(fields: [postId], references: [id])
   tag  Tag           @relation(fields: [tagId], references: [id])
-  
+
   createdAt DateTime @default(now()) @map("created_at")
-  
+
   @@unique([postId, tagId])
   @@map("community_post_tags")
 }

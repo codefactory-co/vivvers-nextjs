@@ -257,6 +257,48 @@ export async function getCommunityPostById(id: string): Promise<CommunityPost | 
   }
 }
 
+/**
+ * Helper function to resolve tag names to their corresponding UUIDs
+ */
+async function resolveTagsByName(tagNames: string[]): Promise<string[]> {
+  if (tagNames.length === 0) {
+    return []
+  }
+
+  try {
+    const tags = await prisma.tag.findMany({
+      where: {
+        name: {
+          in: tagNames
+        }
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    })
+
+    console.log('=== TAG RESOLUTION DEBUG ===')
+    console.log('Input tag names:', tagNames)
+    console.log('Found tags:', tags)
+    console.log('Resolved UUIDs:', tags.map(tag => tag.id))
+
+    // Check for missing tags
+    const foundTagNames = tags.map(tag => tag.name)
+    const missingTags = tagNames.filter(name => !foundTagNames.includes(name))
+    
+    if (missingTags.length > 0) {
+      console.warn('Missing tags (will be skipped):', missingTags)
+    }
+
+    console.log('=== END TAG RESOLUTION DEBUG ===')
+    return tags.map(tag => tag.id)
+  } catch (error) {
+    console.error('Failed to resolve tag names:', error)
+    throw new Error('Failed to resolve tag names')
+  }
+}
+
 export async function createCommunityPost({
   title,
   content,
@@ -311,6 +353,9 @@ export async function createCommunityPost({
     }
     console.log('=== END DEBUG INFO ===')
 
+    // Resolve tag names to UUIDs
+    const tagIds = await resolveTagsByName(tags)
+
     const post = await prisma.communityPost.create({
       data: {
         id: postId,
@@ -321,7 +366,7 @@ export async function createCommunityPost({
         authorId,
         relatedProjectId: relatedProjectId || null,
         tags: {
-          create: tags.map(tagId => {
+          create: tagIds.map(tagId => {
             const tagRelationId = uuidv7()
             console.log('=== TAG RELATION UUID DEBUG ===')
             console.log('Tag relation UUID:', tagRelationId)
@@ -376,10 +421,10 @@ export async function createCommunityPost({
   } catch (error) {
     console.error('=== ERROR DEBUG INFO ===')
     console.error('Full error object:', error)
-    console.error('Error message:', error.message)
-    console.error('Error code:', error.code)
-    console.error('Error meta:', error.meta)
-    console.error('Error stack:', error.stack)
+    console.error('Error message:', error instanceof Error ? error.message : 'Unknown error')
+    console.error('Error code:', error && typeof error === 'object' && 'code' in error ? error.code : 'Unknown')
+    console.error('Error meta:', error && typeof error === 'object' && 'meta' in error ? error.meta : 'Unknown')
+    console.error('Error stack:', error instanceof Error ? error.stack : 'Unknown')
     console.error('=== END ERROR DEBUG ===')
     console.error('Failed to create community post:', error)
     throw new Error('Failed to create community post')

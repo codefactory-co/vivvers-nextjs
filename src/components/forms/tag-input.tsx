@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { X } from 'lucide-react'
+import { X, AlertCircle, CheckCircle } from 'lucide-react'
+import { tagUtils } from '@/lib/validations/project'
 
 interface TagInputProps {
   tags: string[]
@@ -15,12 +16,41 @@ interface TagInputProps {
 
 export function TagInput({ tags, onTagsChange, placeholder = "태그를 입력하세요", maxTags = 10, disabled = false }: TagInputProps) {
   const [inputValue, setInputValue] = useState('')
+  const [validationMessage, setValidationMessage] = useState<string | null>(null)
+  const [isValid, setIsValid] = useState<boolean | null>(null)
+
+  const validateAndSuggest = (value: string) => {
+    if (!value.trim()) {
+      setValidationMessage(null)
+      setIsValid(null)
+      return
+    }
+
+    const isValidTag = tagUtils.isValidTag(value)
+    const suggestion = tagUtils.suggestTag(value)
+
+    if (isValidTag) {
+      setValidationMessage(null)
+      setIsValid(true)
+    } else if (suggestion && suggestion !== value) {
+      setValidationMessage(`"${suggestion}" 으로 변경됩니다`)
+      setIsValid(false)
+    } else if (!suggestion) {
+      setValidationMessage('유효하지 않은 태그입니다')
+      setIsValid(false)
+    } else {
+      setValidationMessage('태그는 영문, 숫자, 하이픈(-), 언더스코어(_)만 사용 가능합니다')
+      setIsValid(false)
+    }
+  }
 
   const addTag = (tagValue: string) => {
-    const trimmedTag = tagValue.trim()
-    if (trimmedTag && !tags.includes(trimmedTag) && tags.length < maxTags) {
-      onTagsChange([...tags, trimmedTag])
+    const suggestion = tagUtils.suggestTag(tagValue)
+    if (suggestion && !tags.includes(suggestion) && tags.length < maxTags) {
+      onTagsChange([...tags, suggestion])
+      return true
     }
+    return false
   }
 
   const removeTag = (indexToRemove: number) => {
