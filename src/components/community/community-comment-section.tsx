@@ -24,10 +24,6 @@ export function CommunityCommentSection({
   const [comments, setComments] = useState(initialComments)
   const [showCommentForm, setShowCommentForm] = useState(false)
 
-  const handleCommentAdded = (newComment: CommunityPostComment) => {
-    setComments(prev => [newComment, ...prev])
-    setShowCommentForm(false)
-  }
 
   const handleCommentLike = (commentId: string) => {
     // Handle comment like - this would update the comment in the list
@@ -69,7 +65,6 @@ export function CommunityCommentSection({
           <div className="pb-6 border-b">
             <CommunityCommentForm
               postId={postId}
-              onCommentAdded={handleCommentAdded}
               onCancel={() => setShowCommentForm(false)}
             />
           </div>

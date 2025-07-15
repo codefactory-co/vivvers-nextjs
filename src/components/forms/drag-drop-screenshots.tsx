@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import {
   DndContext,
   closestCenter,
@@ -122,10 +123,11 @@ export function DragDropScreenshots({
         <DragOverlay>
           {activeScreenshot ? (
             <div className="aspect-video rounded-lg overflow-hidden bg-muted border-2 border-primary shadow-2xl opacity-90">
-              <img
+              <Image
                 src={activeScreenshot}
                 alt={`스크린샷 ${activeIndex + 1}`}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
                 draggable={false}
               />
             </div>

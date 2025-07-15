@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Github, Linkedin, ExternalLink, Edit3, Mail, Calendar, User } from 'lucide-react'
-import { User as UserType } from '@prisma/client'
+import { User as UserType } from '@/types/user'
 import type { UserStats } from '@/types/user'
 import { ProfileProjectsSection } from '@/components/profile/profile-projects-section'
 

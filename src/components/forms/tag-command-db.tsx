@@ -28,6 +28,7 @@ interface TagCommandDBProps {
   maxTags?: number
   type: 'techStack' | 'tags'
   className?: string
+  disabled?: boolean
 }
 
 interface TagData {
@@ -43,7 +44,8 @@ export function TagCommandDB({
   placeholder = "태그를 검색하고 선택하세요",
   maxTags = 10,
   type,
-  className
+  className,
+  disabled = false
 }: TagCommandDBProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
@@ -146,7 +148,7 @@ export function TagCommandDB({
             role="combobox"
             aria-expanded={open}
             className="w-full justify-between"
-            disabled={isMaxReached}
+            disabled={disabled || isMaxReached}
           >
             <span className="truncate">
               {isMaxReached 

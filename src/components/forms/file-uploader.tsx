@@ -35,7 +35,7 @@ export function FileUploader({
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
+  const [, setUploadProgress] = useState<{ [key: string]: number }>({})
   const [currentCropFile, setCurrentCropFile] = useState<File | null>(null)
   const [pendingFiles, setPendingFiles] = useState<File[]>([])
   const [currentFileIndex, setCurrentFileIndex] = useState(0)

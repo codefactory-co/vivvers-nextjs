@@ -1,7 +1,7 @@
 'use client'
 
 import { ProfileView } from '@/components/profile/profile-view'
-import { User } from '@prisma/client'
+import { User } from '@/types/user'
 import type { UserStats } from '@/types/user'
 
 interface ProfileClientProps {

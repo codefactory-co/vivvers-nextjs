@@ -66,10 +66,6 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
     onBestAnswer(comment.id)
   }
 
-  const handleReplyAdded = () => {
-    setShowReplyForm(false)
-    // TODO: Refresh comments or update parent state
-  }
 
   return (
     <div className={cn(
@@ -179,9 +175,7 @@ export const CommunityCommentItem: React.FC<CommunityCommentItemProps & {
               <CommunityCommentForm
                 postId={comment.postId}
                 parentId={comment.id}
-                onCommentAdded={handleReplyAdded}
                 onCancel={() => setShowReplyForm(false)}
-                placeholder={`${comment.author.username}님에게 답글 작성...`}
               />
             </div>
           )}

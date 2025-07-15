@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma/client'
 import { CommunityPost, CommunityFilters, CommunityPostsResponse } from '@/types/community'
-import { uuidv7 } from 'uuidv7'
+import { randomUUID } from 'crypto'
 import type { Prisma } from '@prisma/client'
 
 interface GetCommunityPostsParams {
@@ -262,7 +262,7 @@ export async function createCommunityPost({
   relatedProjectId?: string
 }): Promise<CommunityPost> {
   try {
-    const postId = uuidv7()
+    const postId = randomUUID()
 
     const post = await prisma.communityPost.create({
       data: {
@@ -275,7 +275,7 @@ export async function createCommunityPost({
         relatedProjectId: relatedProjectId || null,
         tags: {
           create: tags.map(tagId => ({
-            id: uuidv7(),
+            id: randomUUID(),
             tagId
           }))
         }
@@ -363,7 +363,7 @@ export async function toggleCommunityPostLike(postId: string, userId: string): P
       await Promise.all([
         prisma.communityPostLike.create({
           data: {
-            id: uuidv7(),
+            id: randomUUID(),
             userId,
             postId
           }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, X } from 'lucide-react'
@@ -48,15 +49,16 @@ export function SortableScreenshot({ id, url, index, onRemove }: SortableScreens
           : 'opacity-100 scale-100 rotate-0 hover:scale-105'
       }`}
     >
-      <div className={`aspect-video rounded-lg overflow-hidden bg-muted border-2 transition-all duration-200 ${
+      <div className={`aspect-video rounded-lg overflow-hidden bg-muted border-2 transition-all duration-200 relative ${
         isDragging 
           ? 'border-primary shadow-lg' 
           : 'border-border hover:border-primary/50'
       }`}>
-        <img
+        <Image
           src={url}
           alt={`스크린샷 ${index + 1}`}
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
           draggable={false}
         />
         

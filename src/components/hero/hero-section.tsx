@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { CtaButtons } from './cta-buttons'
 import { Boxes } from '@/components/ui/background-boxes'
@@ -85,11 +86,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           variantStyles[variant]
         )}>
           {/* Logo */}
-          <div className="mb-2">
-            <img 
+          <div className="mb-2 relative">
+            <Image 
               src="/img/logo.png" 
               alt="Vivvers 로고" 
+              width={160}
+              height={96}
               className="h-24 w-auto md:h-32 lg:h-40"
+              priority
             />
           </div>
 

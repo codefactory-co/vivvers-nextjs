@@ -5,7 +5,7 @@ import { ProfileEditForm } from '@/components/profile/profile-edit-form'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
-import { User } from '@prisma/client'
+import { User } from '@/types/user'
 
 interface ProfileEditPageProps {
   user: User

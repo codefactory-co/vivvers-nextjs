@@ -71,7 +71,7 @@ export function CommunityPostDetail({ post, currentUserId }: CommunityPostDetail
       } else {
         throw new Error(result.error)
       }
-    } catch (error) {
+    } catch {
       toast({
         title: '오류',
         description: '좋아요 처리에 실패했습니다.',

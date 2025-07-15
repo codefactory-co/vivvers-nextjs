@@ -141,67 +141,103 @@ export function ProjectComments({
 
   // Enhanced comment like handler with optimistic updates and error recovery
   const handleCommentLike = useCallback(async (commentId: string) => {
+    console.log('🔥 handleCommentLike called with commentId:', commentId)
+    console.log('🔥 Current likingComments set:', Array.from(likingComments))
+    
     // Prevent multiple likes on same comment
     if (likingComments.has(commentId)) {
+      console.log('⚠️ Already liking this comment, returning early')
       return
     }
 
     // Find the comment to get current state
     const findComment = (comments: Comment[], id: string): Comment | null => {
+      console.log('🔍 findComment searching for:', id, 'in', comments.length, 'comments')
       for (const comment of comments) {
-        if (comment.id === id) return comment
+        console.log('  - Checking comment:', comment.id, 'hasReplies:', !!comment.replies?.length)
+        if (comment.id === id) {
+          console.log('  ✅ Found comment directly:', comment.id)
+          return comment
+        }
         if (comment.replies?.length) {
+          console.log('  🔍 Searching in', comment.replies.length, 'replies...')
           const found = findComment(comment.replies, id)
-          if (found) return found
+          if (found) {
+            console.log('  ✅ Found comment in replies:', found.id)
+            return found
+          }
         }
       }
+      console.log('  ❌ Comment not found in this level')
       return null
     }
 
     const currentComment = findComment(comments, commentId)
-    if (!currentComment) return
+    console.log('🔥 Found current comment:', currentComment)
+    console.log('🔥 Current comments state:', comments)
+    console.log('🔥 Comments count:', comments.length)
+    
+    if (!currentComment) {
+      console.log('❌ Comment not found, returning early')
+      return
+    }
 
     // Add to liking set
-    setLikingComments(prev => new Set([...prev, commentId]))
+    setLikingComments(prev => {
+      const newSet = new Set([...prev, commentId])
+      console.log('🔥 Adding to liking set. New set:', Array.from(newSet))
+      return newSet
+    })
 
     // Store original state for potential rollback
     const originalIsLiked = currentComment.isLiked
     const originalLikeCount = currentComment.likeCount
+    console.log('🔥 Original state - isLiked:', originalIsLiked, 'likeCount:', originalLikeCount)
 
     // Optimistic update
     const newIsLiked = !originalIsLiked
     const newLikeCount = originalIsLiked ? originalLikeCount - 1 : originalLikeCount + 1
+    console.log('🔥 Optimistic update - newIsLiked:', newIsLiked, 'newLikeCount:', newLikeCount)
 
-    setComments(prev => 
-      findAndUpdateComment(prev, commentId, (comment) => ({
+    setComments(prev => {
+      const updated = findAndUpdateComment(prev, commentId, (comment) => ({
         ...comment,
         isLiked: newIsLiked,
         likeCount: newLikeCount
       }))
-    )
+      console.log('🔥 Optimistic update applied to comments')
+      return updated
+    })
 
     try {
+      console.log('🔥 Calling toggleCommentLike action...')
       const result = await toggleCommentLike({ commentId })
-      console.log('toggleCommentLike result:', result) // Debug log
-      
+      console.log('🔥 toggleCommentLike result:', result)
+
       if (result.success && result.data) {
+        console.log('✅ Server response success:', result.data)
         // Update with server response
-        setComments(prev => 
-          findAndUpdateComment(prev, commentId, (comment) => ({
+        setComments(prev => {
+          const updated = findAndUpdateComment(prev, commentId, (comment) => ({
             ...comment,
             isLiked: result.data!.isLiked,
             likeCount: result.data!.likeCount
           }))
-        )
+          console.log('🔥 Server response applied to comments')
+          return updated
+        })
       } else {
+        console.log('❌ Server response failed:', result.error)
         // Revert optimistic update
-        setComments(prev => 
-          findAndUpdateComment(prev, commentId, (comment) => ({
+        setComments(prev => {
+          const reverted = findAndUpdateComment(prev, commentId, (comment) => ({
             ...comment,
             isLiked: originalIsLiked,
             likeCount: originalLikeCount
           }))
-        )
+          console.log('🔥 Optimistic update reverted')
+          return reverted
+        })
         
         toast({
           title: "좋아요 실패",
@@ -209,15 +245,18 @@ export function ProjectComments({
           variant: "destructive"
         })
       }
-    } catch {
+    } catch (error) {
+      console.log('❌ Exception caught in handleCommentLike:', error)
       // Revert optimistic update
-      setComments(prev => 
-        findAndUpdateComment(prev, commentId, (comment) => ({
+      setComments(prev => {
+        const reverted = findAndUpdateComment(prev, commentId, (comment) => ({
           ...comment,
           isLiked: originalIsLiked,
           likeCount: originalLikeCount
         }))
-      )
+        console.log('🔥 Optimistic update reverted due to exception')
+        return reverted
+      })
       
       toast({
         title: "네트워크 오류",
@@ -229,6 +268,7 @@ export function ProjectComments({
       setLikingComments(prev => {
         const newSet = new Set(prev)
         newSet.delete(commentId)
+        console.log('🔥 Removed from liking set. New set:', Array.from(newSet))
         return newSet
       })
     }

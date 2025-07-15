@@ -117,7 +117,7 @@ export default function ProjectCreatePage() {
           formData={formData}
           onFormChange={handleFormChange}
           onSubmit={handleSubmit}
-          userId={userId || undefined}
+          userId={userId || ''}
         />
       </div>
     </div>

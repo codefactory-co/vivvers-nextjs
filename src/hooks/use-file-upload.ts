@@ -10,7 +10,6 @@
 import { useState, useCallback, useRef } from 'react'
 import type {
   UploadResult,
-  BatchUploadResult,
   UploadProgress,
   UploadStatus,
   StorageError,
@@ -20,8 +19,6 @@ import type {
 } from '@/types/storage'
 
 import { 
-  filesToFileInfo,
-  getFileCategory,
   isFileValidForPurpose,
   createStorageError,
 } from '@/lib/storage/helpers'
@@ -254,7 +251,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     }))
   }, [])
 
-  const startUpload = useCallback(async (bucket: StorageBucket, uploadOptions?: BaseUploadOptions) => {
+  const startUpload = useCallback(async (bucket: StorageBucket) => {
     if (state.files.length === 0) return
 
     setState(prev => ({ ...prev, isUploading: true, errors: [] }))
@@ -384,7 +381,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     }
   }, [state.files, updateFileProgress, updateFileStatus, onUploadComplete, onUploadError])
 
-  const uploadFile = useCallback(async (fileId: string, bucket: StorageBucket, _uploadOptions?: BaseUploadOptions) => {
+  const uploadFile = useCallback(async (fileId: string, bucket: StorageBucket) => {
     const fileInfo = state.files.find(f => f.id === fileId)
     if (!fileInfo) return
 
@@ -392,7 +389,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     const originalFiles = state.files
     setState(prev => ({ ...prev, files: [fileInfo] }))
     
-    await startUpload(bucket, _uploadOptions)
+    await startUpload(bucket)
     
     setState(prev => ({ ...prev, files: originalFiles }))
   }, [state.files, startUpload])

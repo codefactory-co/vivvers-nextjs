@@ -17,7 +17,7 @@ interface CommunityPostFormProps {
   userId: string
 }
 
-export function CommunityPostForm({ userId }: CommunityPostFormProps) {
+export function CommunityPostForm({}: CommunityPostFormProps) {
   const router = useRouter()
   const { toast } = useToast()
   
@@ -134,7 +134,7 @@ export function CommunityPostForm({ userId }: CommunityPostFormProps) {
           onTagsChange={handleTagsChange}
           placeholder="관련 태그를 검색하세요 (예: React, JavaScript)"
           maxTags={10}
-          type="community"
+          type="tags"
           disabled={isSubmitting}
         />
         <p className="text-sm text-muted-foreground">

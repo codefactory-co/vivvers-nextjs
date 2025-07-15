@@ -10,7 +10,7 @@ import { TagInput } from '@/components/forms/tag-input'
 import { SocialLinksInput } from '@/components/forms/social-links-input'
 import { updateUserProfile } from '@/lib/actions/user/user-update'
 import { type UpdateUserData } from '@/lib/validations/user'
-import { User } from '@prisma/client'
+import { User } from '@/types/user'
 
 interface ProfileEditFormProps {
   user: User
@@ -76,7 +76,7 @@ export function ProfileEditForm({ user, onSave, onCancel }: ProfileEditFormProps
       } else {
         setError(result.error || '프로필 업데이트에 실패했습니다')
       }
-    } catch (err) {
+    } catch {
       setError('프로필 업데이트 중 오류가 발생했습니다')
     } finally {
       setIsLoading(false)

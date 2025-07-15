@@ -4,23 +4,18 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import TiptapEditor from '@/components/editor/tiptap-editor'
 import { Loader2, Send, X } from 'lucide-react'
-import { CommunityCommentFormData, CommunityPostComment } from '@/types/community'
+import { CommunityCommentFormData } from '@/types/community'
 import { useToast } from '@/hooks/use-toast'
 
 interface CommunityCommentFormProps {
   postId: string
   parentId?: string
-  onCommentAdded: (comment: CommunityPostComment) => void
   onCancel: () => void
-  placeholder?: string
 }
 
 export function CommunityCommentForm({
-  postId,
   parentId,
-  onCommentAdded,
-  onCancel,
-  placeholder = "댓글을 작성하세요..."
+  onCancel
 }: CommunityCommentFormProps) {
   const { toast } = useToast()
   
@@ -58,17 +53,7 @@ export function CommunityCommentForm({
 
     try {
       // TODO: Implement comment creation action
-      const result = await createCommunityComment({
-        postId,
-        content: formData.content.trim(),
-        contentHtml: formData.contentHtml,
-        contentJson: formData.contentJson,
-        parentId: formData.parentId
-      })
-      
-      if (!result.success) {
-        throw new Error(result.error || '댓글 작성에 실패했습니다.')
-      }
+      await createCommunityComment()
 
       // This will be implemented when we create the comment service
       // toast({
@@ -142,13 +127,7 @@ export function CommunityCommentForm({
 }
 
 // Placeholder function - this should be implemented as a server action
-async function createCommunityComment(data: {
-  postId: string
-  content: string
-  contentHtml: string
-  contentJson: unknown
-  parentId?: string
-}) {
+async function createCommunityComment() {
   // TODO: Implement this server action
   return {
     success: false,

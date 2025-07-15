@@ -75,7 +75,7 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
       setSelectedImageSrc(dataUrl)
       setShowCropModal(true)
       setError(null)
-    } catch (err) {
+    } catch {
       setError('파일을 읽는 중 오류가 발생했습니다')
     }
   }, [])
@@ -98,7 +98,7 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
       } else {
         setError(uploadResult.error || '이미지 업로드에 실패했습니다')
       }
-    } catch (err) {
+    } catch {
       setError('이미지 업로드 중 오류가 발생했습니다')
     } finally {
       setIsUploadingAvatar(false)

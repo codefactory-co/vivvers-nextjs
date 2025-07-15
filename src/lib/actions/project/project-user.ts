@@ -24,8 +24,7 @@ export async function getProjectsByUserId(
   try {
     const {
       page = 1,
-      limit = 9,
-      sortBy = 'latest'
+      limit = 9
     } = options
 
     if (!userId) {
