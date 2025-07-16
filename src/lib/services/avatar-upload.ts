@@ -1,21 +1,22 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
+import { generateUniqueFilename } from '@/lib/storage/helpers'
 
 /**
  * Avatar 이미지를 Supabase Storage에 업로드하는 함수
  */
 export async function uploadAvatarImage(
   userId: string,
-  imageBlob: Blob
+  imageBlob: Blob,
+  originalFileName: string = 'avatar.webp'
 ): Promise<{ success: boolean; url?: string; error?: string }> {
   try {
     const supabase = createClient()
 
-    // 파일명 생성 (userId + timestamp로 고유성 보장)
-    const timestamp = Date.now()
-    const fileName = `${userId}_${timestamp}.webp`
-    const filePath = `avatars/${fileName}`
+    // Generate unique filename using storage helper
+    const fileName = generateUniqueFilename(originalFileName, userId)
+    const filePath = `${userId}/${fileName}`
 
     // Supabase Storage에 업로드
     const { error: uploadError } = await supabase.storage
@@ -64,11 +65,16 @@ export async function deleteAvatarImage(
   try {
     const supabase = createClient()
 
-    // URL에서 파일 경로 추출
+    // URL에서 파일 경로 추출 (userId/filename 패턴)
     const url = new URL(imageUrl)
-    const pathParts = url.pathname.split('/')
-    const fileName = pathParts[pathParts.length - 1]
-    const filePath = `avatars/${fileName}`
+    const pathSegments = url.pathname.split('/storage/v1/object/public/avatars/')[1]
+    if (!pathSegments) {
+      return {
+        success: false,
+        error: 'Invalid avatar URL format'
+      }
+    }
+    const filePath = pathSegments
 
     // Supabase Storage에서 삭제
     const { error: deleteError } = await supabase.storage
