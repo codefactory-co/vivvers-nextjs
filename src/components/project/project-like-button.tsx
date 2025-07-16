@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { toggleProjectLike } from '@/lib/actions/project/project-like'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { projectEvents } from '@/lib/analytics'
 
 interface ProjectLikeButtonProps {
   projectId: string
@@ -16,6 +17,7 @@ interface ProjectLikeButtonProps {
   size?: 'sm' | 'default' | 'lg'
   className?: string
   showCount?: boolean
+  projectTitle?: string
 }
 
 export function ProjectLikeButton({
@@ -26,7 +28,8 @@ export function ProjectLikeButton({
   variant = 'outline',
   size = 'sm',
   className,
-  showCount = true
+  showCount = true,
+  projectTitle
 }: ProjectLikeButtonProps) {
   const [isLiked, setIsLiked] = useState(initialIsLiked)
   const [likeCount, setLikeCount] = useState(initialLikeCount)
@@ -55,6 +58,14 @@ export function ProjectLikeButton({
           // 서버 응답으로 상태 동기화
           setIsLiked(result.isLiked)
           setLikeCount(result.likeCount)
+          
+          // Track like event only if the action was successful and resulted in a like
+          if (result.isLiked) {
+            projectEvents.like({
+              project_id: projectId,
+              project_title: projectTitle,
+            });
+          }
         } else {
           // 오류 발생 시 원래 상태로 롤백
           setIsLiked(initialIsLiked)

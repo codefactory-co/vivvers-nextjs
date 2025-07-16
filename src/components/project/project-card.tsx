@@ -6,30 +6,33 @@ import Link from 'next/link'
 import { ProjectCardProps } from '@/types/project'
 import { ProjectLikeButton } from '@/components/project/project-like-button'
 import { cn } from '@/lib/utils'
+import { formatDate, formatCount, shouldShowAdditionalTags, formatAdditionalTagsCount } from '@/lib/utils/formatting'
+import { projectEvents, searchEvents } from '@/lib/analytics'
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   currentUserId,
   className
 }) => {
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('ko-KR', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-  }
-
-  const formatCount = (count: number) => {
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}k`
-    }
-    return count.toString()
-  }
+  
+  const handleProjectClick = () => {
+    projectEvents.view({
+      project_id: project.id,
+      project_title: project.title,
+      project_author: project.author.username,
+      project_tags: project.tags?.map(tag => tag.name),
+    });
+  };
+  
+  const handleTagClick = (tagName: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    searchEvents.tagClick(tagName);
+  };
 
   return (
     <Link 
       href={`/project/${project.id}`}
+      onClick={handleProjectClick}
       className={cn(
         'group block bg-card rounded-lg border border-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 cursor-pointer',
         className
@@ -78,14 +81,15 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           {project.tags?.slice(0, 3).map((tag) => (
             <span
               key={tag.id}
-              className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-accent text-accent-foreground"
+              onClick={(e) => handleTagClick(tag.name, e)}
+              className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-accent text-accent-foreground hover:bg-accent/80 cursor-pointer transition-colors"
             >
               {tag.name}
             </span>
           ))}
-          {project.tags && project.tags.length > 3 && (
+          {project.tags && shouldShowAdditionalTags(project.tags.length, 3) && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs text-muted-foreground">
-              +{project.tags.length - 3}
+              {formatAdditionalTagsCount(project.tags.length, 3)}
             </span>
           )}
         </div>

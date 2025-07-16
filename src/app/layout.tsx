@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const notoSansKR = Noto_Sans_KR({ 
   subsets: ["latin"],
@@ -87,6 +88,9 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
       </body>
     </html>
   );

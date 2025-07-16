@@ -4,6 +4,7 @@ import { ProjectGrid } from "@/components/project"
 import { URLPagination } from "@/components/project/url-pagination"
 import { getProjectsWithFilters } from "@/lib/actions/project/project-list"
 import { createClient } from "@/lib/supabase/server"
+import { PageViewTracker } from "@/components/analytics/page-view-tracker"
 
 interface HomePageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -26,6 +27,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   return (
     <>
+      <PageViewTracker page="home" />
       {/* Hero Section */}
       <HeroSectionWrapper 
         size="lg"

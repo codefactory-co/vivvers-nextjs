@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+import { projectEvents } from '@/lib/analytics'
 
 interface ShareButtonProps {
   url: string
@@ -19,6 +20,8 @@ interface ShareButtonProps {
   variant?: 'default' | 'outline' | 'ghost'
   size?: 'default' | 'sm' | 'lg' | 'icon'
   className?: string
+  projectId?: string
+  projectTitle?: string
 }
 
 export function ShareButton({
@@ -27,13 +30,26 @@ export function ShareButton({
   description = '',
   variant = 'outline',
   size = 'sm',
-  className
+  className,
+  projectId,
+  projectTitle
 }: ShareButtonProps) {
   const [copied, setCopied] = useState(false)
+
+  const trackShareEvent = () => {
+    if (projectId && projectTitle) {
+      projectEvents.share({
+        project_id: projectId,
+        project_title: projectTitle,
+      });
+    }
+  };
 
   const handleCopyUrl = async () => {
     // 항상 full URL로 생성
     const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url}`
+    
+    trackShareEvent();
     
     try {
       await navigator.clipboard.writeText(fullUrl)
@@ -54,18 +70,21 @@ export function ShareButton({
   }
 
   const handleKakaoShare = () => {
+    trackShareEvent();
     const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url}`
     const kakaoUrl = `https://story.kakao.com/share?url=${encodeURIComponent(fullUrl)}`
     window.open(kakaoUrl, '_blank', 'width=600,height=400')
   }
 
   const handleFacebookShare = () => {
+    trackShareEvent();
     const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url}`
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`
     window.open(facebookUrl, '_blank', 'width=600,height=400')
   }
 
   const handleTwitterShare = () => {
+    trackShareEvent();
     const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url}`
     const text = title ? `${title} - ${description}` : description
     const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(fullUrl)}&text=${encodeURIComponent(text)}`
@@ -73,6 +92,7 @@ export function ShareButton({
   }
 
   const handleNaverShare = () => {
+    trackShareEvent();
     const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url}`
     const naverUrl = `https://share.naver.com/web/shareView?url=${encodeURIComponent(fullUrl)}&title=${encodeURIComponent(title)}`
     window.open(naverUrl, '_blank', 'width=600,height=400')

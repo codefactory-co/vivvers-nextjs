@@ -3,19 +3,22 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { searchEvents } from "@/lib/analytics";
 
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  resultsCount?: number;
 }
 
 export function SearchBar({ 
   value, 
   onChange, 
   placeholder = "Search projects...",
-  className 
+  className,
+  resultsCount
 }: SearchBarProps) {
   const [localValue, setLocalValue] = useState(value);
 
@@ -23,10 +26,18 @@ export function SearchBar({
   useEffect(() => {
     const timer = setTimeout(() => {
       onChange(localValue);
+      
+      // Track search event when user finishes typing
+      if (localValue.trim() && localValue !== value) {
+        searchEvents.search({
+          search_query: localValue.trim(),
+          results_count: resultsCount,
+        });
+      }
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [localValue, onChange]);
+  }, [localValue, onChange, value, resultsCount]);
 
   // Update local value when external value changes
   useEffect(() => {
