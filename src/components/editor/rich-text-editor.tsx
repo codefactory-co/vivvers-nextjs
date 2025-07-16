@@ -290,6 +290,7 @@ export default function RichTextEditor({
     const renderToolbar = () => (
         <div className="border-b bg-muted/50 p-2 flex flex-wrap gap-1 items-center">
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('bold') ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleBold().run()}
@@ -297,6 +298,7 @@ export default function RichTextEditor({
                 <Bold className="h-4 w-4"/>
             </Button>
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('italic') ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -304,6 +306,7 @@ export default function RichTextEditor({
                 <Italic className="h-4 w-4"/>
             </Button>
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('code') ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleCode().run()}
@@ -314,6 +317,7 @@ export default function RichTextEditor({
             <div className="w-px h-6 bg-border mx-1"/>
 
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('heading', {level: 1}) ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleHeading({level: 1}).run()}
@@ -321,6 +325,7 @@ export default function RichTextEditor({
                 <Heading1 className="h-4 w-4"/>
             </Button>
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('heading', {level: 2}) ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleHeading({level: 2}).run()}
@@ -331,6 +336,7 @@ export default function RichTextEditor({
             <div className="w-px h-6 bg-border mx-1"/>
 
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('bulletList') ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -338,6 +344,7 @@ export default function RichTextEditor({
                 <List className="h-4 w-4"/>
             </Button>
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('orderedList') ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -345,6 +352,7 @@ export default function RichTextEditor({
                 <ListOrdered className="h-4 w-4"/>
             </Button>
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('blockquote') ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -355,6 +363,7 @@ export default function RichTextEditor({
             <div className="w-px h-6 bg-border mx-1"/>
 
             <Button
+                type="button"
                 size="sm"
                 variant={editor.isActive('codeBlock') ? 'default' : 'ghost'}
                 onClick={() => editor.chain().focus().toggleCodeBlock().run()}
@@ -367,6 +376,7 @@ export default function RichTextEditor({
                 <>
                     <div className="w-px h-6 bg-border mx-1"/>
                     <Button
+                        type="button"
                         size="sm"
                         variant="ghost"
                         onClick={() => {
@@ -406,6 +416,7 @@ export default function RichTextEditor({
                 <>
                     <div className="w-px h-6 bg-border mx-1"/>
                     <Button
+                        type="button"
                         size="sm"
                         variant="ghost"
                         onClick={() => setPreviewVisible(!previewVisible)}
@@ -447,6 +458,7 @@ export default function RichTextEditor({
             <div className="space-y-2">
                 <div className="flex space-x-1 border-b">
                     <Button
+                        type="button"
                         variant={activeTab === 'editor' ? 'default' : 'ghost'}
                         size="sm"
                         onClick={() => setActiveTab('editor')}
@@ -455,6 +467,7 @@ export default function RichTextEditor({
                     </Button>
                     {showPreview && (
                         <Button
+                            type="button"
                             variant={activeTab === 'preview' ? 'default' : 'ghost'}
                             size="sm"
                             onClick={() => setActiveTab('preview')}
