@@ -165,18 +165,37 @@ export function AdminSidebar() {
     )
   }
 
-  const isActive = (href: string) => {
+  const isActive = (href: string, isExact: boolean = false) => {
     if (href === '/admin') {
+      // 대시보드는 정확히 일치해야 함
       return pathname === '/admin'
     }
-    return pathname.startsWith(href)
+    
+    if (isExact) {
+      // 자식 메뉴는 정확히 일치해야 함
+      return pathname === href
+    }
+    
+    // 부모 메뉴는 prefix 매칭 (하지만 더 구체적인 하위 경로 제외)
+    return pathname.startsWith(href) && pathname !== '/admin'
+  }
+
+  const isParentActive = (item: NavItem) => {
+    if (!item.children) return false
+    
+    // 자식 메뉴 중 하나라도 활성화되어 있으면 부모도 활성화
+    return item.children.some(child => pathname === child.href)
   }
 
   const renderNavItem = (item: NavItem, depth = 0) => {
     const Icon = item.icon
     const hasChildren = item.children && item.children.length > 0
     const isOpen = openItems.includes(item.title)
-    const active = isActive(item.href)
+    
+    // depth가 0이면 부모 메뉴, 0보다 크면 자식 메뉴
+    const active = depth === 0 
+      ? (hasChildren ? isParentActive(item) : isActive(item.href)) 
+      : isActive(item.href, true) // 자식 메뉴는 exact match
 
     if (hasChildren) {
       return (

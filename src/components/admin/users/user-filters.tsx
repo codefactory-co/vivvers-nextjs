@@ -32,6 +32,14 @@ interface UserFilterState {
   lastActiveRange: DateRange | undefined
 }
 
+interface UserFiltersProps {
+  filters: UserFilterState
+  onFiltersChange: (filters: UserFilterState) => void
+  onApplyFilters: () => void
+  onClearFilters: () => void
+  isLoading?: boolean
+}
+
 const statusOptions = [
   { value: 'all', label: '전체 상태' },
   { value: 'active', label: '활성' },
@@ -54,32 +62,19 @@ const verificationOptions = [
   { value: 'pending', label: '인증 대기' },
 ]
 
-export function UserFilters() {
-  const [filters, setFilters] = useState<UserFilterState>({
-    search: '',
-    status: 'all',
-    role: 'all',
-    verificationStatus: 'all',
-    joinDateRange: undefined,
-    lastActiveRange: undefined,
-  })
-
+export function UserFilters({ 
+  filters, 
+  onFiltersChange, 
+  onApplyFilters, 
+  onClearFilters, 
+  isLoading = false 
+}: UserFiltersProps) {
   const [isJoinDatePickerOpen, setIsJoinDatePickerOpen] = useState(false)
   const [isActivePickerOpen, setIsActivePickerOpen] = useState(false)
 
   const updateFilter = (key: keyof UserFilterState, value: unknown) => {
-    setFilters(prev => ({ ...prev, [key]: value }))
-  }
-
-  const clearFilters = () => {
-    setFilters({
-      search: '',
-      status: 'all',
-      role: 'all',
-      verificationStatus: 'all',
-      joinDateRange: undefined,
-      lastActiveRange: undefined,
-    })
+    const newFilters = { ...filters, [key]: value }
+    onFiltersChange(newFilters)
   }
 
   const hasActiveFilters = filters.search || 
@@ -215,11 +210,16 @@ export function UserFilters() {
                 </Badge>
               )}
             </div>
-            {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>
-                필터 초기화
+            <div className="flex gap-2">
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={onClearFilters} disabled={isLoading}>
+                  필터 초기화
+                </Button>
+              )}
+              <Button size="sm" onClick={onApplyFilters} disabled={isLoading}>
+                {isLoading ? '적용 중...' : '필터 적용'}
               </Button>
-            )}
+            </div>
           </div>
         </div>
       </CardContent>

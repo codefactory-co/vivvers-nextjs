@@ -96,7 +96,7 @@ const getRoleBadge = (role: UserRole) => {
 }
 
 export function UserTable({ initialUsers }: UserTableProps) {
-  const [users, setUsers] = useState<AdminUser[]>(initialUsers)
+  const [users] = useState<AdminUser[]>(initialUsers)
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
@@ -139,37 +139,10 @@ export function UserTable({ initialUsers }: UserTableProps) {
             description: result.message || '작업이 완료되었습니다'
           })
           
-          // 로컬 상태 업데이트
-          setUsers(prev => prev.map(user => {
-            if (user.id === userId) {
-              const updatedUser = { ...user }
-              switch (action) {
-                case 'suspend':
-                  updatedUser.status = UserStatus.suspended
-                  break
-                case 'activate':
-                  updatedUser.status = UserStatus.active
-                  break
-                case 'ban':
-                  updatedUser.status = UserStatus.banned
-                  break
-                case 'promote-moderator':
-                  updatedUser.role = UserRole.moderator
-                  break
-                case 'demote-user':
-                  updatedUser.role = UserRole.user
-                  break
-                case 'verify':
-                  updatedUser.verified = true
-                  break
-                case 'unverify':
-                  updatedUser.verified = false
-                  break
-              }
-              return updatedUser
-            }
-            return user
-          }))
+          // Revalidate pattern: 서버 액션이 이미 revalidatePath를 호출했으므로
+          // 로컬 상태 업데이트는 제거하고 UI는 자동으로 업데이트됩니다.
+          // 만약 필요하다면 여기서 window.location.reload()를 호출할 수 있지만
+          // Next.js의 revalidation이 더 효율적입니다.
         } else {
           toast({
             title: '오류',

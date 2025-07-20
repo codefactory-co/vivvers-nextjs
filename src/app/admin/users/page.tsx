@@ -1,6 +1,5 @@
 import { AdminBreadcrumb } from '@/components/admin/layout/admin-breadcrumb'
-import { UserTable } from '@/components/admin/users/user-table'
-import { UserFilters } from '@/components/admin/users/user-filters'
+import { UserManagementClient } from '@/components/admin/users/user-management-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -102,10 +101,7 @@ export default async function AdminUsersPage() {
         </Card>
       </div>
 
-      {/* 필터 */}
-      <UserFilters />
-
-      {/* 사용자 테이블 */}
+      {/* 사용자 관리 (필터 + 테이블) */}
       <Card>
         <CardHeader>
           <CardTitle>사용자 목록</CardTitle>
@@ -114,7 +110,7 @@ export default async function AdminUsersPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <UserTable initialUsers={users} />
+          <UserManagementClient initialUsers={users} />
         </CardContent>
       </Card>
     </div>

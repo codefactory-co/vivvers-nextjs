@@ -5,6 +5,7 @@ import { AdminUserService } from '@/lib/admin/user-service'
 import { requireAdminPermission } from '@/lib/auth/admin'
 import { UserRole, UserStatus } from '@prisma/client'
 import type { UserFilters } from '@/types/admin'
+import { getErrorMessage } from '@/lib/errors/admin-errors'
 
 export async function getUsersAction(filters: UserFilters) {
   try {
@@ -12,7 +13,7 @@ export async function getUsersAction(filters: UserFilters) {
     const users = await AdminUserService.getUsers(filters)
     return { success: true, data: users }
   } catch (error) {
-    return { success: false, error: (error as Error).message }
+    return { success: false, error: getErrorMessage(error) }
   }
 }
 
@@ -25,7 +26,7 @@ export async function updateUserStatusAction(userId: string, status: UserStatus)
     revalidatePath('/admin/users')
     return { success: true, message: '사용자 상태가 변경되었습니다' }
   } catch (error) {
-    return { success: false, error: (error as Error).message }
+    return { success: false, error: getErrorMessage(error) }
   }
 }
 
@@ -43,7 +44,7 @@ export async function updateUserRoleAction(userId: string, role: UserRole) {
     revalidatePath('/admin/users')
     return { success: true, message: '사용자 역할이 변경되었습니다' }
   } catch (error) {
-    return { success: false, error: (error as Error).message }
+    return { success: false, error: getErrorMessage(error) }
   }
 }
 
@@ -56,7 +57,7 @@ export async function updateUserVerificationAction(userId: string, verified: boo
     revalidatePath('/admin/users')
     return { success: true, message: '사용자 인증 상태가 변경되었습니다' }
   } catch (error) {
-    return { success: false, error: (error as Error).message }
+    return { success: false, error: getErrorMessage(error) }
   }
 }
 
@@ -69,6 +70,6 @@ export async function updateAdminNotesAction(userId: string, adminNotes: string)
     revalidatePath('/admin/users')
     return { success: true, message: '관리자 메모가 업데이트되었습니다' }
   } catch (error) {
-    return { success: false, error: (error as Error).message }
+    return { success: false, error: getErrorMessage(error) }
   }
 }
