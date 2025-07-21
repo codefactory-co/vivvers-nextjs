@@ -2,14 +2,18 @@
 
 import React, { useState } from 'react'
 import { ProjectGrid, Pagination } from '@/components/project'
-import { getProjects } from '@/lib/data/projects'
+import { getAllProjects } from '@/lib/data/projects'
 
 export const ProjectShowcase: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(false)
   
   const projectsPerPage = 12
-  const { projects, totalPages } = getProjects(currentPage, projectsPerPage)
+  const allProjects = getAllProjects()
+  const startIndex = (currentPage - 1) * projectsPerPage
+  const endIndex = startIndex + projectsPerPage
+  const projects = allProjects.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(allProjects.length / projectsPerPage)
 
   const handlePageChange = async (page: number) => {
     setLoading(true)
@@ -24,7 +28,8 @@ export const ProjectShowcase: React.FC = () => {
     <div className="space-y-8">
       {/* Projects Grid */}
       <ProjectGrid
-        projects={projects}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        projects={projects as unknown as any}
         loading={loading}
         className="min-h-[800px]"
       />
