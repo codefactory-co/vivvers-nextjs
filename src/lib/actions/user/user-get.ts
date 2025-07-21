@@ -1,6 +1,6 @@
 'use server'
 
-import { getUserByUsername as mockGetUserByUsername, getUserById as mockGetUserById } from '@/lib/mock-api/users'
+import { getUser as mockGetUserById, getUserByUsernameApi as mockGetUserByUsername } from '@/lib/mock-api/users'
 import type { User } from '@/types/user'
 
 export async function getUserById(id: string): Promise<User | null> {
