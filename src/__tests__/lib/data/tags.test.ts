@@ -1,295 +1,236 @@
 import {
-  generalTagOptions,
-  generalTagCategories,
-  type TagOption,
-  type TagCategory
+  TAGS,
+  CATEGORIES,
+  getAllTags,
+  getTagsByCategory,
+  getTagBySlug,
+  getAllCategories,
+  getCategoryBySlug,
+  searchTags,
+  Tag,
+  Category
 } from '@/lib/data/tags'
 
-describe('Tags Data', () => {
-  describe('generalTagOptions', () => {
-    it('should be an array of TagOption objects', () => {
-      expect(Array.isArray(generalTagOptions)).toBe(true)
-      expect(generalTagOptions.length).toBeGreaterThan(0)
+describe('lib/data/tags.ts', () => {
+  describe('getAllTags', () => {
+    it('should return all mock tags', () => {
+      const tags = getAllTags()
+      expect(tags).toEqual(TAGS)
+      expect(tags.length).toBeGreaterThan(0)
+    })
 
-      generalTagOptions.forEach(tag => {
-        expect(tag).toHaveProperty('value')
-        expect(tag).toHaveProperty('label')
-        expect(tag).toHaveProperty('category')
-        expect(typeof tag.value).toBe('string')
-        expect(typeof tag.label).toBe('string')
-        expect(typeof tag.category).toBe('string')
+    it('should return tags with required properties', () => {
+      const tags = getAllTags()
+      tags.forEach((tag: Tag) => {
+        expect(tag).toHaveProperty('id')
+        expect(tag).toHaveProperty('name')
+        expect(tag).toHaveProperty('slug')
+        expect(tag).toHaveProperty('projectCount')
+        expect(tag).toHaveProperty('createdAt')
+        expect(tag).toHaveProperty('updatedAt')
+      })
+    })
+  })
+
+  describe('getTagsByCategory', () => {
+    it('should return tags for existing category', () => {
+      const webDevTags = getTagsByCategory('1') // 웹 개발
+      expect(webDevTags.length).toBeGreaterThan(0)
+      webDevTags.forEach((tag: Tag) => {
+        expect(tag.categoryId).toBe('1')
+      })
+    })
+
+    it('should return empty array for non-existent category', () => {
+      const tags = getTagsByCategory('nonexistent')
+      expect(tags).toEqual([])
+    })
+
+    it('should return correct tags for mobile category', () => {
+      const mobileTags = getTagsByCategory('2') // 모바일 앱
+      expect(mobileTags.length).toBeGreaterThan(0)
+      const tagNames = mobileTags.map((tag: Tag) => tag.name)
+      expect(tagNames).toContain('React Native')
+      expect(tagNames).toContain('Flutter')
+    })
+  })
+
+  describe('getTagBySlug', () => {
+    it('should return tag when slug exists', () => {
+      const tag = getTagBySlug('react')
+      expect(tag).toBeDefined()
+      expect(tag?.slug).toBe('react')
+      expect(tag?.name).toBe('React')
+    })
+
+    it('should return undefined when slug does not exist', () => {
+      const tag = getTagBySlug('nonexistent')
+      expect(tag).toBeUndefined()
+    })
+  })
+
+  describe('getAllCategories', () => {
+    it('should return all mock categories', () => {
+      const categories = getAllCategories()
+      expect(categories).toEqual(CATEGORIES)
+      expect(categories.length).toBeGreaterThan(0)
+    })
+
+    it('should return categories with required properties', () => {
+      const categories = getAllCategories()
+      categories.forEach((category: Category) => {
+        expect(category).toHaveProperty('id')
+        expect(category).toHaveProperty('name')
+        expect(category).toHaveProperty('slug')
+        expect(category).toHaveProperty('projectCount')
+        expect(category).toHaveProperty('createdAt')
+        expect(category).toHaveProperty('updatedAt')
+      })
+    })
+  })
+
+  describe('getCategoryBySlug', () => {
+    it('should return category when slug exists', () => {
+      const category = getCategoryBySlug('web-development')
+      expect(category).toBeDefined()
+      expect(category?.slug).toBe('web-development')
+      expect(category?.name).toBe('웹 개발')
+    })
+
+    it('should return undefined when slug does not exist', () => {
+      const category = getCategoryBySlug('nonexistent')
+      expect(category).toBeUndefined()
+    })
+  })
+
+  describe('searchTags', () => {
+    it('should find tags by name', () => {
+      const tags = searchTags('React')
+      expect(tags.length).toBeGreaterThan(0)
+      const hasMatchingTag = tags.some((tag: Tag) => 
+        tag.name.toLowerCase().includes('react')
+      )
+      expect(hasMatchingTag).toBe(true)
+    })
+
+    it('should find tags by slug', () => {
+      const tags = searchTags('nextjs')
+      expect(tags.length).toBeGreaterThan(0)
+      const hasMatchingTag = tags.some((tag: Tag) => 
+        tag.slug.toLowerCase().includes('nextjs')
+      )
+      expect(hasMatchingTag).toBe(true)
+    })
+
+    it('should return empty array for no matches', () => {
+      const tags = searchTags('zzz-nonexistent-term-zzz')
+      expect(tags).toEqual([])
+    })
+
+    it('should be case insensitive', () => {
+      const lowercaseResults = searchTags('react')
+      const uppercaseResults = searchTags('REACT')
+      const mixedCaseResults = searchTags('React')
+      
+      expect(lowercaseResults).toEqual(uppercaseResults)
+      expect(lowercaseResults).toEqual(mixedCaseResults)
+    })
+
+    it('should handle partial matches', () => {
+      const tags = searchTags('java')
+      expect(tags.length).toBeGreaterThan(0)
+      const hasJavaScript = tags.some((tag: Tag) => tag.name === 'JavaScript')
+      expect(hasJavaScript).toBe(true)
+    })
+  })
+
+  describe('Data integrity', () => {
+    it('should have consistent data types', () => {
+      const tags = getAllTags()
+      tags.forEach((tag: Tag) => {
+        expect(typeof tag.id).toBe('string')
+        expect(typeof tag.name).toBe('string')
+        expect(typeof tag.slug).toBe('string')
+        expect(typeof tag.projectCount).toBe('number')
+        expect(tag.createdAt).toBeInstanceOf(Date)
+        expect(tag.updatedAt).toBeInstanceOf(Date)
         
+        if (tag.categoryId) {
+          expect(typeof tag.categoryId).toBe('string')
+        }
         if (tag.description) {
           expect(typeof tag.description).toBe('string')
         }
       })
     })
 
-    it('should contain all expected categories', () => {
-      const categories = [...new Set(generalTagOptions.map(tag => tag.category))]
+    it('should have unique tag IDs', () => {
+      const tags = getAllTags()
+      const ids = tags.map((tag: Tag) => tag.id)
+      const uniqueIds = [...new Set(ids)]
+      expect(ids.length).toBe(uniqueIds.length)
+    })
+
+    it('should have unique tag slugs', () => {
+      const tags = getAllTags()
+      const slugs = tags.map((tag: Tag) => tag.slug)
+      const uniqueSlugs = [...new Set(slugs)]
+      expect(slugs.length).toBe(uniqueSlugs.length)
+    })
+
+    it('should have unique category IDs', () => {
+      const categories = getAllCategories()
+      const ids = categories.map((category: Category) => category.id)
+      const uniqueIds = [...new Set(ids)]
+      expect(ids.length).toBe(uniqueIds.length)
+    })
+
+    it('should have unique category slugs', () => {
+      const categories = getAllCategories()
+      const slugs = categories.map((category: Category) => category.slug)
+      const uniqueSlugs = [...new Set(slugs)]
+      expect(slugs.length).toBe(uniqueSlugs.length)
+    })
+
+    it('should have valid category references', () => {
+      const tags = getAllTags()
+      const categories = getAllCategories()
+      const categoryIds = categories.map((cat: Category) => cat.id)
       
-      expect(categories).toContain('목적')
-      expect(categories).toContain('난이도')
-      expect(categories).toContain('특징')
-      expect(categories).toContain('분야')
-    })
-
-    it('should have unique values', () => {
-      const values = generalTagOptions.map(tag => tag.value)
-      const uniqueValues = [...new Set(values)]
-      
-      expect(values.length).toBe(uniqueValues.length)
-    })
-
-    it('should have valid value formats (kebab-case)', () => {
-      generalTagOptions.forEach(tag => {
-        // Should be kebab-case: lowercase letters, numbers, hyphens
-        expect(tag.value).toMatch(/^[a-z0-9-]+$/)
-        expect(tag.value).not.toMatch(/^-|-$/) // Should not start or end with hyphen
-        expect(tag.value).not.toMatch(/--/) // Should not have consecutive hyphens
-      })
-    })
-
-    it('should have non-empty labels and descriptions', () => {
-      generalTagOptions.forEach(tag => {
-        expect(tag.label.trim()).toBeTruthy()
-        
-        if (tag.description) {
-          expect(tag.description.trim()).toBeTruthy()
+      tags.forEach((tag: Tag) => {
+        if (tag.categoryId) {
+          expect(categoryIds).toContain(tag.categoryId)
         }
       })
     })
-
-    it('should contain expected purpose tags', () => {
-      const purposeTags = generalTagOptions.filter(tag => tag.category === '목적')
-      const purposeValues = purposeTags.map(tag => tag.value)
-
-      expect(purposeValues).toContain('portfolio')
-      expect(purposeValues).toContain('side-project')
-      expect(purposeValues).toContain('learning')
-      expect(purposeValues).toContain('commercial')
-      expect(purposeValues).toContain('open-source')
-      expect(purposeValues).toContain('hackathon')
-    })
-
-    it('should contain expected difficulty tags', () => {
-      const difficultyTags = generalTagOptions.filter(tag => tag.category === '난이도')
-      const difficultyValues = difficultyTags.map(tag => tag.value)
-
-      expect(difficultyValues).toContain('beginner')
-      expect(difficultyValues).toContain('intermediate')
-      expect(difficultyValues).toContain('advanced')
-    })
-
-    it('should contain expected feature tags', () => {
-      const featureTags = generalTagOptions.filter(tag => tag.category === '특징')
-      const featureValues = featureTags.map(tag => tag.value)
-
-      expect(featureValues).toContain('responsive')
-      expect(featureValues).toContain('realtime')
-      expect(featureValues).toContain('mobile-first')
-      expect(featureValues).toContain('pwa')
-      expect(featureValues).toContain('seo-optimized')
-      expect(featureValues).toContain('accessibility')
-      expect(featureValues).toContain('dark-mode')
-      expect(featureValues).toContain('multilingual')
-    })
-
-    it('should contain expected domain tags', () => {
-      const domainTags = generalTagOptions.filter(tag => tag.category === '분야')
-      const domainValues = domainTags.map(tag => tag.value)
-
-      expect(domainValues).toContain('e-commerce')
-      expect(domainValues).toContain('social')
-      expect(domainValues).toContain('education')
-      expect(domainValues).toContain('healthcare')
-      expect(domainValues).toContain('finance')
-      expect(domainValues).toContain('entertainment')
-      expect(domainValues).toContain('productivity')
-      expect(domainValues).toContain('news')
-      expect(domainValues).toContain('travel')
-      expect(domainValues).toContain('food')
-    })
-
-    it('should have Korean labels for appropriate tags', () => {
-      const koreanTags = generalTagOptions.filter(tag => 
-        /[가-힣]/.test(tag.label)
-      )
-
-      expect(koreanTags.length).toBeGreaterThan(0)
-
-      // Check some specific Korean labels
-      const portfolioTag = generalTagOptions.find(tag => tag.value === 'portfolio')
-      expect(portfolioTag?.label).toBe('포트폴리오')
-
-      const beginnerTag = generalTagOptions.find(tag => tag.value === 'beginner')
-      expect(beginnerTag?.label).toBe('초급')
-
-      const responsiveTag = generalTagOptions.find(tag => tag.value === 'responsive')
-      expect(responsiveTag?.label).toBe('반응형')
-    })
-
-    it('should have descriptive descriptions for all tags', () => {
-      generalTagOptions.forEach(tag => {
-        expect(tag.description).toBeDefined()
-        expect(tag.description).toBeTruthy()
-        expect(tag.description!.length).toBeGreaterThanOrEqual(5)
-      })
-    })
   })
 
-  describe('generalTagCategories', () => {
-    it('should be an array of TagCategory objects', () => {
-      expect(Array.isArray(generalTagCategories)).toBe(true)
-      expect(generalTagCategories.length).toBe(4)
-
-      generalTagCategories.forEach(category => {
-        expect(category).toHaveProperty('name')
-        expect(category).toHaveProperty('tags')
-        expect(typeof category.name).toBe('string')
-        expect(Array.isArray(category.tags)).toBe(true)
+  describe('Category-tag relationships', () => {
+    it('should have correct tag distribution across categories', () => {
+      const categories = getAllCategories()
+      
+      categories.forEach((category: Category) => {
+        const categoryTags = getTagsByCategory(category.id)
+        const expectedTags = TAGS.filter((tag: Tag) => tag.categoryId === category.id)
+        expect(categoryTags).toEqual(expectedTags)
       })
     })
 
-    it('should contain all expected category names', () => {
-      const categoryNames = generalTagCategories.map(cat => cat.name)
+    it('should have consistent project counts', () => {
+      const categories = getAllCategories()
       
-      expect(categoryNames).toContain('목적')
-      expect(categoryNames).toContain('난이도')
-      expect(categoryNames).toContain('특징')
-      expect(categoryNames).toContain('분야')
-    })
-
-    it('should have tags that match their category', () => {
-      generalTagCategories.forEach(category => {
-        category.tags.forEach(tag => {
-          expect(tag.category).toBe(category.name)
-        })
+      categories.forEach((category: Category) => {
+        expect(category.projectCount).toBeGreaterThanOrEqual(0)
+        expect(typeof category.projectCount).toBe('number')
       })
     })
 
-    it('should contain all tags from generalTagOptions', () => {
-      const allCategoryTags = generalTagCategories.flatMap(cat => cat.tags)
+    it('should have valid color codes for categories', () => {
+      const categories = getAllCategories()
       
-      expect(allCategoryTags.length).toBe(generalTagOptions.length)
-
-      // Check that every tag from generalTagOptions is in categories
-      generalTagOptions.forEach(originalTag => {
-        const foundTag = allCategoryTags.find(tag => tag.value === originalTag.value)
-        expect(foundTag).toBeDefined()
-        expect(foundTag).toEqual(originalTag)
-      })
-    })
-
-    it('should have proper category grouping', () => {
-      // Check purpose category
-      const purposeCategory = generalTagCategories.find(cat => cat.name === '목적')
-      expect(purposeCategory).toBeDefined()
-      expect(purposeCategory!.tags.length).toBeGreaterThan(0)
-      expect(purposeCategory!.tags.every(tag => tag.category === '목적')).toBe(true)
-
-      // Check difficulty category
-      const difficultyCategory = generalTagCategories.find(cat => cat.name === '난이도')
-      expect(difficultyCategory).toBeDefined()
-      expect(difficultyCategory!.tags.length).toBe(3) // beginner, intermediate, advanced
-      expect(difficultyCategory!.tags.every(tag => tag.category === '난이도')).toBe(true)
-
-      // Check features category
-      const featuresCategory = generalTagCategories.find(cat => cat.name === '특징')
-      expect(featuresCategory).toBeDefined()
-      expect(featuresCategory!.tags.length).toBeGreaterThan(0)
-      expect(featuresCategory!.tags.every(tag => tag.category === '특징')).toBe(true)
-
-      // Check domain category
-      const domainCategory = generalTagCategories.find(cat => cat.name === '분야')
-      expect(domainCategory).toBeDefined()
-      expect(domainCategory!.tags.length).toBeGreaterThan(0)
-      expect(domainCategory!.tags.every(tag => tag.category === '분야')).toBe(true)
-    })
-
-    it('should have unique tag values within each category', () => {
-      generalTagCategories.forEach(category => {
-        const values = category.tags.map(tag => tag.value)
-        const uniqueValues = [...new Set(values)]
-        
-        expect(values.length).toBe(uniqueValues.length)
-      })
-    })
-
-    it('should have consistent filtering logic', () => {
-      // Test that the filtering logic works correctly
-      const purposeTags = generalTagOptions.filter(tag => tag.category === '목적')
-      const purposeCategory = generalTagCategories.find(cat => cat.name === '목적')
-      
-      expect(purposeCategory!.tags).toEqual(purposeTags)
-
-      const difficultyTags = generalTagOptions.filter(tag => tag.category === '난이도')
-      const difficultyCategory = generalTagCategories.find(cat => cat.name === '난이도')
-      
-      expect(difficultyCategory!.tags).toEqual(difficultyTags)
-
-      const featureTags = generalTagOptions.filter(tag => tag.category === '특징')
-      const featuresCategory = generalTagCategories.find(cat => cat.name === '특징')
-      
-      expect(featuresCategory!.tags).toEqual(featureTags)
-
-      const domainTags = generalTagOptions.filter(tag => tag.category === '분야')
-      const domainCategory = generalTagCategories.find(cat => cat.name === '분야')
-      
-      expect(domainCategory!.tags).toEqual(domainTags)
-    })
-
-    it('should maintain tag order within categories', () => {
-      generalTagCategories.forEach(category => {
-        const originalCategoryTags = generalTagOptions.filter(tag => tag.category === category.name)
-        
-        expect(category.tags).toEqual(originalCategoryTags)
-      })
-    })
-
-    it('should have non-empty categories', () => {
-      generalTagCategories.forEach(category => {
-        expect(category.tags.length).toBeGreaterThan(0)
-      })
-    })
-  })
-
-  describe('Data integrity', () => {
-    it('should have consistent tag objects across arrays', () => {
-      // Test that tags in categories are exact references to tags in generalTagOptions
-      generalTagCategories.forEach(category => {
-        category.tags.forEach(categoryTag => {
-          const originalTag = generalTagOptions.find(tag => tag.value === categoryTag.value)
-          expect(originalTag).toBeDefined()
-          
-          // Check all properties match
-          expect(categoryTag.value).toBe(originalTag!.value)
-          expect(categoryTag.label).toBe(originalTag!.label)
-          expect(categoryTag.category).toBe(originalTag!.category)
-          expect(categoryTag.description).toBe(originalTag!.description)
-        })
-      })
-    })
-
-    it('should not have missing or extra tags in categories', () => {
-      const allCategoryTags = generalTagCategories.flatMap(cat => cat.tags)
-      const allCategoryValues = allCategoryTags.map(tag => tag.value).sort()
-      const allOriginalValues = generalTagOptions.map(tag => tag.value).sort()
-      
-      expect(allCategoryValues).toEqual(allOriginalValues)
-    })
-
-    it('should handle edge cases in tag data', () => {
-      // Check for potential issues with special characters
-      generalTagOptions.forEach(tag => {
-        expect(tag.value).not.toContain(' ') // No spaces in values
-        expect(tag.value).not.toContain('.') // No dots in values
-        expect(tag.value).not.toMatch(/[A-Z]/) // No uppercase in values
-        
-        expect(tag.label.trim()).toBe(tag.label) // No leading/trailing whitespace
-        
-        if (tag.description) {
-          expect(tag.description.trim()).toBe(tag.description) // No leading/trailing whitespace
+      categories.forEach((category: Category) => {
+        if (category.color) {
+          expect(category.color).toMatch(/^#[0-9A-F]{6}$/i)
         }
       })
     })
