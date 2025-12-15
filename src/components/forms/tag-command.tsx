@@ -19,9 +19,12 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { 
-  type TagOption, 
-  type TagCategory,
-  generalTagCategories 
+  getAllTags,
+  getAllCategories,
+  getTagsByCategory,
+  searchTags,
+  type Tag,
+  type Category
 } from '@/lib/data/tags'
 import { tagUtils } from '@/lib/validations/project'
 
@@ -44,43 +47,42 @@ export function TagCommand({
   const [search, setSearch] = useState('')
 
   // 태그 카테고리
-  const categories: TagCategory[] = generalTagCategories
-
-  // 모든 태그 옵션을 평면화
-  const allOptions: TagOption[] = categories.flatMap(category => category.tags)
+  const categories: Category[] = getAllCategories()
+  const allTags: Tag[] = getAllTags()
 
   // 검색어로 필터링
+  const filteredTags = search 
+    ? searchTags(search)
+    : allTags
+
   const filteredCategories = categories.map(category => ({
     ...category,
-    tags: category.tags.filter(tag =>
-      tag.label.toLowerCase().includes(search.toLowerCase()) ||
-      tag.value.toLowerCase().includes(search.toLowerCase())
-    )
+    tags: filteredTags.filter(tag => tag.categoryId === category.id)
   })).filter(category => category.tags.length > 0)
 
-  const handleSelect = (tagValue: string) => {
-    if (selectedTags.includes(tagValue)) {
+  const handleSelect = (tagSlug: string) => {
+    if (selectedTags.includes(tagSlug)) {
       // 이미 선택된 태그라면 제거
-      onTagsChange(selectedTags.filter(tag => tag !== tagValue))
+      onTagsChange(selectedTags.filter(tag => tag !== tagSlug))
     } else if (selectedTags.length < maxTags) {
       // 태그 유효성 검사 후 추가
-      const sanitizedTag = tagUtils.sanitizeTag(tagValue)
+      const sanitizedTag = tagUtils.sanitizeTag(tagSlug)
       if (sanitizedTag && tagUtils.isValidTag(sanitizedTag)) {
         onTagsChange([...selectedTags, sanitizedTag])
       }
     }
   }
 
-  const removeTag = (tagValue: string) => {
-    onTagsChange(selectedTags.filter(tag => tag !== tagValue))
+  const removeTag = (tagSlug: string) => {
+    onTagsChange(selectedTags.filter(tag => tag !== tagSlug))
   }
 
-  const getTagLabel = (tagValue: string): string => {
-    const option = allOptions.find(opt => opt.value === tagValue)
-    return option?.label || tagValue
+  const getTagLabel = (tagSlug: string): string => {
+    const tag = allTags.find(t => t.slug === tagSlug)
+    return tag?.name || tagSlug
   }
 
-  const isSelected = (tagValue: string) => selectedTags.includes(tagValue)
+  const isSelected = (tagSlug: string) => selectedTags.includes(tagSlug)
   const isMaxReached = selectedTags.length >= maxTags
 
   return (
@@ -124,21 +126,21 @@ export function TagCommand({
                 <CommandGroup key={category.name} heading={category.name}>
                   {category.tags.map((tag) => (
                     <CommandItem
-                      key={tag.value}
-                      value={tag.value}
-                      onSelect={() => handleSelect(tag.value)}
-                      disabled={!isSelected(tag.value) && isMaxReached}
+                      key={tag.slug}
+                      value={tag.slug}
+                      onSelect={() => handleSelect(tag.slug)}
+                      disabled={!isSelected(tag.slug) && isMaxReached}
                       className="flex items-center justify-between w-full"
                     >
                       <div className="flex items-center">
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            isSelected(tag.value) ? "opacity-100" : "opacity-0"
+                            isSelected(tag.slug) ? "opacity-100" : "opacity-0"
                           )}
                         />
                         <div>
-                          <div className="font-medium">{tag.label}</div>
+                          <div className="font-medium">{tag.name}</div>
                           {tag.description && (
                             <div className="text-xs text-muted-foreground">
                               {tag.description}
@@ -162,18 +164,18 @@ export function TagCommand({
             선택된 태그 ({selectedTags.length}/{maxTags})
           </div>
           <div className="flex flex-wrap gap-2">
-            {selectedTags.map((tagValue) => (
+            {selectedTags.map((tagSlug) => (
               <Badge
-                key={tagValue}
+                key={tagSlug}
                 variant="secondary"
                 className="px-2 py-1"
               >
-                {getTagLabel(tagValue)}
+                {getTagLabel(tagSlug)}
                 <button
                   type="button"
-                  onClick={() => removeTag(tagValue)}
+                  onClick={() => removeTag(tagSlug)}
                   className="ml-1 hover:text-destructive focus:text-destructive"
-                  aria-label={`${getTagLabel(tagValue)} 제거`}
+                  aria-label={`${getTagLabel(tagSlug)} 제거`}
                 >
                   <X className="h-3 w-3" />
                 </button>

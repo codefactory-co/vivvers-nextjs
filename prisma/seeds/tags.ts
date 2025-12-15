@@ -1,16 +1,17 @@
 import { PrismaClient, Tag } from '@prisma/client'
 import { uuidv7 } from 'uuidv7'
-import { generalTagOptions } from '../../src/lib/data/tags'
+import { getAllTags } from '../../src/lib/data/tags'
 
 export async function seedTags(prisma: PrismaClient): Promise<Tag[]> {
   const tags: Tag[] = []
 
   // 일반 태그 생성
-  for (const generalTag of generalTagOptions) {
+  const allTags = getAllTags()
+  for (const tagData of allTags) {
     const tag = await prisma.tag.create({
       data: {
         id: uuidv7(),
-        name: generalTag.label
+        name: tagData.name
       }
     })
     tags.push(tag)
