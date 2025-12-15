@@ -1,5 +1,6 @@
 import { updateSession } from '@/lib/supabase/middleware'
 import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
 // Mock dependencies
 jest.mock('@supabase/ssr', () => ({
@@ -14,10 +15,20 @@ jest.mock('next/server', () => ({
   }
 }))
 
+// Type for mock user in tests
+interface MockUser {
+  id: string
+  email: string
+  user_metadata?: {
+    profile_completed?: boolean
+  }
+}
+
+const mockCreateServerClient = createServerClient as jest.MockedFunction<typeof createServerClient>
+const mockNextResponse = NextResponse as jest.Mocked<typeof NextResponse>
+
 describe('Supabase Middleware', () => {
   const originalEnv = process.env
-  const mockCreateServerClient = require('@supabase/ssr').createServerClient
-  const mockNextResponse = require('next/server').NextResponse
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -46,7 +57,7 @@ describe('Supabase Middleware', () => {
     } as unknown as NextRequest
   }
 
-  const createMockSupabaseClient = (user: any = null) => {
+  const createMockSupabaseClient = (user: MockUser | null = null) => {
     return {
       auth: {
         getUser: jest.fn().mockResolvedValue({

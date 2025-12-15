@@ -1,4 +1,6 @@
 import { createClient, getUser } from '@/lib/supabase/server'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 // Mock dependencies
 jest.mock('@supabase/ssr', () => ({
@@ -9,10 +11,11 @@ jest.mock('next/headers', () => ({
   cookies: jest.fn()
 }))
 
+const mockCreateServerClient = createServerClient as jest.MockedFunction<typeof createServerClient>
+const mockCookies = cookies as jest.MockedFunction<typeof cookies>
+
 describe('Supabase Server Configuration', () => {
   const originalEnv = process.env
-  const mockCreateServerClient = require('@supabase/ssr').createServerClient
-  const mockCookies = require('next/headers').cookies
 
   beforeEach(() => {
     jest.clearAllMocks()

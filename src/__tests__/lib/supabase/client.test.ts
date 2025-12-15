@@ -75,9 +75,9 @@ describe('Supabase Client Configuration', () => {
     })
 
     it('should handle null environment variables', () => {
-      // @ts-ignore - testing runtime behavior
+      // @ts-expect-error - testing runtime behavior
       process.env.NEXT_PUBLIC_SUPABASE_URL = null
-      // @ts-ignore - testing runtime behavior
+      // @ts-expect-error - testing runtime behavior
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = null
 
       expect(() => createClient()).toThrow(
