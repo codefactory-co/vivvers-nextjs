@@ -198,7 +198,7 @@ describe('File Processing Utilities', () => {
     })
 
     it('should return false for undefined FileList', () => {
-      expect(hasValidFiles(undefined as any)).toBe(false)
+      expect(hasValidFiles(undefined as unknown as FileList | null)).toBe(false)
     })
   })
 

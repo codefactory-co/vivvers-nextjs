@@ -5,9 +5,7 @@ import {
   uploadDocument,
   deleteFile,
   deleteUserFiles,
-  type UploadOptions,
-  type ValidationError,
-  type UploadProgress
+  type UploadOptions
 } from '@/lib/supabase/storage'
 
 // Mock crypto.randomUUID
@@ -35,8 +33,22 @@ afterAll(() => {
   console.warn = originalConsoleWarn
 })
 
+// Type for mock Supabase client
+interface MockStorageBucket {
+  upload: jest.Mock
+  remove: jest.Mock
+  list: jest.Mock
+  getPublicUrl: jest.Mock
+}
+
+interface MockSupabaseClient {
+  storage: {
+    from: jest.Mock<MockStorageBucket>
+  }
+}
+
 describe('Supabase Storage Utilities', () => {
-  let mockSupabaseClient: any
+  let mockSupabaseClient: MockSupabaseClient
   let mockFile: File
 
   beforeEach(() => {

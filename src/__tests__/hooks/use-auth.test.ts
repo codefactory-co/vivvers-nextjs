@@ -121,7 +121,7 @@ describe('useAuth', () => {
     }
 
     // Setup default mock implementations
-    mockCreateClient.mockReturnValue(mockSupabaseClient as any)
+    mockCreateClient.mockReturnValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
     mockSupabaseClient.auth.getSession.mockResolvedValue({ data: { session: null }, error: null })
     mockSupabaseClient.auth.onAuthStateChange.mockImplementation((callback: (event: AuthChangeEvent, session: Session | null) => void) => {
       authStateChangeCallback = callback
@@ -469,11 +469,11 @@ describe('useAuth', () => {
       })
 
       // Mock delayed profile fetch
-      let resolveProfile: (value: AppUser) => void
-      const profilePromise = new Promise((resolve) => {
+      let resolveProfile: (value: AppUser | null) => void
+      const profilePromise = new Promise<AppUser | null>((resolve) => {
         resolveProfile = resolve
       })
-      mockGetUserById.mockReturnValue(profilePromise as any)
+      mockGetUserById.mockReturnValue(profilePromise)
 
       const { result } = renderHook(() => useAuth())
 

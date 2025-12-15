@@ -158,7 +158,7 @@ describe('TagInput Component Business Logic', () => {
         maxTags: number
       ) => {
         const newTags = inputValue.split(',').map(tag => tag.trim()).filter(Boolean)
-        let updatedTags = [...currentTags]
+        const updatedTags = [...currentTags]
         let addedCount = 0
 
         for (const tag of newTags) {
